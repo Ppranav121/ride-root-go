@@ -9,7 +9,13 @@ const Index = () => {
     navigate("/");
   }, [navigate]);
 
-  return null;
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-rideroot-darkGrey animate-pulse">Redirecting...</p>
+      </div>
+    </div>
+  );
 };
 
 export default Index;

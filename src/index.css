@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -14,26 +14,26 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 122 39% 49%;
+    --primary: 244 75% 67%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 79% 54%;
+    --secondary: 262 83% 64%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 79% 54%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 122 39% 49%;
+    --ring: 244 75% 67%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -46,7 +46,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 122 39% 49%;
+    --primary: 244 75% 67%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -73,29 +73,45 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-rideroot-background text-rideroot-text font-sans;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-rideroot-primary text-white font-medium py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:brightness-105;
+    @apply bg-rideroot-primary text-white font-medium py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
   }
   
   .btn-secondary {
-    @apply bg-rideroot-accent text-white font-medium py-3 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:brightness-105;
+    @apply bg-rideroot-accent text-white font-medium py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
   }
   
   .btn-outline {
-    @apply border-2 border-rideroot-primary text-rideroot-primary font-medium py-3 px-6 rounded-full hover:bg-rideroot-primary/10 transition-all duration-300;
+    @apply border-2 border-rideroot-primary text-rideroot-primary font-medium py-3 px-6 rounded-xl hover:bg-rideroot-primary/10 transition-all duration-300;
   }
   
   .card-shadow {
-    @apply shadow-md hover:shadow-lg transition-shadow duration-300;
+    @apply shadow-card-soft hover:shadow-card-hover transition-shadow duration-300;
+  }
+  
+  .card-modern {
+    @apply bg-white rounded-2xl shadow-card-soft p-5 hover:shadow-card-hover transition-all duration-300;
   }
   
   .input-field {
     @apply px-4 py-3 border border-rideroot-mediumGrey rounded-xl focus:outline-none focus:ring-2 focus:ring-rideroot-primary/50;
+  }
+  
+  .glass-panel {
+    @apply backdrop-blur-md bg-white/90 border border-white/20 rounded-2xl shadow-card-soft;
+  }
+  
+  .section-header {
+    @apply text-xl font-semibold text-rideroot-text mb-4;
+  }
+  
+  .pill-badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium bg-rideroot-primary/10 text-rideroot-primary;
   }
 }
 

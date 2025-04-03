@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Clock, User } from "lucide-react";
+import { Home, Clock, User, MapPin } from "lucide-react";
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -12,39 +12,61 @@ const BottomNav: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 w-full bg-white border-t border-rideroot-mediumGrey shadow-md">
-      <div className="flex justify-around items-center h-16">
-        <button
+    <nav className="fixed bottom-0 w-full bg-white border-t border-rideroot-mediumGrey shadow-lg backdrop-blur-lg bg-white/90 z-30">
+      <div className="max-w-md mx-auto flex justify-around items-center h-16">
+        <NavButton 
+          label="Home" 
+          icon={Home} 
+          isActive={isActive("/home")} 
           onClick={() => navigate("/home")}
-          className={`flex flex-col items-center justify-center w-1/3 ${
-            isActive("/home") ? "text-rideroot-primary" : "text-rideroot-darkGrey"
-          }`}
-        >
-          <Home size={24} />
-          <span className="text-xs mt-1">Home</span>
-        </button>
+        />
 
-        <button
+        <NavButton 
+          label="Book" 
+          icon={MapPin} 
+          isActive={isActive("/book-ride")} 
+          onClick={() => navigate("/book-ride")}
+        />
+
+        <NavButton 
+          label="Rides" 
+          icon={Clock} 
+          isActive={isActive("/rides")} 
           onClick={() => navigate("/rides")}
-          className={`flex flex-col items-center justify-center w-1/3 ${
-            isActive("/rides") ? "text-rideroot-primary" : "text-rideroot-darkGrey"
-          }`}
-        >
-          <Clock size={24} />
-          <span className="text-xs mt-1">Rides</span>
-        </button>
+        />
 
-        <button
+        <NavButton 
+          label="Profile" 
+          icon={User} 
+          isActive={isActive("/profile")} 
           onClick={() => navigate("/profile")}
-          className={`flex flex-col items-center justify-center w-1/3 ${
-            isActive("/profile") ? "text-rideroot-primary" : "text-rideroot-darkGrey"
-          }`}
-        >
-          <User size={24} />
-          <span className="text-xs mt-1">Profile</span>
-        </button>
+        />
       </div>
     </nav>
+  );
+};
+
+interface NavButtonProps {
+  label: string;
+  icon: React.ElementType;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center w-1/4 pt-1 pb-1 relative ${
+        isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
+      }`}
+    >
+      {isActive && (
+        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-12 h-1 rounded-full bg-rideroot-primary" />
+      )}
+      <Icon size={isActive ? 24 : 20} className={`${isActive ? 'mb-1' : 'mb-1'} transition-all`} />
+      <span className={`text-xs transition-all ${isActive ? 'font-medium' : 'font-normal'}`}>{label}</span>
+    </button>
   );
 };
 
