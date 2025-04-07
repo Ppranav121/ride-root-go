@@ -74,14 +74,14 @@ const WelcomePage: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="min-h-screen flex flex-col"
+          className="h-screen w-screen flex flex-col"
         >
           {/* Skip button */}
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="absolute top-6 right-6 z-10"
+            className="absolute top-6 right-6 z-20"
           >
             <Button 
               variant="outline" 
@@ -93,21 +93,23 @@ const WelcomePage: React.FC = () => {
           </motion.div>
 
           {/* Main carousel */}
-          <Carousel className="w-full flex-1 flex items-center justify-center" 
+          <Carousel 
+            className="w-full h-full" 
             setApi={(api) => {
               api?.on('select', () => {
                 setCurrentSlide(api.selectedScrollSnap());
               });
-            }}>
-            <CarouselContent className="h-full">
+            }}
+          >
+            <CarouselContent className="h-screen">
               {slides.map((slide, index) => (
                 <CarouselItem key={index} className="h-full">
-                  <div className={`w-full h-full flex flex-col items-center justify-center p-8 ${currentSlide === index ? slide.color : "bg-white"} transition-colors duration-700`}>
+                  <div className={`w-full h-full flex flex-col items-center justify-center px-8 py-16 ${currentSlide === index ? slide.color : "bg-white"} transition-colors duration-700`}>
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.7, delay: 0.2 }}
-                      className="flex flex-col items-center max-w-md text-center p-4"
+                      className="flex flex-col items-center max-w-md text-center"
                     >
                       {/* Icon with background */}
                       <motion.div 
@@ -119,7 +121,7 @@ const WelcomePage: React.FC = () => {
                           repeatType: "reverse",
                           ease: "easeInOut"
                         }}
-                        className="bg-white/20 p-10 rounded-full mb-12 shadow-xl backdrop-blur-sm"
+                        className="bg-white/20 p-10 rounded-full mb-16 shadow-xl backdrop-blur-sm"
                       >
                         {slide.icon}
                       </motion.div>
@@ -129,7 +131,7 @@ const WelcomePage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="text-5xl font-bold text-white mb-6"
+                        className="text-5xl font-bold text-white mb-8"
                       >
                         {slide.title}
                       </motion.h1>
@@ -137,7 +139,7 @@ const WelcomePage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
-                        className="text-white/90 text-xl font-light leading-relaxed mb-16"
+                        className="text-white/90 text-xl font-light leading-relaxed"
                       >
                         {slide.description}
                       </motion.p>
