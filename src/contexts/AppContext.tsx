@@ -56,7 +56,7 @@ interface AppContextType {
   calculateFare: (distance: number, option: RideOption, capacity: CapacityOption, isSubscribed: boolean) => number;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  bookRide: (pickup: string, dropoff: string) => Promise<Ride>;
+  bookRide: (pickup: string, dropoff: string, paymentMethodId?: string) => Promise<Ride>;
 }
 
 // Create the context with a default value
@@ -121,8 +121,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setCurrentRide(null);
   };
 
-  // Book ride function
-  const bookRide = async (pickup: string, dropoff: string): Promise<Ride> => {
+  // Book ride function - Add paymentMethodId parameter
+  const bookRide = async (pickup: string, dropoff: string, paymentMethodId?: string): Promise<Ride> => {
     // In a real app, this would call an API
     const mockDistance = 6; // 6 miles
     const mockDuration = 15; // 15 minutes
@@ -143,6 +143,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       fare,
       rideOption,
       capacityOption,
+      paymentMethodId: paymentMethodId,
       status: "pending"
     };
     
