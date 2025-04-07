@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Phone, MessageSquare, MapPin, Navigation, Info, ChevronDown, Star, Clock, Car, Shield, AlertTriangle } from "lucide-react";
@@ -138,34 +139,6 @@ const RideTracking: React.FC = () => {
           </Button>
         </div>
 
-        {/* SOS Button - Fixed at bottom left */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button 
-              variant="destructive" 
-              className="fixed bottom-28 left-4 h-14 w-14 rounded-full shadow-lg border-2 border-white font-bold animate-pulse z-50 flex items-center justify-center"
-              onClick={handleSosClick}
-            >
-              <AlertTriangle size={24} strokeWidth={2.5} />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-72 p-4">
-            <div className="space-y-2">
-              <h3 className="font-bold text-lg flex items-center gap-2">
-                <AlertTriangle size={18} className="text-destructive" />
-                Emergency Help
-              </h3>
-              <p className="text-sm">Click the SOS button to alert our emergency response team. Help will be dispatched to your location immediately.</p>
-              <div className="pt-2">
-                <Button variant="destructive" className="w-full" onClick={handleSosClick}>
-                  <AlertTriangle className="mr-2" size={16} />
-                  Send Emergency Alert
-                </Button>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-
         {/* ETA Banner */}
         <div className="absolute top-4 left-4 right-4 bg-white rounded-lg shadow-md p-3 flex items-center">
           <div className="w-10 h-10 bg-rideroot-primary/20 rounded-full flex items-center justify-center mr-3">
@@ -303,6 +276,18 @@ const RideTracking: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* SOS Button - Full width bar at the bottom */}
+      <Button 
+        variant="destructive" 
+        className="fixed bottom-0 left-0 right-0 h-16 shadow-lg z-50 flex items-center justify-center rounded-none"
+        onClick={handleSosClick}
+      >
+        <div className="flex items-center gap-2">
+          <AlertTriangle size={24} strokeWidth={2.5} />
+          <span className="font-bold text-lg">EMERGENCY SOS</span>
+        </div>
+      </Button>
     </div>
   );
 };
