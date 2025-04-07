@@ -38,48 +38,50 @@ const DriverPulseAnimation: React.FC<DriverPulseAnimationProps> = ({ driverFound
   }
   
   return (
-    <div className="relative w-24 h-24 flex items-center justify-center">
-      <motion.div
-        className="absolute w-40 h-40 rounded-full bg-rideroot-primary/30"
-        animate={{
-          scale: [1, 2.5],
-          opacity: [0.7, 0]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-        style={{ left: "calc(50% - 20px)", top: "calc(50% - 20px)", transform: "translate(-50%, -50%)" }}
-      />
-      <motion.div
-        className="absolute w-40 h-40 rounded-full bg-rideroot-primary/20"
-        animate={{
-          scale: [1, 2.2],
-          opacity: [0.7, 0]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 0.5
-        }}
-        style={{ left: "calc(50% - 20px)", top: "calc(50% - 20px)", transform: "translate(-50%, -50%)" }}
-      />
-      <motion.div
-        className="absolute w-40 h-40 rounded-full bg-rideroot-primary/30"
-        animate={{
-          scale: [1, 2],
-          opacity: [0.7, 0]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 1
-        }}
-        style={{ left: "calc(50% - 20px)", top: "calc(50% - 20px)", transform: "translate(-50%, -50%)" }}
-      />
+    <div className="relative flex items-center justify-center w-32 h-32">
+      {/* Pulse rings animation */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <motion.div
+          className="absolute w-full h-full rounded-full bg-rideroot-primary/30"
+          animate={{
+            scale: [1, 2.5],
+            opacity: [0.7, 0]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <motion.div
+          className="absolute w-full h-full rounded-full bg-rideroot-primary/20"
+          animate={{
+            scale: [1, 2.2],
+            opacity: [0.7, 0]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 0.5
+          }}
+        />
+        <motion.div
+          className="absolute w-full h-full rounded-full bg-rideroot-primary/30"
+          animate={{
+            scale: [1, 2],
+            opacity: [0.7, 0]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 1
+          }}
+        />
+      </div>
+      
+      {/* Central car icon */}
       <motion.div 
         className="relative w-24 h-24 rounded-full bg-gradient-to-br from-rideroot-primary to-rideroot-secondary flex items-center justify-center shadow-lg z-10"
         animate={{

@@ -13,7 +13,7 @@ const CancelRideButton: React.FC = () => {
   return (
     <motion.button
       onClick={handleCancel}
-      className="w-full bg-white/10 backdrop-blur-md text-white rounded-xl py-4 font-medium border border-white/20 hover:bg-white/20 transition-colors"
+      className="w-full bg-white/10 backdrop-blur-md text-white rounded-xl py-4 font-medium border border-white/20 hover:bg-white/20 transition-colors shadow-lg"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
