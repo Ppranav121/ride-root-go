@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
@@ -14,6 +14,7 @@ import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import FareEstimate from "@/components/ride/FareEstimate";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
+import PaymentMethodSelector, { PaymentMethod } from "@/components/ride/PaymentMethodSelector";
 
 const BookRide: React.FC = () => {
   const navigate = useNavigate();
@@ -25,6 +26,14 @@ const BookRide: React.FC = () => {
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>({
+    id: "card-1",
+    type: "card",
+    name: "Personal Visa",
+    last4: "4242",
+    expiryDate: "12/25",
+    isDefault: true
+  });
 
   // Mock recent locations
   const recentLocations = [
@@ -107,9 +116,16 @@ const BookRide: React.FC = () => {
       return;
     }
 
+    if (!selectedPaymentMethod) {
+      toast.error("Missing payment method", {
+        description: "Please select a payment method",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await bookRide(pickupLocation, dropoffLocation);
+      await bookRide(pickupLocation, dropoffLocation, selectedPaymentMethod.id);
       navigate("/ride-confirmation");
     } catch (error) {
       console.error("Error booking ride:", error);
@@ -184,6 +200,14 @@ const BookRide: React.FC = () => {
                 <RideOptionSelector />
               </div>
 
+              {/* Payment Method Selector */}
+              <div className="mb-5">
+                <PaymentMethodSelector 
+                  selectedPaymentMethod={selectedPaymentMethod}
+                  onSelectPaymentMethod={setSelectedPaymentMethod}
+                />
+              </div>
+
               {/* Fare Estimate */}
               <FareEstimate 
                 distance={distance}
@@ -197,7 +221,7 @@ const BookRide: React.FC = () => {
               <motion.button
                 onClick={handleBookRide}
                 className={`btn-primary w-full ${isLoading ? "opacity-70" : ""}`}
-                disabled={isLoading || !dropoffLocation}
+                disabled={isLoading || !dropoffLocation || !selectedPaymentMethod}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
