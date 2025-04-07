@@ -7,7 +7,7 @@ interface RouteInfoCardProps {
   dropoffLocation: string;
   rideOption: string;
   capacityOption: string;
-  distance: string;
+  distance: string | number;
   fare: number;
 }
 
