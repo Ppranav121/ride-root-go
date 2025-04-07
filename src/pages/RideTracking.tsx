@@ -7,6 +7,7 @@ import MapView from "@/components/ride/MapView";
 import RideDetailsBanner from "@/components/ride/RideDetailsBanner";
 import RideDetailsPanel from "@/components/ride/RideDetailsPanel";
 import EmergencyButton from "@/components/ride/EmergencyButton";
+import RouteInfoCard from "@/components/ride/RouteInfoCard";
 
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
@@ -83,7 +84,19 @@ const RideTracking: React.FC = () => {
 
         <RideDetailsBanner secondsLeft={secondsLeft} />
         
-        <RideDetailsPanel currentRide={currentRide} />
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
+          <RideDetailsPanel currentRide={currentRide} />
+          
+          {/* Add RouteInfoCard with current ride details */}
+          <RouteInfoCard
+            pickupLocation={currentRide.pickupLocation}
+            dropoffLocation={currentRide.dropoffLocation}
+            rideOption={currentRide.rideOption}
+            capacityOption={currentRide.capacityOption}
+            distance={currentRide.distance}
+            fare={currentRide.fare}
+          />
+        </div>
       </div>
 
       <EmergencyButton />
