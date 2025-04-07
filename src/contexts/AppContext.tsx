@@ -40,6 +40,7 @@ interface Ride {
   rating?: number;
   tipAmount?: number;
   comment?: string;
+  paymentMethodId?: string;
 }
 
 interface AppContextType {
@@ -143,7 +144,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       fare,
       rideOption,
       capacityOption,
-      paymentMethodId: paymentMethodId,
+      paymentMethodId,
       status: "pending"
     };
     
