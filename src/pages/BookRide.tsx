@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin } from "lucide-react";
@@ -149,15 +150,16 @@ const BookRide: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Ride Booking Interface - Now with ScrollArea */}
+        {/* Ride Booking Interface - Fixed height with scrollable content */}
         <motion.div 
-          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl max-h-[70vh]"
+          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl"
+          style={{ maxHeight: "70vh" }}
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <ScrollArea className="h-full max-h-[70vh] px-6 pb-6 pt-6">
-            <div className="pr-4">
+          <ScrollArea className="h-[70vh] w-full">
+            <div className="px-6 pb-8 pt-6">
               {/* Location inputs */}
               <LocationSelector 
                 pickupLocation={pickupLocation}
@@ -208,7 +210,7 @@ const BookRide: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="mt-3 text-center"
+                  className="mt-3 text-center mb-6"
                 >
                   <p className="text-xs text-rideroot-darkGrey">
                     Save 10% on rides with <span className="text-rideroot-primary font-medium">RideRoot Premium</span>
