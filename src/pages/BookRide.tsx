@@ -125,7 +125,8 @@ const BookRide: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await bookRide(pickupLocation, dropoffLocation, selectedPaymentMethod.id);
+      // Fix the argument count here to match the function signature in AppContext
+      await bookRide(pickupLocation, dropoffLocation);
       navigate("/ride-confirmation");
     } catch (error) {
       console.error("Error booking ride:", error);
