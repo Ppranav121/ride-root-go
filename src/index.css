@@ -70,10 +70,34 @@
 @layer base {
   * {
     @apply border-border;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-rideroot-background text-rideroot-text font-sans;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+  }
+  
+  /* For webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -130,4 +154,27 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* Add car-like scroll behavior for all scrollable containers */
+.scrollable {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-item {
+  scroll-snap-align: start;
+}
+
+/* Add special car-like acceleration/deceleration */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  .smooth-scroll {
+    transition: scroll-behavior 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
 }
