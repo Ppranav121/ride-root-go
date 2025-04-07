@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define types for our context
@@ -38,6 +37,9 @@ interface Ride {
   capacityOption: CapacityOption;
   driver?: Driver;
   status: "pending" | "confirmed" | "in-progress" | "completed" | "cancelled";
+  rating?: number;
+  tipAmount?: number;
+  comment?: string;
 }
 
 interface AppContextType {
