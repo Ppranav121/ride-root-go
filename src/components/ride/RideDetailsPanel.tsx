@@ -4,9 +4,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import DriverInfoCard from "./DriverInfoCard";
 import RouteInfoCard from "./RouteInfoCard";
 import AdditionalRideInfo from "./AdditionalRideInfo";
-import type { Ride } from "@/contexts/AppContext"; // Add import for Ride type
+import { Ride } from "@/contexts/AppContext"; // Updated import to use the exported type
 
-// Update the interface to match the Ride type from AppContext
 interface RideDetailsPanelProps {
   currentRide: Ride;
 }

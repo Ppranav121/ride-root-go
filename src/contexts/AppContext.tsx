@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define types for our context
@@ -17,7 +18,7 @@ interface User {
   savedAddresses: any[];
 }
 
-interface Driver {
+export interface Driver {
   id: string;
   name: string;
   vehicleType: string;
@@ -26,7 +27,8 @@ interface Driver {
   tier: DriverTier;
 }
 
-interface Ride {
+// Export the Ride interface so it can be imported elsewhere
+export interface Ride {
   id: string;
   pickupLocation: string;
   dropoffLocation: string;
