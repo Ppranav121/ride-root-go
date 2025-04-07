@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -71,12 +72,22 @@
   * {
     @apply border-border;
     scroll-behavior: smooth;
+    font-family: 'Poppins', sans-serif;
   }
 
   body {
-    @apply bg-rideroot-background text-rideroot-text font-sans;
+    @apply bg-rideroot-background text-rideroot-text;
     scrollbar-width: thin;
     scroll-behavior: smooth;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+
+  p, span, button, input, textarea, select {
+    font-family: 'Inter', sans-serif;
   }
   
   /* For webkit browsers */
@@ -139,14 +150,12 @@
   }
 }
 
-/* Remove all margins and padding from the body */
 body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* Ensure root container takes full height */
 #root {
   min-height: 100vh;
   max-width: 100%;
@@ -156,7 +165,6 @@ body {
   flex-direction: column;
 }
 
-/* Add car-like scroll behavior for all scrollable containers */
 .scrollable {
   scroll-behavior: smooth;
   scroll-snap-type: y proximity;
@@ -168,7 +176,6 @@ body {
   scroll-snap-align: start;
 }
 
-/* Add special car-like acceleration/deceleration */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;

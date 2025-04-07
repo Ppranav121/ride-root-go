@@ -131,7 +131,7 @@ const WelcomePage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="text-5xl font-bold text-white mb-8"
+                        className="text-5xl font-bold text-white mb-8 font-heading"
                       >
                         {slide.title}
                       </motion.h1>
