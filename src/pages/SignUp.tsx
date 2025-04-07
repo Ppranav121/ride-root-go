@@ -28,7 +28,7 @@ const SignUp: React.FC = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-black text-white flex flex-col"
+      className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col"
     >
       {/* Logo and header */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16">
@@ -38,7 +38,7 @@ const SignUp: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="mb-10"
         >
-          <div className="w-16 h-16 bg-rideroot-primary rounded-full flex items-center justify-center mb-8 mx-auto">
+          <div className="w-16 h-16 bg-rideroot-primary rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
             <svg viewBox="0 0 24 24" width="32" height="32" className="text-white">
               <path 
                 fill="currentColor" 
@@ -47,13 +47,13 @@ const SignUp: React.FC = () => {
             </svg>
           </div>
           
-          <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
+          <h1 className="text-3xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">Create Account</h1>
           <p className="text-gray-400 text-center">Join RideRoot today</p>
         </motion.div>
 
         {/* User type selector */}
         <div className="w-full max-w-md mb-8">
-          <div className="flex mb-6 bg-gray-900 rounded-lg p-1">
+          <div className="flex mb-6 bg-black/40 border border-gray-700 rounded-lg p-1 backdrop-blur-sm">
             <button
               onClick={() => setUserType("rider")}
               className={`flex-1 py-3 rounded-lg flex items-center justify-center transition-all ${
@@ -112,9 +112,9 @@ const SignUp: React.FC = () => {
         </div>
 
         {/* Sign up button */}
-        <Button
+        <Button 
           onClick={handleSignUp}
-          className="w-full max-w-md bg-rideroot-primary hover:bg-rideroot-primary/90 text-white rounded-full p-6 mb-4 font-medium"
+          className="w-full max-w-md bg-gradient-to-r from-rideroot-primary to-rideroot-secondary hover:opacity-90 text-white rounded-full p-6 mb-4 font-medium shadow-md"
         >
           Sign up
         </Button>
@@ -123,7 +123,7 @@ const SignUp: React.FC = () => {
         <Button
           variant="outline"
           onClick={goToSignIn}
-          className="w-full max-w-md border-gray-700 text-white hover:bg-gray-800 rounded-full p-6"
+          className="w-full max-w-md bg-transparent border-2 border-rideroot-primary/70 text-white hover:bg-rideroot-primary/20 rounded-full p-6"
         >
           Sign in
         </Button>
