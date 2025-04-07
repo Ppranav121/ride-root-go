@@ -2,17 +2,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 
 const CancelRideButton: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCancel = () => {
-    toast.info("Ride cancelled", {
-      description: "Your ride request has been cancelled",
-      duration: 3000,
-    });
-    navigate("/home");
+    navigate("/ride-cancellation");
   };
 
   return (
