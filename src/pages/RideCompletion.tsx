@@ -1,11 +1,12 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const RideCompletion: React.FC = () => {
   const navigate = useNavigate();
@@ -15,11 +16,15 @@ const RideCompletion: React.FC = () => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [comment, setComment] = useState("");
 
-  if (!currentRide || !currentRide.driver) {
-    // Redirect if there's no current ride
-    React.useEffect(() => {
+  useEffect(() => {
+    // Only redirect if there's no current ride
+    if (!currentRide || !currentRide.driver) {
+      console.log("No current ride data, redirecting to home");
       navigate("/home");
-    }, [navigate]);
+    }
+  }, [currentRide, navigate]);
+
+  if (!currentRide || !currentRide.driver) {
     return null;
   }
 
@@ -34,6 +39,7 @@ const RideCompletion: React.FC = () => {
     });
 
     setFeedbackSubmitted(true);
+    toast.success("Thank you for your feedback!");
 
     // Show success message and redirect after delay
     setTimeout(() => {

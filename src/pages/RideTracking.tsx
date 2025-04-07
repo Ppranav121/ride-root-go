@@ -46,14 +46,7 @@ const RideTracking: React.FC = () => {
       });
     }, 1000);
 
-    // Automatically navigate to completion after countdown reaches zero
-    const timer = setTimeout(() => {
-      console.log("Navigating to ride completion page");
-      navigate("/ride-completion");
-    }, 10000);
-
     return () => {
-      clearTimeout(timer);
       clearInterval(positionInterval);
       clearInterval(countdownInterval);
     };
@@ -63,7 +56,9 @@ const RideTracking: React.FC = () => {
     // When countdown reaches zero, navigate to completion page
     if (secondsLeft === 0) {
       console.log("Countdown reached zero, navigating to ride completion");
-      navigate("/ride-completion");
+      setTimeout(() => {
+        navigate("/ride-completion");
+      }, 500); // Short delay to ensure state updates complete before navigation
     }
   }, [secondsLeft, navigate]);
 
