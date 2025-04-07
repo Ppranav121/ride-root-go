@@ -1,23 +1,24 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-interface CancelRideButtonProps {
-  className?: string;
-}
-
-const CancelRideButton: React.FC<CancelRideButtonProps> = ({ className = "" }) => {
+const CancelRideButton: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleCancel = () => {
+    navigate("/home");
+  };
+
   return (
-    <Button 
-      onClick={() => navigate("/home")}
-      variant="outline" 
-      className={`w-full border border-red-500/50 bg-transparent text-red-500 hover:bg-red-500/10 hover:text-red-400 py-6 rounded-full text-lg ${className}`}
+    <motion.button
+      onClick={handleCancel}
+      className="w-full bg-white/10 backdrop-blur-md text-white rounded-xl py-4 font-medium border border-white/20 hover:bg-white/20 transition-colors"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
     >
       Cancel Ride
-    </Button>
+    </motion.button>
   );
 };
 
