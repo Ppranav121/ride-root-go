@@ -21,7 +21,7 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   capacityOption,
   distance,
   fare
-}) {
+}) => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { currentRide } = useApp();
 
