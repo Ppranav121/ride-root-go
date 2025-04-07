@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define types for our context
@@ -6,6 +5,7 @@ type RideOption = "standard" | "premium";
 type CapacityOption = "regular" | "xl";
 type UserType = "rider" | "driver";
 type DriverTier = 1 | 2;
+type MoodType = "happy" | "neutral" | "sad" | null;
 
 interface User {
   id: string;
@@ -42,6 +42,7 @@ export interface Ride {
   rating?: number;
   tipAmount?: number;
   comment?: string;
+  mood?: MoodType;
   paymentMethodId?: string;
 }
 
