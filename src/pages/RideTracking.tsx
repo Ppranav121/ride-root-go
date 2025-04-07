@@ -1,13 +1,23 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, MessageSquare, MapPin, Navigation, Info } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Navigation, Info, ChevronDown, Star, Clock, Car, Shield } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { motion } from "framer-motion";
 
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
+  // State to track the driver's position for animation
+  const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
 
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
@@ -21,12 +31,23 @@ const RideTracking: React.FC = () => {
       status: "in-progress"
     });
 
+    // Animate driver moving toward pickup location
+    const positionInterval = setInterval(() => {
+      setDriverPosition(prev => ({
+        top: parseInt(prev.top) - 0.5 + "%",
+        left: parseInt(prev.left) + 0.3 + "%"
+      }));
+    }, 200);
+
     // Automatically navigate to completion after 10 seconds (simulating a ride)
     const timer = setTimeout(() => {
       navigate("/ride-completion");
     }, 10000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(positionInterval);
+    };
   }, [currentRide, navigate, setCurrentRide]);
 
   if (!currentRide || !currentRide.driver) return null;
@@ -39,6 +60,33 @@ const RideTracking: React.FC = () => {
         {/* Map Placeholder - In a real app this would be an actual map */}
         <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
           <p className="text-rideroot-darkGrey">Map view with route would appear here</p>
+          
+          {/* Driver's car icon on map */}
+          <motion.div 
+            className="absolute w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg"
+            style={{ 
+              top: driverPosition.top, 
+              left: driverPosition.left,
+            }}
+            animate={{ 
+              rotate: [0, 5, 0, -5, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+          >
+            <Car size={20} className="text-white" />
+          </motion.div>
+          
+          {/* Destination pin */}
+          <div className="absolute top-[20%] right-[40%]">
+            <div className="w-6 h-6 bg-rideroot-accent rounded-full flex items-center justify-center shadow-lg">
+              <MapPin size={16} className="text-white" />
+            </div>
+          </div>
         </div>
 
         {/* ETA Banner */}
@@ -54,18 +102,83 @@ const RideTracking: React.FC = () => {
 
         {/* Ride details */}
         <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg p-4">
-          <div className="flex items-center mb-4">
-            <div className="w-14 h-14 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-4">
-              <span className="text-xl font-bold text-rideroot-darkGrey">
-                {currentRide.driver.name.charAt(0)}
-              </span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <div className="w-14 h-14 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-4">
+                <span className="text-xl font-bold text-rideroot-darkGrey">
+                  {currentRide.driver.name.charAt(0)}
+                </span>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-rideroot-text">
+                  {currentRide.driver.name}
+                </h3>
+                <p className="text-rideroot-darkGrey">{currentRide.driver.vehicleType}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-rideroot-text">
-                {currentRide.driver.name}
-              </h3>
-              <p className="text-rideroot-darkGrey">{currentRide.driver.vehicleType}</p>
-            </div>
+            
+            {/* Driver details dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center px-3 py-2 rounded-lg bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey transition-colors">
+                  <span className="text-sm mr-1">Details</span>
+                  <ChevronDown size={16} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-72">
+                <DropdownMenuGroup>
+                  <div className="p-3 border-b border-gray-100">
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-3">
+                        <span className="text-lg font-bold text-rideroot-darkGrey">
+                          {currentRide.driver.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{currentRide.driver.name}</h4>
+                        <div className="flex items-center">
+                          <Star className="h-3.5 w-3.5 text-yellow-500 mr-1" />
+                          <span className="text-sm">{currentRide.driver.rating} • Professional Driver</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-3 border-b border-gray-100">
+                    <div className="flex items-center mb-2">
+                      <Car size={16} className="text-rideroot-darkGrey mr-2" />
+                      <span className="text-sm font-medium">Vehicle</span>
+                    </div>
+                    <p className="text-sm pl-6">{currentRide.driver.vehicleType}</p>
+                    <p className="text-sm pl-6 text-rideroot-darkGrey">License: {currentRide.driver.licensePlate}</p>
+                  </div>
+
+                  <div className="p-3 border-b border-gray-100">
+                    <div className="flex items-center mb-2">
+                      <Shield size={16} className="text-rideroot-darkGrey mr-2" />
+                      <span className="text-sm font-medium">Safety Features</span>
+                    </div>
+                    <p className="text-sm pl-6">License Verified</p>
+                    <p className="text-sm pl-6">Background Checked</p>
+                  </div>
+
+                  <div className="p-3">
+                    <div className="flex items-center mb-2">
+                      <Clock size={16} className="text-rideroot-darkGrey mr-2" />
+                      <span className="text-sm font-medium">Driver History</span>
+                    </div>
+                    <p className="text-sm pl-6">{1000 + Math.floor(Math.random() * 5000)} rides</p>
+                    <p className="text-sm pl-6">Member since 2021</p>
+                  </div>
+                </DropdownMenuGroup>
+                
+                <DropdownMenuItem className="cursor-pointer hover:bg-rideroot-lightGrey">
+                  <div className="flex justify-center w-full py-1">
+                    <span className="text-rideroot-primary font-medium">Report an Issue</span>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="bg-rideroot-lightGrey p-3 rounded-xl mb-4">
