@@ -277,17 +277,27 @@ const RideTracking: React.FC = () => {
         </div>
       </div>
 
-      {/* SOS Button - Full width bar at the bottom */}
-      <Button 
-        variant="destructive" 
-        className="fixed bottom-0 left-0 right-0 h-16 shadow-lg z-50 flex items-center justify-center rounded-none"
-        onClick={handleSosClick}
-      >
-        <div className="flex items-center gap-2">
-          <AlertTriangle size={24} strokeWidth={2.5} />
-          <span className="font-bold text-lg">EMERGENCY SOS</span>
-        </div>
-      </Button>
+      {/* Improved SOS Button - More eye-catching bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 px-4 pb-4 z-50">
+        <motion.button 
+          className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg border-2 border-white"
+          onClick={handleSosClick}
+          whileTap={{ scale: 0.97 }}
+          animate={{ 
+            boxShadow: ['0 4px 12px rgba(239, 68, 68, 0.3)', '0 4px 20px rgba(239, 68, 68, 0.6)', '0 4px 12px rgba(239, 68, 68, 0.3)'],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        >
+          <div className="bg-white p-1 rounded-full">
+            <AlertTriangle size={22} strokeWidth={2.5} className="text-red-600" />
+          </div>
+          <span className="text-lg tracking-wide">EMERGENCY ASSISTANCE</span>
+        </motion.button>
+      </div>
     </div>
   );
 };
