@@ -18,6 +18,7 @@ import RideConfirmation from "./pages/RideConfirmation";
 import RideTracking from "./pages/RideTracking";
 import RideCompletion from "./pages/RideCompletion";
 import Profile from "./pages/Profile";
+import Rides from "./pages/Rides";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/ride-tracking" element={<RideTracking />} />
             <Route path="/ride-completion" element={<RideCompletion />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/rides" element={<Rides />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -38,8 +38,9 @@ const BottomNav: React.FC = () => {
         <NavButton 
           label="Profile" 
           icon={User} 
-          isActive={isActive("/profile")} 
-          onClick={() => navigate("/profile")}
+          isActive={isActive("/profile")}
+
+          onClick={() => navigate("/profile", { replace: false, state: { refresh: Date.now() } })}
         />
       </div>
     </nav>
