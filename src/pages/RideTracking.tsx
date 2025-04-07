@@ -21,6 +21,7 @@ const RideTracking: React.FC = () => {
   // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
   const { toast } = useToast();
+  const [secondsLeft, setSecondsLeft] = useState(10);
 
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
@@ -42,16 +43,37 @@ const RideTracking: React.FC = () => {
       }));
     }, 200);
 
-    // Automatically navigate to completion after 10 seconds (simulating a ride)
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+      setSecondsLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Automatically navigate to completion after countdown reaches zero
     const timer = setTimeout(() => {
+      console.log("Navigating to ride completion page");
       navigate("/ride-completion");
     }, 10000);
 
     return () => {
       clearTimeout(timer);
       clearInterval(positionInterval);
+      clearInterval(countdownInterval);
     };
   }, [currentRide, navigate, setCurrentRide]);
+
+  useEffect(() => {
+    // When countdown reaches zero, navigate to completion page
+    if (secondsLeft === 0) {
+      console.log("Countdown reached zero, navigating to ride completion");
+      navigate("/ride-completion");
+    }
+  }, [secondsLeft, navigate]);
 
   const handleSosClick = () => {
     toast({
@@ -60,6 +82,12 @@ const RideTracking: React.FC = () => {
       variant: "destructive",
     });
     console.log("SOS Button clicked");
+  };
+
+  // Manually navigate to completion page function
+  const goToCompletion = () => {
+    console.log("Manual navigation to ride completion");
+    navigate("/ride-completion");
   };
 
   if (!currentRide || !currentRide.driver) return null;
@@ -99,9 +127,18 @@ const RideTracking: React.FC = () => {
               <MapPin size={16} className="text-white" />
             </div>
           </div>
+
+          {/* Debug controls - only visible in development */}
+          <Button
+            variant="default"
+            className="absolute bottom-4 right-4 bg-green-500 hover:bg-green-600"
+            onClick={goToCompletion}
+          >
+            Complete Ride ({secondsLeft}s)
+          </Button>
         </div>
 
-        {/* SOS Button - Repositioned to bottom left for easier thumb access */}
+        {/* SOS Button - Fixed at bottom left */}
         <Popover>
           <PopoverTrigger asChild>
             <Button 
@@ -136,7 +173,7 @@ const RideTracking: React.FC = () => {
           </div>
           <div className="flex-1">
             <p className="text-sm text-rideroot-darkGrey">Estimated arrival</p>
-            <p className="font-semibold text-rideroot-text">10:45 AM (5 min)</p>
+            <p className="font-semibold text-rideroot-text">10:45 AM ({secondsLeft} seconds)</p>
           </div>
         </div>
 
@@ -254,7 +291,7 @@ const RideTracking: React.FC = () => {
             </button>
           </div>
 
-          {/* Eco-Ride Impact Animation (would be triggered conditionally in a real app) */}
+          {/* Eco-Ride Impact Animation */}
           <div className="bg-green-50 border border-green-100 rounded-lg p-3 flex items-center mb-4 animate-fade-in">
             <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
               <span className="text-green-600 text-xl">🍃</span>
