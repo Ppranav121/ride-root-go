@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, MessageSquare, MapPin, Navigation, Info, ChevronDown, Star, Clock, Car, Shield } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Navigation, Info, ChevronDown, Star, Clock, Car, Shield, AlertTriangle } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import {
@@ -12,12 +12,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useToast } from "@/hooks/use-toast";
 
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
   // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
@@ -49,6 +53,15 @@ const RideTracking: React.FC = () => {
       clearInterval(positionInterval);
     };
   }, [currentRide, navigate, setCurrentRide]);
+
+  const handleSosClick = () => {
+    toast({
+      title: "Emergency Alert Sent",
+      description: "Help is on the way. Stay calm and remain in the vehicle if safe to do so.",
+      variant: "destructive",
+    });
+    console.log("SOS Button clicked");
+  };
 
   if (!currentRide || !currentRide.driver) return null;
 
@@ -88,6 +101,35 @@ const RideTracking: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* SOS Button */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button 
+              variant="destructive" 
+              className="absolute top-20 right-4 h-12 px-6 rounded-full shadow-lg border-2 border-white font-bold animate-pulse z-50"
+              onClick={handleSosClick}
+            >
+              <AlertTriangle className="mr-1" size={20} strokeWidth={2.5} />
+              SOS
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-4">
+            <div className="space-y-2">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <AlertTriangle size={18} className="text-destructive" />
+                Emergency Help
+              </h3>
+              <p className="text-sm">Click the SOS button to alert our emergency response team. Help will be dispatched to your location immediately.</p>
+              <div className="pt-2">
+                <Button variant="destructive" className="w-full" onClick={handleSosClick}>
+                  <AlertTriangle className="mr-2" size={16} />
+                  Send Emergency Alert
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
 
         {/* ETA Banner */}
         <div className="absolute top-4 left-4 right-4 bg-white rounded-lg shadow-md p-3 flex items-center">
