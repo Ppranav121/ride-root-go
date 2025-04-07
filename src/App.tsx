@@ -22,6 +22,12 @@ import Profile from "./pages/Profile";
 import Rides from "./pages/Rides";
 import NotFound from "./pages/NotFound";
 
+// Driver Pages
+import DriverSignUp from "./pages/DriverSignUp";
+import DriverHome from "./pages/DriverHome";
+import DriverRide from "./pages/DriverRide";
+import DriverEarnings from "./pages/DriverEarnings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -45,6 +51,13 @@ const App = () => (
             <Route path="/ride-cancellation" element={<RideCancellation />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/rides" element={<Rides />} />
+            
+            {/* Driver Routes */}
+            <Route path="/driver-signup" element={<DriverSignUp />} />
+            <Route path="/driver-home" element={<DriverHome />} />
+            <Route path="/driver-ride" element={<DriverRide />} />
+            <Route path="/driver-earnings" element={<DriverEarnings />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -24,6 +24,10 @@ const SignUp: React.FC = () => {
     navigate("/signin");
   };
 
+  const goToDriverSignUp = () => {
+    navigate("/driver-signup");
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -65,12 +69,8 @@ const SignUp: React.FC = () => {
               <span>I'm a Rider</span>
             </button>
             <button
-              onClick={() => setUserType("driver")}
-              className={`flex-1 py-3 rounded-lg flex items-center justify-center transition-all ${
-                userType === "driver" 
-                  ? "bg-rideroot-primary text-white" 
-                  : "text-gray-400"
-              }`}
+              onClick={() => goToDriverSignUp()}
+              className="flex-1 py-3 rounded-lg flex items-center justify-center transition-all text-gray-400 hover:text-white"
             >
               <span>I'm a Driver</span>
             </button>
