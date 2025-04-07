@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Star, ThumbsUp, DollarSign } from "lucide-react";
+import { Check } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const RideCompletion: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const RideCompletion: React.FC = () => {
   const [rating, setRating] = useState(5);
   const [tipAmount, setTipAmount] = useState(0);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [comment, setComment] = useState("");
 
   if (!currentRide || !currentRide.driver) {
     // Redirect if there's no current ride
@@ -25,7 +28,9 @@ const RideCompletion: React.FC = () => {
     setCurrentRide({
       ...currentRide,
       status: "completed",
-      // Add rating and tip information
+      rating,
+      tipAmount,
+      comment
     });
 
     setFeedbackSubmitted(true);
@@ -41,7 +46,7 @@ const RideCompletion: React.FC = () => {
       <button
         key={star}
         onClick={() => setRating(star)}
-        className={`text-2xl ${star <= rating ? "text-yellow-400" : "text-rideroot-mediumGrey"}`}
+        className={`text-4xl ${star <= rating ? "text-yellow-400" : "text-gray-300"}`}
       >
         ★
       </button>
@@ -49,101 +54,100 @@ const RideCompletion: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-black text-white">
       <RootHeader title="Rate Your Ride" />
 
       <div className="flex-1 p-6">
         {feedbackSubmitted ? (
           <div className="flex flex-col items-center justify-center h-full animate-fade-in">
-            <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-rideroot-text mb-2">
-              Thank You!
-            </h2>
-            <p className="text-rideroot-darkGrey">
-              Your feedback helps improve our service.
+            <div className="bg-green-500 rounded-full p-4 mb-6">
+              <Check className="h-12 w-12 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Thanks for your feedback!</h2>
+            <p className="text-gray-400 text-center">
+              See you on your next ride
             </p>
           </div>
         ) : (
           <>
+            <div className="flex items-center justify-center mb-8">
+              <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mr-4">
+                <img
+                  src={`https://ui-avatars.com/api/?name=${currentRide.driver.name}&background=random`}
+                  alt={currentRide.driver.name}
+                  className="rounded-full w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-rideroot-text mb-2">
-                How was your ride?
+              <h2 className="text-2xl font-bold mb-2">
+                How was the driver?
               </h2>
-              <p className="text-rideroot-darkGrey">
-                Your feedback helps {currentRide.driver.name} improve.
+              <p className="text-gray-400">
+                Rate {currentRide.driver.name}
               </p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <div className="flex items-center mb-4">
-                <div className="w-14 h-14 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-4">
-                  <span className="text-xl font-bold text-rideroot-darkGrey">
-                    {currentRide.driver.name.charAt(0)}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-rideroot-text">
-                    {currentRide.driver.name}
-                  </h3>
-                  <p className="text-rideroot-darkGrey">
-                    {currentRide.driver.vehicleType}
-                  </p>
-                </div>
+            <div className="flex justify-center space-x-2 mb-8">
+              {renderStars()}
+            </div>
+
+            <div className="mb-8">
+              <Textarea
+                placeholder="How was your ride?"
+                className="bg-gray-800 border-gray-700 text-white resize-none w-full min-h-[100px] p-4 rounded-xl"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-xl mb-8">
+              <h3 className="text-lg font-semibold mb-4">Tip your driver</h3>
+              <div className="grid grid-cols-4 gap-3">
+                {[0, 2, 5, 10].map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setTipAmount(amount)}
+                    className={`py-3 rounded-lg ${
+                      tipAmount === amount
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-700 text-white"
+                    } ${amount === 0 ? "col-span-1" : ""}`}
+                  >
+                    {amount === 0 ? "Skip" : `$${amount}`}
+                  </button>
+                ))}
               </div>
-
-              <div className="flex justify-center space-x-2 mb-6">
-                {renderStars()}
-              </div>
-
-              <textarea
-                placeholder="Add a comment (optional)"
-                className="input-field w-full min-h-[100px] resize-none mb-4"
-              ></textarea>
-
-              <div className="bg-rideroot-lightGrey p-4 rounded-xl mb-4">
-                <h4 className="font-medium text-rideroot-text mb-2">Add a tip?</h4>
-                <div className="flex space-x-3">
-                  {[0, 2, 5, 10].map((amount) => (
-                    <button
-                      key={amount}
-                      onClick={() => setTipAmount(amount)}
-                      className={`flex-1 py-2 px-3 rounded-lg ${
-                        tipAmount === amount
-                          ? "bg-rideroot-primary text-white"
-                          : "bg-white border border-rideroot-mediumGrey"
-                      }`}
-                    >
-                      {amount === 0 ? "No tip" : `$${amount}`}
-                    </button>
-                  ))}
+              
+              <div className="mt-4 mb-2">
+                <div className="flex justify-between mb-2">
+                  <span>Ride Total:</span>
+                  <span>${currentRide.fare.toFixed(2)}</span>
+                </div>
+                {tipAmount > 0 && (
+                  <div className="flex justify-between mb-2">
+                    <span>Tip:</span>
+                    <span>${tipAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-bold">
+                  <span>Total:</span>
+                  <span>${(currentRide.fare + tipAmount).toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
-            {/* Eco-Bonus Tracker - For subscribers only (would be conditional in a real app) */}
-            <div className="bg-green-50 border border-green-100 rounded-lg p-4 mb-6 animate-fade-in">
-              <div className="flex justify-between items-center mb-2">
-                <h4 className="font-medium text-green-700">Eco-Bonus Tracker</h4>
-                <span className="text-sm text-green-600">3/5 rides</span>
-              </div>
-              <div className="w-full bg-green-200 rounded-full h-2.5">
-                <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "60%" }}></div>
-              </div>
-              <p className="text-xs text-green-600 mt-2">
-                Complete 2 more eco-rides to earn a $1 credit!
-              </p>
-            </div>
-
-            <button
+            <Button
               onClick={handleSubmitFeedback}
-              className="btn-primary w-full mb-4"
+              className="w-full py-6 mb-4 bg-green-500 hover:bg-green-600 text-white rounded-xl"
             >
-              Submit Feedback
-            </button>
+              {tipAmount > 0 ? `Pay $${(currentRide.fare + tipAmount).toFixed(2)}` : 'Submit'}
+            </Button>
 
             <button
               onClick={() => navigate("/home")}
-              className="text-rideroot-primary text-center w-full"
+              className="w-full text-center text-gray-400"
             >
               Skip
             </button>

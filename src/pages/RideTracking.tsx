@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Phone, MessageSquare, MapPin, Navigation, Info, ChevronDown, Star, Clock, Car, Shield, AlertTriangle } from "lucide-react";
@@ -102,16 +101,15 @@ const RideTracking: React.FC = () => {
           </div>
         </div>
 
-        {/* SOS Button */}
+        {/* SOS Button - Repositioned to bottom left for easier thumb access */}
         <Popover>
           <PopoverTrigger asChild>
             <Button 
               variant="destructive" 
-              className="absolute top-20 right-4 h-12 px-6 rounded-full shadow-lg border-2 border-white font-bold animate-pulse z-50"
+              className="fixed bottom-28 left-4 h-14 w-14 rounded-full shadow-lg border-2 border-white font-bold animate-pulse z-50 flex items-center justify-center"
               onClick={handleSosClick}
             >
-              <AlertTriangle className="mr-1" size={20} strokeWidth={2.5} />
-              SOS
+              <AlertTriangle size={24} strokeWidth={2.5} />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-72 p-4">
