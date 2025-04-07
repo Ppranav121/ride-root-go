@@ -13,7 +13,7 @@ const Splash: React.FC = () => {
       if (isAuthenticated) {
         navigate("/home");
       } else {
-        navigate("/onboarding");
+        navigate("/welcome");
       }
     }, 2500);
 
