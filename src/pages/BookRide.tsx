@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin } from "lucide-react";
@@ -7,8 +6,9 @@ import RootHeader from "@/components/RootHeader";
 import RideOptionSelector from "@/components/RideOptionSelector";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Import our new components
+// Import our components
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import FareEstimate from "@/components/ride/FareEstimate";
@@ -121,7 +121,7 @@ const BookRide: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-rideroot-lightGrey">
+    <div className="flex flex-col h-screen bg-rideroot-lightGrey">
       <RootHeader title="Book a Ride" />
 
       <div className="flex-1 relative">
@@ -149,70 +149,74 @@ const BookRide: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Ride Booking Interface */}
+        {/* Ride Booking Interface - Now with ScrollArea */}
         <motion.div 
-          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl p-6"
+          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl max-h-[70vh]"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          {/* Location inputs */}
-          <LocationSelector 
-            pickupLocation={pickupLocation}
-            dropoffLocation={dropoffLocation}
-            onOpenPickupSearch={() => handleOpenLocationSearch("pickup")}
-            onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
-            onClearPickup={() => setPickupLocation("")}
-            onClearDropoff={() => setDropoffLocation("")}
-          />
+          <ScrollArea className="h-full max-h-[70vh] px-6 pb-6 pt-6">
+            <div className="pr-4">
+              {/* Location inputs */}
+              <LocationSelector 
+                pickupLocation={pickupLocation}
+                dropoffLocation={dropoffLocation}
+                onOpenPickupSearch={() => handleOpenLocationSearch("pickup")}
+                onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
+                onClearPickup={() => setPickupLocation("")}
+                onClearDropoff={() => setDropoffLocation("")}
+              />
 
-          {/* Recent locations */}
-          <AnimatePresence>
-            <RecentLocations 
-              recentLocations={recentLocations}
-              onSelectLocation={handleSelectRecentLocation}
-              showRecentLocations={showRecentLocations && !locationDialogOpen}
-            />
-          </AnimatePresence>
+              {/* Recent locations */}
+              <AnimatePresence>
+                <RecentLocations 
+                  recentLocations={recentLocations}
+                  onSelectLocation={handleSelectRecentLocation}
+                  showRecentLocations={showRecentLocations && !locationDialogOpen}
+                />
+              </AnimatePresence>
 
-          {/* Ride Options */}
-          <div className="mb-5">
-            <RideOptionSelector />
-          </div>
+              {/* Ride Options */}
+              <div className="mb-5">
+                <RideOptionSelector />
+              </div>
 
-          {/* Fare Estimate */}
-          <FareEstimate 
-            distance={distance}
-            rideOption={rideOption}
-            capacityOption={capacityOption}
-            fare={fare}
-            isSubscribed={user?.isSubscribed || false}
-          />
+              {/* Fare Estimate */}
+              <FareEstimate 
+                distance={distance}
+                rideOption={rideOption}
+                capacityOption={capacityOption}
+                fare={fare}
+                isSubscribed={user?.isSubscribed || false}
+              />
 
-          {/* Book Button */}
-          <motion.button
-            onClick={handleBookRide}
-            className={`btn-primary w-full ${isLoading ? "opacity-70" : ""}`}
-            disabled={isLoading || !dropoffLocation}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            {isLoading ? "Finding your ride..." : "Book Ride"}
-          </motion.button>
+              {/* Book Button */}
+              <motion.button
+                onClick={handleBookRide}
+                className={`btn-primary w-full ${isLoading ? "opacity-70" : ""}`}
+                disabled={isLoading || !dropoffLocation}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                {isLoading ? "Finding your ride..." : "Book Ride"}
+              </motion.button>
 
-          {/* Subscription call-to-action for non-subscribers */}
-          {!user?.isSubscribed && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-3 text-center"
-            >
-              <p className="text-xs text-rideroot-darkGrey">
-                Save 10% on rides with <span className="text-rideroot-primary font-medium">RideRoot Premium</span>
-              </p>
-            </motion.div>
-          )}
+              {/* Subscription call-to-action for non-subscribers */}
+              {!user?.isSubscribed && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-3 text-center"
+                >
+                  <p className="text-xs text-rideroot-darkGrey">
+                    Save 10% on rides with <span className="text-rideroot-primary font-medium">RideRoot Premium</span>
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          </ScrollArea>
         </motion.div>
       </div>
 
