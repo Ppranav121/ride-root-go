@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Phone, Car, User, Shield, ChevronRight, Calendar, Palette, Key } from "lucide-react";
+import { Mail, Phone, Car, User, Shield, ChevronRight, Calendar, Palette, Key, Zap, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
