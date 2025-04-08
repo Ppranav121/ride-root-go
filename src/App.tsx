@@ -25,7 +25,6 @@ import NotFound from "./pages/NotFound";
 // Driver Pages
 import DriverSignUp from "./pages/DriverSignUp";
 import DriverHome from "./pages/DriverHome";
-import DriverRide from "./pages/DriverRide";
 import DriverEarnings from "./pages/DriverEarnings";
 import DriverHelp from "./pages/DriverHelp";
 import DriverSubscription from "./pages/DriverSubscription";
@@ -57,7 +56,7 @@ const App = () => (
             {/* Driver Routes */}
             <Route path="/driver-signup" element={<DriverSignUp />} />
             <Route path="/driver-home" element={<DriverHome />} />
-            <Route path="/driver-ride" element={<DriverRide />} />
+            {/* Removed separate driver-ride route and integrated into driver-home */}
             <Route path="/driver-earnings" element={<DriverEarnings />} />
             <Route path="/driver-help" element={<DriverHelp />} />
             <Route path="/driver-profile" element={<Profile />} />

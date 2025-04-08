@@ -15,10 +15,11 @@ import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
 import MapBackground from "@/components/ride/MapBackground";
 import DriverSearching from "@/components/ride/DriverSearching";
+import { toast } from "sonner";
 
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: shadcnToast } = useToast();
   const [isOnline, setIsOnline] = useState(false);
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
   const [todayEarnings, setTodayEarnings] = useState(50);
@@ -33,11 +34,21 @@ const DriverHome: React.FC = () => {
       setIsSearching(true);
     }
   }, [isOnline]);
+
+  // Clear popup after 2 seconds
+  useEffect(() => {
+    if (showEarningsBoost) {
+      const timer = setTimeout(() => {
+        setShowEarningsBoost(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showEarningsBoost]);
   
   const toggleOnlineStatus = () => {
     if (!isOnline) {
       setIsOnline(true);
-      toast({
+      shadcnToast({
         title: "You're now online",
         description: "Searching for ride requests...",
       });
@@ -45,7 +56,7 @@ const DriverHome: React.FC = () => {
       // This will be handled by the cancel search function
       setIsSearching(false);
       setIsOnline(false);
-      toast({
+      shadcnToast({
         title: "You've gone offline",
         description: "You won't receive ride requests.",
         variant: "destructive",
@@ -54,15 +65,27 @@ const DriverHome: React.FC = () => {
   };
 
   const toggleDriverTier = (newValue: boolean) => {
+    if (!newValue) {
+      setIsPrimeDriver(false);
+      toast("Switched to Pay-Per-Ride: $2.50 per ride without weekly subscription.");
+      return;
+    }
+    
+    // If trying to switch to Prime, redirect to subscription page
+    if (!isPrimeDriver) {
+      navigate("/driver-subscription");
+      return;
+    }
+    
     setIsPrimeDriver(newValue);
     
     if (newValue) {
-      toast({
+      shadcnToast({
         title: "Prime Driver Activated",
         description: "You now have access to premium benefits and priority rides.",
       });
 
-      // Simulate earnings boost after small delay
+      // Simulate earnings boost after small delay with 2 second auto dismissal
       setTimeout(() => {
         setShowEarningsBoost(true);
         let count = 0;
@@ -71,16 +94,10 @@ const DriverHome: React.FC = () => {
           count += 1;
           if (count >= 5) {
             clearInterval(interval);
-            setTimeout(() => setShowEarningsBoost(false), 2000);
           }
         }, 500);
       }, 1000);
-    } else {
-      toast({
-        title: "Switched to Pay-Per-Ride",
-        description: "$2.50 per ride without weekly subscription.",
-      });
-    }
+    } 
   };
 
   const cancelSearch = () => {
@@ -146,18 +163,18 @@ const DriverHome: React.FC = () => {
                 <h2 className="text-xl font-semibold text-center">
                   Driver Portal
                 </h2>
-                <div className="flex items-center justify-center space-x-1 mt-1">
+                <div className="flex items-center justify-center mt-2 bg-gradient-to-r from-amber-100 to-amber-200 rounded-full py-1 px-3">
                   {isPrimeDriver ? (
                     <>
-                      <Crown size={16} className="text-amber-500" />
-                      <p className="text-center text-amber-600 font-medium">
+                      <Crown size={16} className="text-amber-500 mr-1" />
+                      <p className="text-center text-amber-600 font-medium text-sm">
                         Prime Driver
                       </p>
                     </>
                   ) : (
                     <>
-                      <Zap size={16} className="text-blue-500" />
-                      <p className="text-center text-blue-600 font-medium">
+                      <Zap size={16} className="text-blue-500 mr-1" />
+                      <p className="text-center text-blue-600 font-medium text-sm">
                         Pay-Per-Ride Driver
                       </p>
                     </>
@@ -265,18 +282,21 @@ const DriverHome: React.FC = () => {
         )}
         
         {/* Earnings boost animation */}
-        {showEarningsBoost && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-4 p-3 bg-gradient-to-r from-green-100 to-green-50 border border-green-100 rounded-lg text-center"
-          >
-            <p className="text-sm text-green-600">Peak Bonus</p>
-            <p className="text-lg font-bold text-green-600">+${boostAmount.toFixed(2)}</p>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {showEarningsBoost && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="mt-4 p-3 bg-gradient-to-r from-green-100 to-green-50 border border-green-100 rounded-lg text-center"
+            >
+              <p className="text-sm text-green-600">Peak Bonus</p>
+              <p className="text-lg font-bold text-green-600">+${boostAmount.toFixed(2)}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
-        {/* Enhanced Go Online Button */}
+        {/* Enhanced Go Online Button with improved car animation */}
         <motion.div 
           className="mt-8 sticky bottom-20 z-20"
           initial={{ scale: 1 }}
@@ -285,21 +305,31 @@ const DriverHome: React.FC = () => {
         >
           <div className="relative">
             {/* Car animation on the button */}
-            <div className={`absolute -top-12 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-500 ${isOnline ? 'opacity-100' : 'opacity-0'}`}>
-              <motion.div
-                animate={{
-                  y: [0, -10, 0],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-                className="bg-gradient-to-b from-green-500 to-green-600 p-3 rounded-full shadow-lg"
-              >
-                <Car size={24} className="text-white" />
-              </motion.div>
-            </div>
+            <AnimatePresence>
+              {isOnline && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: -40 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute left-1/2 transform -translate-x-1/2 z-10"
+                >
+                  <motion.div
+                    animate={{
+                      y: [0, -5, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                    className="bg-gradient-to-b from-green-500 to-green-600 p-3 rounded-full shadow-lg"
+                  >
+                    <Car size={24} className="text-white" />
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <Button
               onClick={toggleOnlineStatus}
@@ -311,30 +341,10 @@ const DriverHome: React.FC = () => {
             >
               <div className="flex items-center justify-center relative">
                 <motion.div
-                  animate={{ 
-                    scale: isOnline ? [1, 1.1, 1] : 1,
-                    rotate: isOnline ? [0, 5, -5, 0] : 0
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-                  className="relative"
+                  className="flex items-center space-x-2"
                 >
-                  {/* The car "drives" on the road when toggled */}
-                  <div className="flex items-center justify-center">
-                    <motion.div 
-                      animate={{ 
-                        x: isOnline ? [-30, 30, -30] : 0
-                      }}
-                      transition={{ 
-                        duration: 4, 
-                        repeat: Infinity,
-                        ease: "easeInOut" 
-                      }}
-                      className="absolute z-20"
-                    >
-                      <Car size={24} className="text-white" />
-                    </motion.div>
-                    
-                    {/* Road animation */}
+                  {/* The car drives forward on the road when toggled */}
+                  <div className="flex flex-col items-center justify-center relative">
                     <div className="h-0.5 bg-white/50 rounded-full w-28 relative overflow-hidden">
                       {isOnline && (
                         <>
@@ -360,6 +370,20 @@ const DriverHome: React.FC = () => {
                         </>
                       )}
                     </div>
+                    
+                    <motion.div 
+                      animate={{ 
+                        x: isOnline ? [0, 40, 0, -40, 0] : 0
+                      }}
+                      transition={{ 
+                        duration: 4, 
+                        repeat: Infinity,
+                        ease: "linear" 
+                      }}
+                      className="absolute top-1/2 transform -translate-y-1/2"
+                    >
+                      <Car size={24} className="text-white" />
+                    </motion.div>
                   </div>
                   
                   <span className="ml-2">

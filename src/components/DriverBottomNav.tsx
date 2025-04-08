@@ -40,6 +40,13 @@ const DriverBottomNav: React.FC = () => {
           isActive={isActive("/driver-profile")}
           onClick={() => navigate("/driver-profile")}
         />
+        
+        <NavButton 
+          label="Help" 
+          icon={HelpCircle} 
+          isActive={isActive("/driver-help")}
+          onClick={() => navigate("/driver-help")}
+        />
       </div>
     </motion.nav>
   );
@@ -57,13 +64,13 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className={`flex flex-col items-center justify-center w-1/3 pt-1 pb-1 relative ${
+      className={`flex flex-col items-center justify-center w-1/4 pt-1 pb-1 relative ${
         isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
       }`}
     >
       {isActive && (
         <motion.div 
-          layoutId="activeTab"
+          layoutId="driverActiveTab"
           className="absolute -top-1 w-full h-1 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />

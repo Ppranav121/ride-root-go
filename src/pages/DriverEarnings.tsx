@@ -2,28 +2,29 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, Calendar, ChevronDown, ChevronUp, DollarSign, LineChart, Car } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RootHeader from "@/components/RootHeader";
-import BottomNav from "@/components/BottomNav";
+import DriverBottomNav from "@/components/DriverBottomNav";
 
-// Data visualization would typically use a charting library like recharts
-// This is a simplified version for the UI mockup
-const WeeklyBarChart = () => {
+// Enhanced weekly bar chart with animated bars based on actual earnings data
+const WeeklyBarChart = ({ values = [] }: { values: number[] }) => {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const values = [45, 65, 35, 50, 75, 90, 60];
   const max = Math.max(...values);
   
   return (
     <div className="flex h-[160px] items-end space-x-2">
       {days.map((day, i) => (
         <div key={day} className="flex flex-col items-center flex-1">
-          <div 
-            className="w-full bg-rideroot-primary rounded-t-md hover:bg-rideroot-primary/90 transition-colors"
-            style={{ height: `${(values[i] / max) * 100}%` }}
+          <motion.div 
+            initial={{ height: 0 }}
+            animate={{ height: `${(values[i] / (max || 1)) * 100}%` }}
+            transition={{ duration: 0.8, delay: i * 0.1 }}
+            className="w-full bg-gradient-to-t from-rideroot-primary to-blue-400 rounded-t-md hover:from-blue-500 hover:to-indigo-400 transition-colors"
           />
           <div className="text-xs mt-2 text-rideroot-darkGrey">{day}</div>
+          <div className="text-xs font-medium">${values[i]}</div>
         </div>
       ))}
     </div>
@@ -36,6 +37,7 @@ interface EarningsProps {
   onlineHours: number;
   date: string;
   isPrime: boolean;
+  weeklyTrend?: number[];
   rideDetails: {
     id: string;
     time: string;
@@ -53,13 +55,14 @@ const DriverEarnings: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState("weekly");
   const [expandedRide, setExpandedRide] = useState<string | null>(null);
 
-  // Simulated earnings data
+  // Simulated earnings data with weekly trend
   const weeklyEarnings: EarningsProps = {
     amount: 680.50,
     rides: 32,
     onlineHours: 24,
     date: "Apr 1 - Apr 7, 2025",
     isPrime: true,
+    weeklyTrend: [45, 65, 35, 50, 75, 90, 60], // Daily earnings amounts
     rideDetails: [
       {
         id: "ride-1",
@@ -118,6 +121,7 @@ const DriverEarnings: React.FC = () => {
     onlineHours: 6,
     date: "Today, Apr 7, 2025",
     isPrime: true,
+    weeklyTrend: [0, 0, 0, 0, 0, 0, 145.75], // Today's earnings only
     rideDetails: [
       {
         id: "ride-1",
@@ -195,7 +199,7 @@ const DriverEarnings: React.FC = () => {
       </Tabs>
       
       <div className="h-16"></div> {/* Spacer for bottom nav */}
-      <BottomNav />
+      <DriverBottomNav />
     </div>
   );
 };
@@ -257,12 +261,13 @@ const EarningsContent: React.FC<EarningsContentProps> = ({
           </div>
         </div>
         
-        {showSubscription && (
-          <div className="mb-4">
-            <h3 className="text-sm font-medium mb-2">Weekly Trend</h3>
-            <WeeklyBarChart />
-          </div>
-        )}
+        {/* Enhanced weekly trend chart */}
+        <div className="mb-4">
+          <h3 className="text-sm font-medium mb-2">
+            {selectedTab === "weekly" ? "Weekly Trend" : "Daily Breakdown"}
+          </h3>
+          <WeeklyBarChart values={earnings.weeklyTrend || [0, 0, 0, 0, 0, 0, 0]} />
+        </div>
       </div>
       
       <div className="bg-white rounded-xl shadow-md p-4">
@@ -294,47 +299,49 @@ const EarningsContent: React.FC<EarningsContentProps> = ({
                 </div>
               </div>
               
-              {expandedRide === ride.id && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="p-3 bg-gray-50 border-t border-gray-100"
-                >
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-rideroot-darkGrey">Base fare</span>
-                      <span className="text-sm font-medium">
-                        ${(ride.fare - (ride.peakBonus || 0)).toFixed(2)}
-                      </span>
-                    </div>
-                    
-                    {ride.peakBonus && (
+              <AnimatePresence>
+                {expandedRide === ride.id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-3 bg-gray-50 border-t border-gray-100"
+                  >
+                    <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-sm text-green-600">Peak bonus</span>
-                        <span className="text-sm font-medium text-green-600">
-                          +${ride.peakBonus.toFixed(2)}
+                        <span className="text-sm text-rideroot-darkGrey">Base fare</span>
+                        <span className="text-sm font-medium">
+                          ${(ride.fare - (ride.peakBonus || 0)).toFixed(2)}
                         </span>
                       </div>
-                    )}
-                    
-                    <div className="flex justify-between">
-                      <span className="text-sm text-red-500">Platform fee</span>
-                      <span className="text-sm font-medium text-red-500">
-                        -${ride.platformFee.toFixed(2)}
-                      </span>
+                      
+                      {ride.peakBonus && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-green-600">Peak bonus</span>
+                          <span className="text-sm font-medium text-green-600">
+                            +${ride.peakBonus.toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between">
+                        <span className="text-sm text-red-500">Platform fee</span>
+                        <span className="text-sm font-medium text-red-500">
+                          -${ride.platformFee.toFixed(2)}
+                        </span>
+                      </div>
+                      
+                      <div className="pt-2 border-t border-gray-200 flex justify-between">
+                        <span className="font-medium">Your earnings</span>
+                        <span className="font-bold text-rideroot-primary">
+                          ${(ride.fare - ride.platformFee).toFixed(2)}
+                        </span>
+                      </div>
                     </div>
-                    
-                    <div className="pt-2 border-t border-gray-200 flex justify-between">
-                      <span className="font-medium">Your earnings</span>
-                      <span className="font-bold text-rideroot-primary">
-                        ${(ride.fare - ride.platformFee).toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>

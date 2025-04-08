@@ -80,7 +80,7 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel }) => {
         />
         
         {/* Main search animation */}
-        <div className="relative mb-8">
+        <div className="relative mb-8 flex flex-col items-center">
           <motion.div 
             className="w-32 h-32 rounded-full bg-blue-500/10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0"
             animate={{
@@ -125,8 +125,8 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel }) => {
           </div>
         </div>
         
-        {/* Search pulse animation */}
-        <div className="flex space-x-2 mb-8">
+        {/* Search pulse animation - Centered properly */}
+        <div className="flex justify-center space-x-2 mb-8">
           {[0, 1, 2, 3, 4].map((i) => (
             <motion.div
               key={i}
@@ -216,11 +216,11 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel }) => {
         </div>
       </div>
       
-      {/* Cancel button */}
-      <div className="p-4 bg-white">
+      {/* Cancel button - Moved from bottom bar to floating button */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
         <Button
-          variant="outline"
-          className="w-full border-red-500 text-red-500 hover:bg-red-50"
+          variant="destructive"
+          className="px-6 py-2 rounded-full shadow-lg"
           onClick={onCancel}
         >
           Cancel Search
