@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
@@ -83,6 +83,9 @@ const MessageDialog: React.FC<MessageDialogProps> = ({ isOpen, onClose, driverNa
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Message {driverName}</DialogTitle>
+          <DialogDescription className="text-sm text-gray-500">
+            Communicate with your rider about pickup details or ride updates
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col h-80">
           <div className="flex-1 overflow-y-auto p-2 space-y-3">

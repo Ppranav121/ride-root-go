@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Crown, Zap, ArrowRight, ShieldCheck, Fuel, Award } from "lucide-react";
+import { Crown, Zap, ArrowRight, ShieldCheck, Award } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface DriverTierSelectorProps {
@@ -22,7 +22,7 @@ const DriverTierSelector: React.FC<DriverTierSelectorProps> = ({ isPrimeDriver, 
         }}>
           <ToggleGroupItem value="standard" aria-label="Standard Tier" className={`w-1/2 px-5 py-3 rounded-lg ${!isPrimeDriver ? 'bg-blue-50 text-blue-700' : 'bg-transparent text-gray-600'}`}>
             <div className="flex items-center justify-center">
-              <Zap size={18} className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : ''}`} />
+              <Zap size={18} className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : 'text-gray-400'}`} />
               <span>Pay-Per-Ride</span>
             </div>
           </ToggleGroupItem>
@@ -91,11 +91,7 @@ const DriverTierSelector: React.FC<DriverTierSelectorProps> = ({ isPrimeDriver, 
                 </div>
                 <div className="flex items-center">
                   <ShieldCheck size={14} className="text-indigo-500 mr-2" />
-                  <p className="text-xs text-indigo-700">5 free cancellations/month</p>
-                </div>
-                <div className="flex items-center">
-                  <Fuel size={14} className="text-indigo-500 mr-2" />
-                  <p className="text-xs text-indigo-700">Fuel & maintenance discounts</p>
+                  <p className="text-xs text-indigo-700">5 free cancellations/day</p>
                 </div>
               </div>
             </motion.div>
