@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, Car } from "lucide-react";
+import { Menu, Car, BarChart2, User, HelpCircle, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -43,6 +43,10 @@ const DriverHome: React.FC = () => {
         title: "You're now online",
         description: "You'll start receiving ride requests shortly.",
       });
+      // Automatically navigate to searching for rides
+      setTimeout(() => {
+        navigate("/driver-ride");
+      }, 500);
     } else {
       toast({
         title: "You've gone offline",
@@ -159,21 +163,35 @@ const DriverHome: React.FC = () => {
                     className="w-full justify-start rounded-lg py-5 font-medium"
                     onClick={() => navigate("/driver-earnings")}
                   >
-                    <Car className="mr-2" size={20} />
+                    <BarChart2 className="mr-2" size={20} />
                     Earnings
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-lg py-5 font-medium"
+                    onClick={() => navigate("/driver-profile")}
+                  >
+                    <User className="mr-2" size={20} />
+                    Profile
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-lg py-5 font-medium"
+                    onClick={() => navigate("/driver-help")}
+                  >
+                    <HelpCircle className="mr-2" size={20} />
+                    Help Center
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-lg py-5 font-medium"
+                    onClick={() => navigate("/driver-messages")}
+                  >
+                    <MessageCircle className="mr-2" size={20} />
+                    Messages
                   </Button>
                 </div>
               </nav>
-              
-              <div className="border-t border-gray-200 pt-4 pb-6">
-                <Button 
-                  variant="outline" 
-                  className="w-full border-rideroot-primary text-rideroot-primary"
-                  onClick={() => navigate("/")}
-                >
-                  Switch to Rider
-                </Button>
-              </div>
             </div>
           </SheetContent>
         </Sheet>
@@ -241,19 +259,24 @@ const DriverHome: React.FC = () => {
           </motion.div>
         )}
         
-        {/* Main action button */}
+        {/* Main action button - Made larger and more prominent */}
         <motion.div 
-          className="mt-8"
+          className="mt-8 sticky bottom-20"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <Button
-            disabled={!isOnline}
-            onClick={() => navigate("/driver-ride")}
-            className={`w-full py-6 rounded-xl text-white font-medium hover:opacity-95 transition-all ${
+            onClick={() => {
+              if (isOnline) {
+                navigate("/driver-ride");
+              } else {
+                toggleOnlineStatus();
+              }
+            }}
+            className={`w-full py-8 rounded-xl text-white font-bold text-lg hover:opacity-95 transition-all ${
               isOnline 
                 ? "bg-gradient-to-r from-rideroot-primary to-rideroot-secondary shadow-lg" 
-                : "bg-gray-400"
+                : "bg-gradient-to-r from-green-500 to-green-600 shadow-lg"
             }`}
           >
             <div className="flex items-center justify-center">
@@ -272,12 +295,12 @@ const DriverHome: React.FC = () => {
                     transition={{ duration: 1.5 }}
                     className="w-4 h-4 rounded-full bg-green-500 mr-3"
                   />
-                  <span className="text-md">Finding Ride Requests...</span>
+                  <span className="text-md">Find Ride Requests</span>
                 </>
               ) : (
                 <>
-                  <div className="w-4 h-4 rounded-full bg-white/50 mr-3" />
-                  <span className="text-md">Go Online to Find Rides</span>
+                  <div className="w-4 h-4 rounded-full bg-white/80 mr-3" />
+                  <span className="text-md">GO ONLINE</span>
                 </>
               )}
             </div>

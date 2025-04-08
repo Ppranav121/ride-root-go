@@ -1,295 +1,419 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Phone, MessageCircle, HelpCircle, ChevronRight, Shield, Clock, AlertCircle } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import { HelpCircle, MessageCircle, Phone, Search, ArrowRight, X, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RootHeader from "@/components/RootHeader";
 import DriverBottomNav from "@/components/DriverBottomNav";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
-interface SupportCase {
-  id: string;
-  title: string;
-  date: string;
-  status: "open" | "resolved";
-  type: string;
-}
+// FAQ topics
+const faqTopics = [
+  {
+    id: "account",
+    title: "Account & Profile",
+    icon: User,
+    color: "bg-blue-100 text-blue-600"
+  },
+  {
+    id: "earnings",
+    title: "Earnings & Payments",
+    icon: BarChart2,
+    color: "bg-green-100 text-green-600"
+  },
+  {
+    id: "rides",
+    title: "Ride Issues",
+    icon: Car,
+    color: "bg-purple-100 text-purple-600"
+  },
+  {
+    id: "technical",
+    title: "Technical Support",
+    icon: Settings,
+    color: "bg-amber-100 text-amber-600"
+  }
+];
 
-const DriverHelp: React.FC = () => {
-  const { toast } = useToast();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showChat, setShowChat] = useState(false);
-  const [message, setMessage] = useState("");
-  const [supportCases, setSupportCases] = useState<SupportCase[]>([
-    {
-      id: "SC-123456",
-      title: "Payment issue with ride #R-98765",
-      date: "April 5, 2025",
-      status: "resolved",
-      type: "Payment"
-    },
-    {
-      id: "SC-123457",
-      title: "Rider behavior report",
-      date: "April 7, 2025",
-      status: "open",
-      type: "Safety"
-    }
-  ]);
-  
-  // Simulated FAQ data
-  const faqs = [
+// FAQ questions by topic
+const faqQuestions: Record<string, Array<{question: string, answer: string}>> = {
+  account: [
     {
       question: "How do I update my vehicle information?",
-      answer: "Go to your Driver Profile page, then tap on 'Vehicle Information'. From there, you can update details like car model, color, and license plate."
+      answer: "To update your vehicle information, go to Profile > Vehicle Details > Edit. Make sure to upload clear photos of your vehicle and registration documents for verification."
     },
     {
-      question: "How do Prime Driver benefits work?",
-      answer: "As a Prime Driver, you pay $19.99 weekly plus $1 per ride, but get benefits like priority ride assignments, 5 free cancellations per day, and peak-time bonuses of $0.50 per ride during busy hours."
+      question: "Why was my vehicle registration rejected?",
+      answer: "Vehicle registrations may be rejected if the documents provided are unclear, expired, or don't match our requirements. Check for any notification in your inbox explaining the specific reason."
     },
     {
-      question: "What should I do if a rider leaves an item in my car?",
-      answer: "If you find an item left by a rider, report it immediately through the app. Go to 'Help Center', then 'Report Lost Item'. We'll connect you with the rider to arrange return."
+      question: "How do I change my profile picture?",
+      answer: "You can change your profile picture by going to Profile > Personal Details > Edit Profile Picture. Select a clear, front-facing photo of yourself."
+    },
+  ],
+  earnings: [
+    {
+      question: "When do I get paid?",
+      answer: "Payments are processed every Monday for the previous week's earnings. Depending on your bank, funds typically arrive in 1-3 business days after processing."
     },
     {
-      question: "How do I change my payment information?",
-      answer: "To update your payment details, go to Account > Payment Information. From there, you can add, edit, or remove payment methods."
+      question: "How are my earnings calculated?",
+      answer: "Your earnings are calculated based on base fare + distance + time + any applicable bonuses or surge pricing, minus the platform fee."
     },
     {
-      question: "What happens if I need to cancel a ride?",
-      answer: "If you need to cancel a ride, open the ride details and tap 'Cancel Ride'. Prime Drivers get 5 free cancellations per day, while standard drivers may incur a cancellation fee."
-    }
-  ];
+      question: "Why is there a discrepancy in my earnings?",
+      answer: "Earnings discrepancies might occur due to rider adjustments, cancellation fees, or promotional credits. Check your detailed ride history for a breakdown of each ride's earnings."
+    },
+  ],
+  rides: [
+    {
+      question: "What if a rider cancels mid-ride?",
+      answer: "If a rider cancels after you've already started the ride, you'll be compensated for the distance driven up to the cancellation point plus a cancellation fee."
+    },
+    {
+      question: "How do I report inappropriate rider behavior?",
+      answer: "After completing a ride, you can report inappropriate behavior through the ride details screen. For urgent situations, use the emergency help button during the ride."
+    },
+    {
+      question: "What if I need to cancel a ride after accepting it?",
+      answer: "You can cancel a ride after accepting, but excessive cancellations may affect your acceptance rate and access to premium features. Prime drivers get 5 free cancellations per day."
+    },
+  ],
+  technical: [
+    {
+      question: "The app is freezing or crashing",
+      answer: "Try closing and reopening the app. If issues persist, try logging out, restarting your device, and logging back in. Make sure your app is updated to the latest version."
+    },
+    {
+      question: "I'm not receiving ride notifications",
+      answer: "Check your phone's notification settings for RideRoot. Also ensure that battery optimization is disabled for the app and that you have a stable internet connection."
+    },
+    {
+      question: "GPS inaccuracy issues",
+      answer: "For GPS issues, make sure location services are enabled with 'High Accuracy' mode. Try calibrating your compass by moving your phone in a figure-8 pattern."
+    },
+  ]
+};
+
+// Support team availability schedule
+const supportAvailability = [
+  { day: "Monday-Friday", hours: "8:00 AM - 10:00 PM" },
+  { day: "Saturday", hours: "9:00 AM - 8:00 PM" },
+  { day: "Sunday", hours: "10:00 AM - 6:00 PM" },
+];
+
+const DriverHelp: React.FC = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [selectedTopic, setSelectedTopic] = useState("account");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isContactSheetOpen, setIsContactSheetOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  
+  // Filter questions based on search query
+  const filteredQuestions = searchQuery
+    ? Object.values(faqQuestions).flat().filter(item => 
+        item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.answer.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : faqQuestions[selectedTopic];
   
   const handleSendMessage = () => {
-    if (message.trim() === "") return;
+    if (contactMessage.trim() === "") return;
     
+    // Close sheet and show success message
+    setIsContactSheetOpen(false);
+    setShowSuccessMessage(true);
+    
+    // Show success toast
     toast({
       title: "Message Sent",
-      description: "Support will respond to your inquiry soon.",
+      description: "A support representative will respond shortly.",
     });
     
-    setMessage("");
-    
-    // Simulate support response
+    // Reset form after a delay
     setTimeout(() => {
-      setShowChat(false);
-      toast({
-        title: "Support Response",
-        description: "A support agent has responded to your inquiry. Check your messages.",
-      });
-      
-      // Add a new case to the list
-      setSupportCases(prev => [
-        {
-          id: `SC-${Math.floor(100000 + Math.random() * 900000)}`,
-          title: message.substring(0, 30) + (message.length > 30 ? "..." : ""),
-          date: new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-          status: "open",
-          type: "General"
-        },
-        ...prev
-      ]);
+      setContactMessage("");
+      setShowSuccessMessage(false);
     }, 3000);
   };
-  
-  const filteredFaqs = searchQuery 
-    ? faqs.filter(faq => 
-        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : faqs;
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <RootHeader title="Help Center" />
       
-      <div className="flex-1 overflow-auto p-4 pb-24">
-        {/* Emergency Support */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-rose-500 to-red-600 rounded-xl p-4 mb-5 shadow-md"
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-white font-medium text-lg flex items-center">
-                <Shield size={20} className="mr-2" />
-                Emergency Support
-              </h2>
-              <p className="text-white/90 text-sm mt-1">
-                Safety concern or urgent issue?
-              </p>
-            </div>
-            
-            <Button 
-              size="sm" 
-              className="bg-white text-red-600 hover:bg-white/90"
-              onClick={() => {
-                toast({
-                  title: "Connecting to emergency support",
-                  description: "An agent will assist you immediately.",
-                });
-              }}
-            >
-              <Phone size={16} className="mr-1" />
-              Contact Now
-            </Button>
+      <div className="flex-1 overflow-y-auto pb-20">
+        {/* Search bar */}
+        <div className="bg-white p-4 border-b border-gray-200">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Input
+              placeholder="Search help articles..."
+              className="pl-10 pr-4 h-11 bg-gray-100 border-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                <X size={16} className="text-gray-400" />
+              </button>
+            )}
           </div>
-        </motion.div>
-        
-        {/* Search Bar */}
-        <div className="mb-6 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <Input
-            type="text"
-            placeholder="Search for help articles..."
-            className="pl-10 py-6 bg-white rounded-lg shadow-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
         </div>
         
-        {/* Quick Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <Button 
-            variant="outline" 
-            className="flex flex-col items-center justify-center h-24 bg-white border-gray-200 hover:bg-gray-50"
-            onClick={() => setShowChat(true)}
-          >
-            <MessageCircle size={24} className="mb-2 text-rideroot-primary" />
-            <span className="text-sm font-medium">Chat with Support</span>
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            className="flex flex-col items-center justify-center h-24 bg-white border-gray-200 hover:bg-gray-50"
-            onClick={() => {
-              toast({
-                title: "Checking connection...",
-                description: "Your app connection is working properly.",
-              });
-            }}
-          >
-            <HelpCircle size={24} className="mb-2 text-blue-500" />
-            <span className="text-sm font-medium">Troubleshoot App</span>
-          </Button>
-        </div>
-        
-        {/* Support Cases */}
-        {supportCases.length > 0 && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-6"
-          >
-            <h2 className="text-lg font-medium mb-3 flex items-center">
-              <Clock size={18} className="mr-2 text-gray-500" />
-              Your Support Cases
-            </h2>
-            
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100">
-              {supportCases.map(supportCase => (
-                <div key={supportCase.id} className="p-4 flex justify-between items-center hover:bg-gray-50">
-                  <div>
-                    <div className="flex items-center">
-                      <span className={`w-2 h-2 rounded-full ${supportCase.status === 'open' ? 'bg-green-500' : 'bg-gray-400'} mr-2`}></span>
-                      <h3 className="font-medium">{supportCase.title}</h3>
-                    </div>
-                    <div className="flex items-center mt-1 text-sm text-gray-500">
-                      <span>{supportCase.id}</span>
-                      <span className="mx-2">•</span>
-                      <span>{supportCase.date}</span>
-                      <span className="mx-2">•</span>
-                      <span>{supportCase.type}</span>
-                    </div>
-                  </div>
-                  <ChevronRight size={18} className="text-gray-400" />
+        {/* Content area */}
+        <div className="p-4">
+          {/* Success message */}
+          <AnimatePresence>
+            {showSuccessMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="mb-4 p-3 bg-green-50 border border-green-100 rounded-lg flex items-center"
+              >
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                  <CheckCircle size={18} className="text-green-600" />
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-        
-        {/* FAQs */}
-        <div className="mb-6">
-          <h2 className="text-lg font-medium mb-3 flex items-center">
-            <HelpCircle size={18} className="mr-2 text-gray-500" />
-            Frequently Asked Questions
-          </h2>
+                <div>
+                  <p className="text-sm font-medium text-green-800">Message Sent Successfully</p>
+                  <p className="text-xs text-green-600">We'll get back to you soon</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           
-          {filteredFaqs.length === 0 && (
-            <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-              <AlertCircle size={24} className="mx-auto text-gray-400 mb-2" />
-              <p className="text-gray-500">No FAQs match your search.</p>
-            </div>
+          {!searchQuery ? (
+            <>
+              {/* Topic selector */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {faqTopics.map((topic) => {
+                  const Icon = topic.icon;
+                  return (
+                    <button
+                      key={topic.id}
+                      onClick={() => setSelectedTopic(topic.id)}
+                      className={`p-3 rounded-lg flex items-center border transition-all ${
+                        selectedTopic === topic.id 
+                          ? "border-rideroot-primary bg-blue-50" 
+                          : "border-gray-200 bg-white"
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-full ${topic.color} flex items-center justify-center mr-3`}>
+                        <Icon size={18} />
+                      </div>
+                      <span className="text-sm font-medium">{topic.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              
+              {/* Topic FAQs */}
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+                <div className="p-4 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold">
+                    {faqTopics.find(t => t.id === selectedTopic)?.title} FAQ
+                  </h3>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {faqQuestions[selectedTopic].map((item, index) => (
+                    <Details key={index} question={item.question} answer={item.answer} />
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Search results */}
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+                <div className="p-4 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold">
+                    Search Results {filteredQuestions.length > 0 && `(${filteredQuestions.length})`}
+                  </h3>
+                </div>
+                {filteredQuestions.length > 0 ? (
+                  <div className="divide-y divide-gray-100">
+                    {filteredQuestions.map((item, index) => (
+                      <Details key={index} question={item.question} answer={item.answer} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-6 text-center">
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <HelpCircle size={24} className="text-gray-400" />
+                    </div>
+                    <h4 className="font-medium mb-1">No results found</h4>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Try different keywords or contact our support team
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsContactSheetOpen(true)}
+                      className="mx-auto"
+                    >
+                      Contact Support
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
           
-          <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm overflow-hidden">
-            {filteredFaqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="px-4 py-3 hover:bg-gray-50">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="px-4 pb-3">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {/* Contact support section */}
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-gray-100">
+              <h3 className="text-lg font-semibold">Contact Support</h3>
+            </div>
+            <div className="p-4">
+              <Tabs defaultValue="chat">
+                <TabsList className="w-full mb-4">
+                  <TabsTrigger value="chat" className="flex-1">
+                    <MessageCircle size={16} className="mr-2" /> Chat
+                  </TabsTrigger>
+                  <TabsTrigger value="call" className="flex-1">
+                    <Phone size={16} className="mr-2" /> Call
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="chat" className="mt-0">
+                  <Button 
+                    className="w-full bg-rideroot-primary hover:bg-rideroot-primary/90 mb-4"
+                    onClick={() => setIsContactSheetOpen(true)}
+                  >
+                    Start Chat Support <ArrowRight size={16} className="ml-2" />
+                  </Button>
+                  <p className="text-sm text-gray-500 text-center">
+                    Average response time: 5 minutes
+                  </p>
+                </TabsContent>
+                <TabsContent value="call" className="mt-0">
+                  <Button 
+                    className="w-full bg-rideroot-primary hover:bg-rideroot-primary/90 mb-4"
+                    onClick={() => {
+                      toast({
+                        title: "Initiating Call",
+                        description: "Connecting you to driver support...",
+                      });
+                    }}
+                  >
+                    Call Driver Support <Phone size={16} className="ml-2" />
+                  </Button>
+                  <div className="space-y-2">
+                    {supportAvailability.map((item, index) => (
+                      <div key={index} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{item.day}</span>
+                        <span className="font-medium">{item.hours}</span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         </div>
       </div>
       
-      {/* Support Chat */}
-      {showChat && (
-        <motion.div 
-          initial={{ y: "100%" }}
-          animate={{ y: 0 }}
-          className="fixed bottom-0 inset-x-0 bg-white rounded-t-xl shadow-lg z-40 p-4"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-medium">Chat with Support</h2>
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              onClick={() => setShowChat(false)}
-            >
-              Close
-            </Button>
-          </div>
-          
-          <div className="bg-gray-50 p-3 rounded-lg mb-4 h-60 overflow-y-auto">
-            <div className="bg-blue-100 text-blue-800 p-3 rounded-lg inline-block max-w-[80%]">
-              <p className="text-sm">Hello, how can we help you today?</p>
-              <span className="text-xs text-blue-600 mt-1 block">Support • Just now</span>
+      {/* Contact Support Sheet */}
+      <Sheet open={isContactSheetOpen} onOpenChange={setIsContactSheetOpen}>
+        <SheetContent className="w-full sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>Contact Support</SheetTitle>
+            <SheetDescription>
+              Describe your issue and a support representative will assist you shortly.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div>
+              <label htmlFor="issue-type" className="block text-sm font-medium text-gray-700 mb-1">
+                Issue Type
+              </label>
+              <select 
+                id="issue-type" 
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option>Account & Profile</option>
+                <option>Earnings & Payments</option>
+                <option>Ride Issues</option>
+                <option>Technical Support</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                Message
+              </label>
+              <Textarea
+                id="message"
+                placeholder="Describe your issue in detail..."
+                className="min-h-[120px]"
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
+              />
+            </div>
+            <div className="flex space-x-2 pt-4">
+              <Button
+                className="flex-1 bg-rideroot-primary hover:bg-rideroot-primary/90"
+                onClick={handleSendMessage}
+                disabled={!contactMessage.trim()}
+              >
+                Send Message
+              </Button>
+              <SheetClose asChild>
+                <Button variant="outline" className="flex-1">
+                  Cancel
+                </Button>
+              </SheetClose>
             </div>
           </div>
-          
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-grow"
-            />
-            <Button onClick={handleSendMessage} disabled={!message.trim()}>
-              Send
-            </Button>
-          </div>
-        </motion.div>
-      )}
+        </SheetContent>
+      </Sheet>
       
       <DriverBottomNav />
     </div>
   );
 };
+
+// FAQ Details Component
+const Details = ({ question, answer }: { question: string, answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <div className="border-t border-gray-100 first:border-t-0">
+      <button
+        className="w-full text-left p-4 flex justify-between items-center"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <h4 className="font-medium text-gray-900">{question}</h4>
+        <ArrowRight 
+          size={16} 
+          className={`text-gray-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} 
+        />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="px-4 pb-4"
+          >
+            <p className="text-gray-600 text-sm">{answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Required imports
+import { User, BarChart2, Car, Settings } from "lucide-react";
 
 export default DriverHelp;

@@ -27,6 +27,7 @@ import DriverSignUp from "./pages/DriverSignUp";
 import DriverHome from "./pages/DriverHome";
 import DriverRide from "./pages/DriverRide";
 import DriverEarnings from "./pages/DriverEarnings";
+import DriverHelp from "./pages/DriverHelp";
 
 const queryClient = new QueryClient();
 
@@ -57,8 +58,9 @@ const App = () => (
             <Route path="/driver-home" element={<DriverHome />} />
             <Route path="/driver-ride" element={<DriverRide />} />
             <Route path="/driver-earnings" element={<DriverEarnings />} />
-            <Route path="/driver-profile" element={<Profile />} /> {/* Added new route */}
-            <Route path="/settings" element={<Profile />} /> {/* Placeholder for settings */}
+            <Route path="/driver-help" element={<DriverHelp />} />
+            <Route path="/driver-profile" element={<Profile />} />
+            <Route path="/driver-messages" element={<Profile />} /> {/* This will be developed in future */}
             
             <Route path="*" element={<NotFound />} />
           </Routes>

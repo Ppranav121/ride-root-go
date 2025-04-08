@@ -19,19 +19,15 @@ const DriverTierSelector: React.FC<DriverTierSelectorProps> = ({ isPrimeDriver, 
         
         <ToggleGroup type="single" value={isPrimeDriver ? "prime" : "standard"} onValueChange={(value) => {
           if (value) onChange(value === "prime");
-        }}>
-          <ToggleGroupItem value="standard" aria-label="Standard Tier" className={`w-1/2 px-5 py-3 rounded-lg ${!isPrimeDriver ? 'bg-blue-50 text-blue-700' : 'bg-transparent text-gray-600'}`}>
-            <div className="flex items-center justify-center">
-              <Zap size={18} className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : 'text-gray-400'}`} />
-              <span>Pay-Per-Ride</span>
-            </div>
+        }} className="flex w-full">
+          <ToggleGroupItem value="standard" aria-label="Standard Tier" className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${!isPrimeDriver ? 'bg-blue-50 text-blue-700' : 'bg-transparent text-gray-600'}`}>
+            <Zap size={18} className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : 'text-gray-400'}`} />
+            <span>Pay-Per-Ride</span>
           </ToggleGroupItem>
           
-          <ToggleGroupItem value="prime" aria-label="Prime Tier" className={`w-1/2 px-5 py-3 rounded-lg ${isPrimeDriver ? 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white' : 'bg-transparent text-gray-600'}`}>
-            <div className="flex items-center justify-center">
-              <Crown size={18} className="mr-2" />
-              <span>Prime Driver</span>
-            </div>
+          <ToggleGroupItem value="prime" aria-label="Prime Tier" className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${isPrimeDriver ? 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white' : 'bg-transparent text-gray-600'}`}>
+            <Crown size={18} className="mr-2" />
+            <span>Prime Driver</span>
           </ToggleGroupItem>
         </ToggleGroup>
         
