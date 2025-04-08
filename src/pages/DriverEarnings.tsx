@@ -190,11 +190,22 @@ const DriverEarnings: React.FC = () => {
         </div>
         
         <TabsContent value="daily" className="flex-1 p-4 pb-24">
-          <EarningsContent earnings={dailyEarnings} expandedRide={expandedRide} onExpandRide={handleExpandRide} />
+          <EarningsContent 
+            earnings={dailyEarnings} 
+            expandedRide={expandedRide} 
+            onExpandRide={handleExpandRide} 
+            isWeekly={false}
+          />
         </TabsContent>
         
         <TabsContent value="weekly" className="flex-1 p-4 pb-24">
-          <EarningsContent earnings={weeklyEarnings} expandedRide={expandedRide} onExpandRide={handleExpandRide} showSubscription />
+          <EarningsContent 
+            earnings={weeklyEarnings} 
+            expandedRide={expandedRide} 
+            onExpandRide={handleExpandRide} 
+            isWeekly={true}
+            showSubscription 
+          />
         </TabsContent>
       </Tabs>
       
@@ -208,6 +219,7 @@ interface EarningsContentProps {
   earnings: EarningsProps;
   expandedRide: string | null;
   onExpandRide: (id: string) => void;
+  isWeekly: boolean;
   showSubscription?: boolean;
 }
 
@@ -215,6 +227,7 @@ const EarningsContent: React.FC<EarningsContentProps> = ({
   earnings, 
   expandedRide, 
   onExpandRide,
+  isWeekly,
   showSubscription = false 
 }) => {
   return (
@@ -264,7 +277,7 @@ const EarningsContent: React.FC<EarningsContentProps> = ({
         {/* Enhanced weekly trend chart */}
         <div className="mb-4">
           <h3 className="text-sm font-medium mb-2">
-            {earnings === weeklyEarnings ? "Weekly Trend" : "Daily Breakdown"}
+            {isWeekly ? "Weekly Trend" : "Daily Breakdown"}
           </h3>
           <WeeklyBarChart values={earnings.weeklyTrend || [0, 0, 0, 0, 0, 0, 0]} />
         </div>
