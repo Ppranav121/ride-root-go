@@ -264,7 +264,7 @@ const EarningsContent: React.FC<EarningsContentProps> = ({
         {/* Enhanced weekly trend chart */}
         <div className="mb-4">
           <h3 className="text-sm font-medium mb-2">
-            {selectedTab === "weekly" ? "Weekly Trend" : "Daily Breakdown"}
+            {earnings === weeklyEarnings ? "Weekly Trend" : "Daily Breakdown"}
           </h3>
           <WeeklyBarChart values={earnings.weeklyTrend || [0, 0, 0, 0, 0, 0, 0]} />
         </div>
