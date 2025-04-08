@@ -1,14 +1,18 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Clock, ChevronRight, Menu, Shield, Car, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { Menu, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import RootHeader from "@/components/RootHeader";
-import BottomNav from "@/components/BottomNav";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+// Custom Components
+import DriverBottomNav from "@/components/DriverBottomNav";
+import DriverStatusToggle from "@/components/DriverStatusToggle";
+import DriverTierSelector from "@/components/DriverTierSelector";
+import DriverStatsPanel from "@/components/DriverStatsPanel";
+import MapBackground from "@/components/ride/MapBackground";
 
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
@@ -20,14 +24,17 @@ const DriverHome: React.FC = () => {
   const [isPeakTime, setIsPeakTime] = useState(true);
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
+  const [pulseShadow, setPulseShadow] = useState(false);
   
-  // Simulated earnings data
-  const recentRides = [
-    { id: "1", pickupLocation: "Washington St", dropoffLocation: "Market Ave", earnings: 14.50, time: "10:24 AM", isPremium: false },
-    { id: "2", pickupLocation: "Union Square", dropoffLocation: "Golden Gate Park", earnings: 21.50, time: "12:05 PM", isPremium: true },
-    { id: "3", pickupLocation: "Financial District", dropoffLocation: "Marina District", earnings: 16.50, time: "2:30 PM", isPremium: false },
-  ];
-
+  useEffect(() => {
+    if (isOnline) {
+      const interval = setInterval(() => {
+        setPulseShadow(prev => !prev);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isOnline]);
+  
   const toggleOnlineStatus = () => {
     setIsOnline(!isOnline);
     
@@ -45,10 +52,10 @@ const DriverHome: React.FC = () => {
     }
   };
 
-  const toggleDriverTier = () => {
-    setIsPrimeDriver(!isPrimeDriver);
+  const toggleDriverTier = (newValue: boolean) => {
+    setIsPrimeDriver(newValue);
     
-    if (!isPrimeDriver) {
+    if (newValue) {
       toast({
         title: "Prime Driver Activated",
         description: "You now have access to premium benefits and priority rides.",
@@ -76,9 +83,47 @@ const DriverHome: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-rideroot-lightGrey">
+    <div className="flex flex-col min-h-screen relative">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100" />
+        
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.4 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          {isOnline && (
+            <MapBackground>
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ 
+                  repeat: Infinity, 
+                  duration: 4,
+                  ease: "easeInOut" 
+                }}
+                className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-blue-400/20"
+              />
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 5,
+                  ease: "easeInOut",
+                  delay: 1
+                }}
+                className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-indigo-400/20"
+              />
+            </MapBackground>
+          )}
+        </motion.div>
+      </div>
+
       {/* Header with menu */}
-      <div className="flex items-center justify-between p-4 bg-white shadow-sm">
+      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md shadow-sm z-10">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
@@ -88,7 +133,7 @@ const DriverHome: React.FC = () => {
           <SheetContent side="left" className="w-[270px] bg-white">
             <div className="flex flex-col h-full">
               <div className="py-6">
-                <div className="w-16 h-16 bg-rideroot-primary rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="w-16 h-16 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-4 mx-auto">
                   <Car size={32} className="text-white" />
                 </div>
                 <h2 className="text-xl font-semibold text-center">
@@ -114,16 +159,8 @@ const DriverHome: React.FC = () => {
                     className="w-full justify-start rounded-lg py-5 font-medium"
                     onClick={() => navigate("/driver-earnings")}
                   >
-                    <Star className="mr-2" size={20} />
+                    <Car className="mr-2" size={20} />
                     Earnings
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-start rounded-lg py-5 font-medium"
-                    onClick={() => navigate("/driver-profile")}
-                  >
-                    <Shield className="mr-2" size={20} />
-                    Profile & Safety
                   </Button>
                 </div>
               </nav>
@@ -146,182 +183,109 @@ const DriverHome: React.FC = () => {
           RideRoot Driver
         </h1>
         
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full"
-          onClick={() => navigate("/notifications")}
-        >
-          <div className="relative">
-            <Clock size={24} />
-            {isPeakTime && (
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-rideroot-danger rounded-full"></span>
-            )}
-          </div>
-        </Button>
+        <div className="w-10" />
       </div>
       
-      {/* Driver status panel */}
-      <div className="p-4 bg-white shadow-md rounded-b-xl mx-4 mb-4">
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">
-                {isOnline ? "You're Online" : "Go Online to Drive"}
-              </h2>
-              <p className="text-sm text-rideroot-darkGrey">
-                {isOnline 
-                  ? "You're receiving ride requests" 
-                  : "Toggle to start receiving requests"}
-              </p>
-            </div>
-            <Switch 
-              checked={isOnline} 
-              onCheckedChange={toggleOnlineStatus} 
-              className={isOnline ? "bg-green-500" : ""} 
-            />
-          </div>
-          
-          <div className="py-3 px-4 bg-gray-50 rounded-xl mb-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm text-rideroot-darkGrey">Driver Tier</p>
-                <h3 className="font-medium">
-                  {isPrimeDriver 
-                    ? "Prime: $19.99/week + $1/ride" 
-                    : "Pay-Per-Ride: $2.50/ride"}
-                </h3>
-              </div>
-              <Switch 
-                checked={isPrimeDriver} 
-                onCheckedChange={toggleDriverTier} 
-                className={isPrimeDriver ? "bg-rideroot-primary" : ""} 
-              />
-            </div>
-          </div>
-          
-          {isPrimeDriver && (
-            <div className="mb-4">
-              <div className="flex space-x-2">
-                {isPeakTime && (
-                  <span className="bg-rideroot-primary/10 text-rideroot-primary text-xs font-medium px-2.5 py-1 rounded-full">
-                    Peak Bonus Active (+$0.50/ride)
-                  </span>
-                )}
-                <span className="bg-rideroot-accent/10 text-rideroot-accent text-xs font-medium px-2.5 py-1 rounded-full">
-                  Priority Rides
-                </span>
-              </div>
-            </div>
-          )}
-          
-          <div className="flex justify-between">
-            <div className="text-center p-3 bg-gray-50 rounded-lg flex-1 mr-2">
-              <p className="text-sm text-rideroot-darkGrey">Today's Earnings</p>
-              <h3 className="text-xl font-bold text-rideroot-primary">${todayEarnings.toFixed(2)}</h3>
-            </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg flex-1 ml-2">
-              <p className="text-sm text-rideroot-darkGrey">Today's Rides</p>
-              <h3 className="text-xl font-bold text-rideroot-accent">{todayRides}</h3>
+      <div className="flex-1 overflow-auto p-4 z-10 space-y-4 pb-24">
+        {/* Driver status toggle */}
+        <DriverStatusToggle
+          isOnline={isOnline}
+          onStatusChange={toggleOnlineStatus}
+        />
+        
+        {/* Driver tier selector */}
+        <DriverTierSelector
+          isPrimeDriver={isPrimeDriver}
+          onChange={toggleDriverTier}
+        />
+        
+        {/* Driver stats panel */}
+        <DriverStatsPanel 
+          todayEarnings={todayEarnings}
+          todayRides={todayRides}
+          isPrimeDriver={isPrimeDriver}
+        />
+        
+        {/* Prime badges */}
+        {isPrimeDriver && (
+          <div className="mb-4">
+            <div className="flex space-x-2">
+              {isPeakTime && (
+                <motion.span 
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center"
+                >
+                  <span className="w-2 h-2 bg-white rounded-full mr-1"></span>
+                  Peak Bonus Active (+$0.50/ride)
+                </motion.span>
+              )}
+              <motion.span 
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium px-2.5 py-1 rounded-full"
+              >
+                Priority Rides
+              </motion.span>
             </div>
           </div>
-          
-          {/* Earnings boost animation */}
-          {showEarningsBoost && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-4 p-3 bg-green-50 border border-green-100 rounded-lg text-center"
-            >
-              <p className="text-sm text-green-600">Peak Bonus</p>
-              <p className="text-lg font-bold text-green-600">+${boostAmount.toFixed(2)}</p>
-            </motion.div>
-          )}
-        </div>
-      </div>
-      
-      {/* Map placeholder */}
-      <div className="flex-1 bg-gradient-to-b from-blue-50 to-blue-200 relative min-h-[180px] mx-4 mb-4 rounded-xl shadow-inner">
+        )}
+        
+        {/* Earnings boost animation */}
+        {showEarningsBoost && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-4 p-3 bg-gradient-to-r from-green-100 to-green-50 border border-green-100 rounded-lg text-center"
+          >
+            <p className="text-sm text-green-600">Peak Bonus</p>
+            <p className="text-lg font-bold text-green-600">+${boostAmount.toFixed(2)}</p>
+          </motion.div>
+        )}
+        
+        {/* Main action button */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0 flex items-center justify-center"
+          className="mt-8"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          {isOnline ? (
-            <div className="bg-white/90 backdrop-blur-sm px-5 py-3 rounded-xl shadow-md">
-              <p className="text-rideroot-darkGrey font-medium">Searching for ride requests...</p>
+          <Button
+            disabled={!isOnline}
+            onClick={() => navigate("/driver-ride")}
+            className={`w-full py-6 rounded-xl text-white font-medium hover:opacity-95 transition-all ${
+              isOnline 
+                ? "bg-gradient-to-r from-rideroot-primary to-rideroot-secondary shadow-lg" 
+                : "bg-gray-400"
+            }`}
+          >
+            <div className="flex items-center justify-center">
+              {isOnline ? (
+                <>
+                  <motion.div 
+                    animate={{ 
+                      boxShadow: pulseShadow 
+                        ? [
+                            "0 0 0 0 rgba(0, 255, 0, 0)",
+                            "0 0 0 10px rgba(0, 255, 0, 0.1)",
+                            "0 0 0 20px rgba(0, 255, 0, 0)"
+                          ] 
+                        : "0 0 0 0 rgba(0, 255, 0, 0)"
+                    }}
+                    transition={{ duration: 1.5 }}
+                    className="w-4 h-4 rounded-full bg-green-500 mr-3"
+                  />
+                  <span className="text-md">Finding Ride Requests...</span>
+                </>
+              ) : (
+                <>
+                  <div className="w-4 h-4 rounded-full bg-white/50 mr-3" />
+                  <span className="text-md">Go Online to Find Rides</span>
+                </>
+              )}
             </div>
-          ) : (
-            <div className="bg-white/80 backdrop-blur-sm px-5 py-3 rounded-xl shadow-md">
-              <p className="text-rideroot-darkGrey font-medium">Go online to see nearby requests</p>
-            </div>
-          )}
+          </Button>
         </motion.div>
       </div>
       
-      {/* Recent activity */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-        className="bg-white rounded-t-3xl shadow-lg p-4 mx-4 -mb-4 relative z-10"
-      >
-        <h3 className="text-sm font-medium text-rideroot-darkGrey mb-3 flex items-center">
-          <Clock size={16} className="mr-1" />
-          RECENT RIDES
-        </h3>
-        
-        <div className="space-y-3 mb-4">
-          {recentRides.map((ride) => (
-            <motion.div
-              key={ride.id}
-              whileHover={{ scale: 1.01 }}
-              className="flex items-start p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <div className="bg-rideroot-primary/10 p-2 rounded-full mr-3">
-                <MapPin size={18} className={ride.isPremium ? "text-rideroot-secondary" : "text-rideroot-primary"} />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <p className="font-medium text-rideroot-text">{ride.pickupLocation} → {ride.dropoffLocation}</p>
-                  <p className="font-bold text-rideroot-primary">${ride.earnings.toFixed(2)}</p>
-                </div>
-                <div className="flex justify-between mt-1">
-                  <p className="text-xs text-rideroot-darkGrey">{ride.time}</p>
-                  {ride.isPremium && (
-                    <span className="text-xs font-medium text-rideroot-secondary">
-                      Premium Ride
-                    </span>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        
-        {isOnline ? (
-          <Button 
-            disabled={!isOnline}
-            onClick={() => navigate("/driver-ride")}
-            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full flex items-center justify-center py-5 rounded-xl text-white font-medium shadow-md hover:opacity-95 transition-all"
-          >
-            <Car size={18} className="mr-2" />
-            Find New Rides
-          </Button>
-        ) : (
-          <Button 
-            onClick={toggleOnlineStatus}
-            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full flex items-center justify-center py-5 rounded-xl text-white font-medium shadow-md hover:opacity-95 transition-all"
-          >
-            <Car size={18} className="mr-2" />
-            Go Online Now
-          </Button>
-        )}
-      </motion.div>
-      
-      <div className="h-16"></div> {/* Spacer for bottom nav */}
-      <BottomNav />
+      <DriverBottomNav />
     </div>
   );
 };

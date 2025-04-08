@@ -57,6 +57,8 @@ const App = () => (
             <Route path="/driver-home" element={<DriverHome />} />
             <Route path="/driver-ride" element={<DriverRide />} />
             <Route path="/driver-earnings" element={<DriverEarnings />} />
+            <Route path="/driver-profile" element={<Profile />} /> {/* Added new route */}
+            <Route path="/settings" element={<Profile />} /> {/* Placeholder for settings */}
             
             <Route path="*" element={<NotFound />} />
           </Routes>
