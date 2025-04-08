@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Menu, Car, BarChart2, User, HelpCircle, MessageCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, Car, BarChart2, User, HelpCircle, MessageCircle, Crown, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
 
 // Custom Components
 import DriverBottomNav from "@/components/DriverBottomNav";
@@ -13,6 +14,7 @@ import DriverStatusToggle from "@/components/DriverStatusToggle";
 import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
 import MapBackground from "@/components/ride/MapBackground";
+import DriverSearching from "@/components/ride/DriverSearching";
 
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
@@ -24,33 +26,28 @@ const DriverHome: React.FC = () => {
   const [isPeakTime, setIsPeakTime] = useState(true);
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
-  const [pulseShadow, setPulseShadow] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   
   useEffect(() => {
-    if (isOnline) {
-      const interval = setInterval(() => {
-        setPulseShadow(prev => !prev);
-      }, 2000);
-      return () => clearInterval(interval);
+    if (isOnline && !isSearching) {
+      setIsSearching(true);
     }
   }, [isOnline]);
   
   const toggleOnlineStatus = () => {
-    setIsOnline(!isOnline);
-    
     if (!isOnline) {
+      setIsOnline(true);
       toast({
         title: "You're now online",
-        description: "You'll start receiving ride requests shortly.",
+        description: "Searching for ride requests...",
       });
-      // Automatically navigate to searching for rides
-      setTimeout(() => {
-        navigate("/driver-ride");
-      }, 500);
     } else {
+      // This will be handled by the cancel search function
+      setIsSearching(false);
+      setIsOnline(false);
       toast({
         title: "You've gone offline",
-        description: "You won't receive any ride requests.",
+        description: "You won't receive ride requests.",
         variant: "destructive",
       });
     }
@@ -84,6 +81,12 @@ const DriverHome: React.FC = () => {
         description: "$2.50 per ride without weekly subscription.",
       });
     }
+  };
+
+  const cancelSearch = () => {
+    setIsSearching(false);
+    setIsOnline(false);
+    navigate("/driver-home");
   };
 
   return (
@@ -143,9 +146,23 @@ const DriverHome: React.FC = () => {
                 <h2 className="text-xl font-semibold text-center">
                   Driver Portal
                 </h2>
-                <p className="text-center text-rideroot-darkGrey">
-                  {isPrimeDriver ? "Prime Driver" : "Pay-Per-Ride Driver"}
-                </p>
+                <div className="flex items-center justify-center space-x-1 mt-1">
+                  {isPrimeDriver ? (
+                    <>
+                      <Crown size={16} className="text-amber-500" />
+                      <p className="text-center text-amber-600 font-medium">
+                        Prime Driver
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={16} className="text-blue-500" />
+                      <p className="text-center text-blue-600 font-medium">
+                        Pay-Per-Ride Driver
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
               
               <nav className="flex-1">
@@ -259,56 +276,118 @@ const DriverHome: React.FC = () => {
           </motion.div>
         )}
         
-        {/* Main action button - Made larger and more prominent */}
+        {/* Enhanced Go Online Button */}
         <motion.div 
-          className="mt-8 sticky bottom-20"
+          className="mt-8 sticky bottom-20 z-20"
+          initial={{ scale: 1 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <Button
-            onClick={() => {
-              if (isOnline) {
-                navigate("/driver-ride");
-              } else {
-                toggleOnlineStatus();
-              }
-            }}
-            className={`w-full py-8 rounded-xl text-white font-bold text-lg hover:opacity-95 transition-all ${
-              isOnline 
-                ? "bg-gradient-to-r from-rideroot-primary to-rideroot-secondary shadow-lg" 
-                : "bg-gradient-to-r from-green-500 to-green-600 shadow-lg"
-            }`}
-          >
-            <div className="flex items-center justify-center">
-              {isOnline ? (
-                <>
-                  <motion.div 
-                    animate={{ 
-                      boxShadow: pulseShadow 
-                        ? [
-                            "0 0 0 0 rgba(0, 255, 0, 0)",
-                            "0 0 0 10px rgba(0, 255, 0, 0.1)",
-                            "0 0 0 20px rgba(0, 255, 0, 0)"
-                          ] 
-                        : "0 0 0 0 rgba(0, 255, 0, 0)"
-                    }}
-                    transition={{ duration: 1.5 }}
-                    className="w-4 h-4 rounded-full bg-green-500 mr-3"
-                  />
-                  <span className="text-md">Find Ride Requests</span>
-                </>
-              ) : (
-                <>
-                  <div className="w-4 h-4 rounded-full bg-white/80 mr-3" />
-                  <span className="text-md">GO ONLINE</span>
-                </>
-              )}
+          <div className="relative">
+            {/* Car animation on the button */}
+            <div className={`absolute -top-12 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-500 ${isOnline ? 'opacity-100' : 'opacity-0'}`}>
+              <motion.div
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+                className="bg-gradient-to-b from-green-500 to-green-600 p-3 rounded-full shadow-lg"
+              >
+                <Car size={24} className="text-white" />
+              </motion.div>
             </div>
-          </Button>
+            
+            <Button
+              onClick={toggleOnlineStatus}
+              className={`w-full py-8 rounded-xl text-white font-bold text-lg hover:opacity-95 transition-all ${
+                isOnline 
+                  ? "bg-gradient-to-r from-red-500 to-red-600 shadow-lg" 
+                  : "bg-gradient-to-r from-green-500 to-green-600 shadow-lg"
+              }`}
+            >
+              <div className="flex items-center justify-center relative">
+                <motion.div
+                  animate={{ 
+                    scale: isOnline ? [1, 1.1, 1] : 1,
+                    rotate: isOnline ? [0, 5, -5, 0] : 0
+                  }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                  className="relative"
+                >
+                  {/* The car "drives" on the road when toggled */}
+                  <div className="flex items-center justify-center">
+                    <motion.div 
+                      animate={{ 
+                        x: isOnline ? [-30, 30, -30] : 0
+                      }}
+                      transition={{ 
+                        duration: 4, 
+                        repeat: Infinity,
+                        ease: "easeInOut" 
+                      }}
+                      className="absolute z-20"
+                    >
+                      <Car size={24} className="text-white" />
+                    </motion.div>
+                    
+                    {/* Road animation */}
+                    <div className="h-0.5 bg-white/50 rounded-full w-28 relative overflow-hidden">
+                      {isOnline && (
+                        <>
+                          <motion.div 
+                            animate={{ x: [-40, 40] }}
+                            transition={{ 
+                              duration: 1.5, 
+                              repeat: Infinity,
+                              repeatType: "loop"
+                            }}
+                            className="absolute h-full w-4 bg-white left-0"
+                          />
+                          <motion.div 
+                            animate={{ x: [-60, 60] }}
+                            transition={{ 
+                              duration: 2, 
+                              repeat: Infinity,
+                              repeatType: "loop", 
+                              delay: 0.4
+                            }}
+                            className="absolute h-full w-4 bg-white left-10"
+                          />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <span className="ml-2">
+                    {isOnline ? "GO OFFLINE" : "GO ONLINE TO DRIVE"}
+                  </span>
+                </motion.div>
+              </div>
+            </Button>
+          </div>
         </motion.div>
       </div>
       
       <DriverBottomNav />
+      
+      {/* Searching overlay */}
+      <AnimatePresence>
+        {isSearching && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 z-50"
+          >
+            <DriverSearching onCancel={cancelSearch} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

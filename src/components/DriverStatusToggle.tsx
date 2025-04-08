@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, AlertCircle } from "lucide-react";
+import { Check, AlertCircle, Car } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 interface DriverStatusToggleProps {
@@ -52,11 +52,24 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
               : "Toggle to start receiving requests"}
           </p>
         </div>
-        <Switch 
-          checked={isOnline} 
-          onCheckedChange={onStatusChange} 
-          className={isOnline ? "bg-green-500" : ""} 
-        />
+        <div className="relative">
+          <motion.div
+            initial={{ x: isOnline ? 22 : 0 }}
+            animate={{ x: isOnline ? 22 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="absolute -top-7 -left-2"
+          >
+            <Car 
+              size={18} 
+              className={`${isOnline ? 'text-green-500' : 'text-gray-400'} transform ${isOnline ? 'rotate-90' : 'rotate-0'}`}
+            />
+          </motion.div>
+          <Switch 
+            checked={isOnline} 
+            onCheckedChange={onStatusChange} 
+            className={`${isOnline ? 'bg-green-500' : ''} h-6 w-11 relative`}
+          />
+        </div>
       </div>
       
       {isOnline && (

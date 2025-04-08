@@ -28,6 +28,7 @@ import DriverHome from "./pages/DriverHome";
 import DriverRide from "./pages/DriverRide";
 import DriverEarnings from "./pages/DriverEarnings";
 import DriverHelp from "./pages/DriverHelp";
+import DriverSubscription from "./pages/DriverSubscription";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/driver-help" element={<DriverHelp />} />
             <Route path="/driver-profile" element={<Profile />} />
             <Route path="/driver-messages" element={<Profile />} /> {/* This will be developed in future */}
+            <Route path="/driver-subscription" element={<DriverSubscription />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

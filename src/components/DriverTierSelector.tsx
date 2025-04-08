@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Crown, Zap, ArrowRight, ShieldCheck, Award } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -11,22 +12,66 @@ interface DriverTierSelectorProps {
 
 const DriverTierSelector: React.FC<DriverTierSelectorProps> = ({ isPrimeDriver, onChange }) => {
   const [showBenefits, setShowBenefits] = useState(false);
+  const navigate = useNavigate();
+
+  const handleTierChange = (value: string) => {
+    if (value) {
+      const isPrime = value === "prime";
+      
+      // If selecting prime and not already a prime driver, redirect to subscription
+      if (isPrime && !isPrimeDriver) {
+        navigate("/driver-subscription");
+        return;
+      }
+      
+      onChange(isPrime);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
       <div className="p-4">
-        <h3 className="text-sm font-medium text-rideroot-darkGrey mb-3">Driver Tier</h3>
+        <h3 className="text-sm font-medium text-rideroot-darkGrey mb-3 flex items-center">
+          {isPrimeDriver ? 
+            <Crown size={16} className="text-amber-500 mr-1" /> :
+            <Zap size={16} className="text-blue-500 mr-1" />
+          }
+          DRIVER TIER
+        </h3>
         
-        <ToggleGroup type="single" value={isPrimeDriver ? "prime" : "standard"} onValueChange={(value) => {
-          if (value) onChange(value === "prime");
-        }} className="flex w-full">
-          <ToggleGroupItem value="standard" aria-label="Standard Tier" className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${!isPrimeDriver ? 'bg-blue-50 text-blue-700' : 'bg-transparent text-gray-600'}`}>
-            <Zap size={18} className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : 'text-gray-400'}`} />
+        <ToggleGroup 
+          type="single" 
+          value={isPrimeDriver ? "prime" : "standard"} 
+          onValueChange={handleTierChange} 
+          className="flex w-full"
+        >
+          <ToggleGroupItem 
+            value="standard" 
+            aria-label="Standard Tier" 
+            className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${
+              !isPrimeDriver ? 'bg-blue-50 text-blue-700' : 'bg-transparent text-gray-600'
+            }`}
+          >
+            <Zap 
+              size={18} 
+              className={`mr-2 ${!isPrimeDriver ? 'text-blue-500' : 'text-gray-400'}`} 
+              style={{ display: "inline" }}
+            />
             <span>Pay-Per-Ride</span>
           </ToggleGroupItem>
           
-          <ToggleGroupItem value="prime" aria-label="Prime Tier" className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${isPrimeDriver ? 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white' : 'bg-transparent text-gray-600'}`}>
-            <Crown size={18} className="mr-2" />
+          <ToggleGroupItem 
+            value="prime" 
+            aria-label="Prime Tier" 
+            className={`w-1/2 px-5 py-3 rounded-lg flex items-center justify-center ${
+              isPrimeDriver ? 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white' : 'bg-transparent text-gray-600'
+            }`}
+          >
+            <Crown 
+              size={18} 
+              className="mr-2" 
+              style={{ display: "inline" }}
+            />
             <span>Prime Driver</span>
           </ToggleGroupItem>
         </ToggleGroup>

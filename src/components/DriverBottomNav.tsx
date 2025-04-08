@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, BarChart2, User } from "lucide-react";
+import { Car, BarChart2, User, MessageCircle, HelpCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const DriverBottomNav: React.FC = () => {
@@ -21,7 +21,7 @@ const DriverBottomNav: React.FC = () => {
     >
       <div className="max-w-md mx-auto flex justify-around items-center h-16">
         <NavButton 
-          label="Dashboard" 
+          label="Home" 
           icon={Car} 
           isActive={isActive("/driver-home")} 
           onClick={() => navigate("/driver-home")}
@@ -64,13 +64,14 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
       {isActive && (
         <motion.div 
           layoutId="activeTab"
-          className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-12 h-1 rounded-full bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
+          className="absolute -top-1 w-full h-1 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       )}
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 300 }}
+        className="flex flex-col items-center"
       >
         <Icon size={isActive ? 24 : 20} className="mb-1 transition-all" />
         <span className={`text-xs transition-all ${isActive ? 'font-medium' : 'font-normal'}`}>{label}</span>
