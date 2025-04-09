@@ -17,7 +17,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
     <div className="relative rounded-xl bg-white shadow-lg p-5 border border-gray-100 overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         {isOnline ? (
-          <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-600" />
+          <div className="absolute inset-0 bg-gradient-to-r from-rideroot-primary to-rideroot-accent" />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-400" />
         )}
@@ -54,49 +54,58 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
         </div>
         
         {/* Custom Road Toggle Switch */}
-        <div className="relative">
+        <div className="relative w-20 h-10 mr-2">
           {/* Custom Road Toggle Background */}
-          <div className="w-16 h-8 rounded-full relative overflow-hidden">
+          <div className="w-20 h-10 rounded-full relative overflow-hidden shadow-inner border border-gray-200">
             {/* Road Background */}
-            <div className="absolute inset-0 flex">
-              <div className={`h-full transition-all duration-300 ${isOnline ? 'w-full bg-green-100' : 'w-full bg-gray-200'}`}>
-                {/* Road Pavement */}
-                <div className="absolute bottom-0 w-full h-4 bg-gray-600 rounded-b-lg">
-                  {/* Road Markings */}
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white flex justify-between px-1">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="w-1.5 h-0.5 bg-white"></div>
-                    ))}
-                  </div>
-                </div>
-                {/* Trees and scenery */}
-                <div className="absolute top-0 left-0 right-0 h-4 bg-green-300 flex justify-around items-end">
-                  <div className="w-1.5 h-2 rounded-full bg-green-600"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
-                  <div className="w-1.5 h-2.5 rounded-full bg-green-600"></div>
+            <div className="absolute inset-0">
+              {/* Sky Background */}
+              <div className={`absolute inset-0 transition-all duration-300 ${isOnline ? 'bg-gradient-to-b from-blue-300 to-blue-100' : 'bg-gradient-to-b from-gray-300 to-gray-200'}`}></div>
+              
+              {/* Road Surface */}
+              <div className="absolute bottom-0 w-full h-5 bg-gray-800 flex items-center justify-center">
+                {/* Road Markings */}
+                <div className="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-around">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="w-2 h-0.5 bg-yellow-400"></div>
+                  ))}
                 </div>
               </div>
+              
+              {/* Scenery */}
+              <div className="absolute top-1 left-2 w-2 h-2 rounded-full bg-green-600"></div>
+              <div className="absolute top-2 right-3 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+              
+              {/* Sun/Moon */}
+              <motion.div 
+                animate={{ y: isOnline ? -5 : 5 }}
+                transition={{ duration: 0.5 }}
+                className={`absolute ${isOnline ? 'right-2 top-1.5 w-2.5 h-2.5 bg-yellow-300 rounded-full' : 'left-2 top-1 w-2 h-2 bg-gray-100 rounded-full'}`}
+              />
             </div>
           </div>
           
-          {/* Moving Car Position */}
+          {/* Moving Car */}
           <motion.div
-            initial={{ x: isOnline ? 10 : 0 }}
+            initial={{ x: 0 }}
             animate={{ x: isOnline ? 10 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute -top-2 left-1"
+            className="absolute top-1/2 transform -translate-y-1/2"
             style={{ 
-              transform: `translateX(${isOnline ? 'calc(100% - 8px)' : '0px'})`,
-              transition: 'transform 0.3s ease'
+              transform: `translateX(${isOnline ? '10px' : '0px'}) translateY(-50%)`,
+              left: isOnline ? '45%' : '10%',
+              transition: 'left 0.3s ease'
             }}
           >
-            <div className={`flex items-center justify-center w-7 h-7 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}>
+            <div 
+              className={`flex items-center justify-center w-7 h-7 rounded-full ${
+                isOnline ? 'bg-rideroot-primary shadow-lg' : 'bg-gray-500'
+              }`}
+            >
               <Car 
-                size={16} 
+                size={15} 
                 className="text-white" 
-                style={{ 
-                  transform: isOnline ? 'rotate(0deg)' : 'rotate(0deg)'
-                }}
+                style={{ transform: 'rotate(90deg)' }}
               />
             </div>
           </motion.div>
@@ -105,7 +114,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
           <Switch 
             checked={isOnline} 
             onCheckedChange={onStatusChange} 
-            className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+            className="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-10"
           />
         </div>
       </div>
