@@ -24,8 +24,8 @@ const DriverInfoCard: React.FC<DriverInfoCardProps> = ({ driver }) => {
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center">
-        <div className="w-14 h-14 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-4">
-          <span className="text-xl font-bold text-rideroot-darkGrey">
+        <div className="w-14 h-14 bg-rideroot-primary/20 rounded-full flex items-center justify-center mr-4">
+          <span className="text-xl font-bold text-rideroot-primary">
             {driver.name.charAt(0)}
           </span>
         </div>
@@ -40,7 +40,7 @@ const DriverInfoCard: React.FC<DriverInfoCardProps> = ({ driver }) => {
       {/* Driver details dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center px-3 py-2 rounded-lg bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey transition-colors">
+          <button className="flex items-center px-3 py-2 rounded-lg bg-rideroot-primary/10 hover:bg-rideroot-primary/20 transition-colors text-rideroot-primary">
             <span className="text-sm mr-1">Details</span>
             <ChevronDown size={16} />
           </button>
@@ -49,8 +49,8 @@ const DriverInfoCard: React.FC<DriverInfoCardProps> = ({ driver }) => {
           <DropdownMenuGroup>
             <div className="p-3 border-b border-gray-100">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-3">
-                  <span className="text-lg font-bold text-rideroot-darkGrey">
+                <div className="w-12 h-12 bg-rideroot-primary/20 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-lg font-bold text-rideroot-primary">
                     {driver.name.charAt(0)}
                   </span>
                 </div>
