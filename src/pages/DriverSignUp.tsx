@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Phone, Car, User, Shield, ChevronRight, Calendar, Palette, Key, Zap, Crown } from "lucide-react";
@@ -6,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import BackButton from "@/components/common/BackButton";
 import {
   Select,
   SelectContent,
@@ -83,6 +83,12 @@ const DriverSignUp: React.FC = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col"
     >
+      {/* Add Back Button */}
+      <BackButton 
+        onClick={() => navigate('/signup')} 
+        className="top-6 left-6 z-50"
+      />
+      
       {/* Logo and header */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16">
         <motion.div
