@@ -1,0 +1,58 @@
+
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import DriverSearching from "@/components/ride/DriverSearching";
+import DriverRideRequest from "@/components/ride/DriverRideRequest";
+import DriverBottomNav from "@/components/DriverBottomNav";
+
+const DriverSearchAndRequest: React.FC = () => {
+  const navigate = useNavigate();
+  const [stage, setStage] = useState<"searching" | "request">("searching");
+  
+  const handleCancelSearch = () => {
+    toast("Search cancelled");
+    navigate("/driver-home");
+  };
+  
+  const handleFoundRideRequest = () => {
+    setStage("request");
+  };
+  
+  const handleAcceptRide = () => {
+    navigate("/driver-ride");
+  };
+  
+  const handleDeclineRide = () => {
+    setStage("searching");
+  };
+  
+  return (
+    <div className="relative min-h-screen">
+      {stage === "searching" && (
+        <DriverSearching 
+          onCancel={handleCancelSearch} 
+          onRideFound={handleFoundRideRequest}
+        />
+      )}
+      
+      {stage === "request" && (
+        <div className="fixed inset-0 bg-gradient-to-b from-blue-50 to-indigo-100 flex flex-col">
+          {/* Map placeholder */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center text-blue-800 animate-pulse">
+              Map View
+            </div>
+          </div>
+          
+          <DriverRideRequest
+            onAccept={handleAcceptRide}
+            onDecline={handleDeclineRide}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DriverSearchAndRequest;

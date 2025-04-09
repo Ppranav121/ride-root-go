@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 
 interface DriverSearchingProps {
   onCancel: () => void;
+  onRideFound?: () => void;
 }
 
-const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel }) => {
+const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel, onRideFound }) => {
   const navigate = useNavigate();
   const [searchPulse, setSearchPulse] = useState(0);
   const [searchTime, setSearchTime] = useState(0);
@@ -24,11 +25,20 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel }) => {
       setSearchTime(prev => prev + 1);
     }, 1000);
     
+    // Simulate finding a ride after some time if onRideFound callback is provided
+    let rideTimer: ReturnType<typeof setTimeout>;
+    if (onRideFound) {
+      rideTimer = setTimeout(() => {
+        onRideFound();
+      }, 8000); // Find a ride after 8 seconds
+    }
+    
     return () => {
       clearInterval(pulseInterval);
       clearInterval(timeInterval);
+      if (rideTimer) clearTimeout(rideTimer);
     };
-  }, []);
+  }, [onRideFound]);
   
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

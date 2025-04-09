@@ -29,6 +29,8 @@ import DriverHome from "./pages/DriverHome";
 import DriverEarnings from "./pages/DriverEarnings";
 import DriverHelp from "./pages/DriverHelp";
 import DriverSubscription from "./pages/DriverSubscription";
+import DriverSearchAndRequest from "./pages/DriverSearchAndRequest";
+import DriverRide from "./pages/DriverRide";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +72,8 @@ const App = () => (
             <Route path="/driver-profile" element={<Profile />} />
             <Route path="/driver-messages" element={<Profile />} />
             <Route path="/driver-subscription" element={<DriverSubscription />} />
+            <Route path="/driver-search" element={<DriverSearchAndRequest />} />
+            <Route path="/driver-ride" element={<DriverRide />} />
             
             {/* Redirect index to home when logged in */}
             <Route path="/index" element={<Navigate to="/home" replace />} />

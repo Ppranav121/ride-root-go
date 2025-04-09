@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Check, AlertCircle, Car } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { useNavigate } from "react-router-dom";
 
 interface DriverStatusToggleProps {
   isOnline: boolean;
@@ -13,6 +14,17 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
   isOnline, 
   onStatusChange 
 }) => {
+  const navigate = useNavigate();
+  
+  const handleStatusChange = (online: boolean) => {
+    onStatusChange(online);
+    
+    // If turning online, navigate to the search page
+    if (online) {
+      navigate("/driver-search");
+    }
+  };
+  
   return (
     <div className="relative rounded-xl bg-white shadow-lg p-5 border border-gray-100 overflow-hidden">
       <div className="absolute inset-0 opacity-10">
@@ -85,7 +97,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car - Better positioned within the toggle */}
+          {/* Moving Car */}
           <motion.div
             initial={{ x: 0 }}
             animate={{ 
@@ -97,7 +109,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             style={{
               top: '50%',
               transform: 'translateY(-50%)',
-              left: isOnline ? '40%' : '20%', // Adjusted position to keep car inside toggle
+              left: isOnline ? '40%' : '20%',
               transition: 'left 0.3s ease'
             }}
           >
@@ -105,10 +117,10 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
               className={`flex items-center justify-center ${
                 isOnline ? 'bg-rideroot-primary shadow-lg' : 'bg-gray-500'
               } rounded-full`}
-              style={{ width: '32px', height: '32px' }} // Further increased car container size
+              style={{ width: '32px', height: '32px' }}
             >
               <Car 
-                size={24} // Further increased car icon size
+                size={24}
                 className="text-white"
               />
             </div>
@@ -117,7 +129,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
           {/* Actual Toggle Switch (hidden but functional) */}
           <Switch 
             checked={isOnline} 
-            onCheckedChange={onStatusChange} 
+            onCheckedChange={handleStatusChange} 
             className="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-10"
           />
         </div>
