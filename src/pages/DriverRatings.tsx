@@ -76,7 +76,9 @@ const DriverRatings: React.FC = () => {
       });
   
   const averageRating = ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length;
-  const starCounts = {
+  
+  // Define starCounts with proper typing
+  const starCounts: Record<string, number> = {
     "5": ratings.filter(r => r.rating === 5).length,
     "4": ratings.filter(r => r.rating === 4).length,
     "3": ratings.filter(r => r.rating === 3).length,
@@ -124,7 +126,7 @@ const DriverRatings: React.FC = () => {
                   <div className="flex-1 bg-gray-100 h-2 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: `${(starCounts[star as keyof typeof starCounts] / ratings.length) * 100}%` }}
+                      animate={{ width: `${(starCounts[star] / ratings.length) * 100}%` }}
                       transition={{ duration: 0.5, delay: Number(star) * 0.1 }}
                       className={`h-full rounded-full ${
                         star === "5" || star === "4" ? "bg-green-500" : 
@@ -133,7 +135,7 @@ const DriverRatings: React.FC = () => {
                     />
                   </div>
                   <span className="text-xs w-6 ml-2 text-right">
-                    {starCounts[star as keyof typeof starCounts]}
+                    {starCounts[star]}
                   </span>
                 </div>
               ))}
