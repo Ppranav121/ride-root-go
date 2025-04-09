@@ -85,12 +85,12 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car - Fixed positioning and orientation */}
+          {/* Moving Car - Improved size and positioning */}
           <motion.div
             initial={{ x: 0 }}
             animate={{ 
               x: isOnline ? 10 : 0,
-              rotate: 0 // Keep car straight
+              rotate: 0 
             }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="absolute"
@@ -102,14 +102,14 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             }}
           >
             <div 
-              className={`flex items-center justify-center w-7 h-7 rounded-full ${
+              className={`flex items-center justify-center ${
                 isOnline ? 'bg-rideroot-primary shadow-lg' : 'bg-gray-500'
-              }`}
+              } rounded-full`}
+              style={{ width: '22px', height: '22px' }} // Increased car container size
             >
               <Car 
-                size={15} 
+                size={18} // Increased car icon size
                 className="text-white"
-                // Remove the rotation that was making the car appear upside down
               />
             </div>
           </motion.div>
