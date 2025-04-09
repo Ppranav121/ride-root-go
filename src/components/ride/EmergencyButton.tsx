@@ -17,9 +17,9 @@ const EmergencyButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4">
       <motion.button 
-        className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-4 flex items-center justify-center gap-3 shadow-inner border-t border-red-700"
+        className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-4 flex items-center justify-center gap-3 shadow-lg border border-red-700 rounded-xl"
         onClick={handleSosClick}
         whileTap={{ scale: 0.98 }}
         animate={{ 
