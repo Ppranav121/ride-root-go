@@ -85,15 +85,16 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car */}
+          {/* Moving Car - Fixed positioning */}
           <motion.div
             initial={{ x: 0 }}
             animate={{ x: isOnline ? 10 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute top-1/2 transform -translate-y-1/2"
-            style={{ 
-              transform: `translateX(${isOnline ? '10px' : '0px'}) translateY(-50%)`,
-              left: isOnline ? '45%' : '10%',
+            className="absolute"
+            style={{
+              top: '50%',
+              transform: 'translateY(-50%)',
+              left: isOnline ? '55%' : '20%',
               transition: 'left 0.3s ease'
             }}
           >
