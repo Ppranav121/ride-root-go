@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, AlertCircle, Car } from "lucide-react";
+import { Check, AlertCircle, Car, Road } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 interface DriverStatusToggleProps {
@@ -52,22 +52,60 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
               : "Toggle to start receiving requests"}
           </p>
         </div>
+        
+        {/* Custom Road Toggle Switch */}
         <div className="relative">
+          {/* Custom Road Toggle Background */}
+          <div className="w-16 h-8 rounded-full relative overflow-hidden">
+            {/* Road Background */}
+            <div className="absolute inset-0 flex">
+              <div className={`h-full transition-all duration-300 ${isOnline ? 'w-full bg-green-100' : 'w-full bg-gray-200'}`}>
+                {/* Road Pavement */}
+                <div className="absolute bottom-0 w-full h-4 bg-gray-600 rounded-b-lg">
+                  {/* Road Markings */}
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white flex justify-between px-1">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="w-1.5 h-0.5 bg-white"></div>
+                    ))}
+                  </div>
+                </div>
+                {/* Trees and scenery */}
+                <div className="absolute top-0 left-0 right-0 h-4 bg-green-300 flex justify-around items-end">
+                  <div className="w-1.5 h-2 rounded-full bg-green-600"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+                  <div className="w-1.5 h-2.5 rounded-full bg-green-600"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Moving Car Position */}
           <motion.div
-            initial={{ x: isOnline ? 22 : 0 }}
-            animate={{ x: isOnline ? 22 : 0 }}
+            initial={{ x: isOnline ? 10 : 0 }}
+            animate={{ x: isOnline ? 10 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute -top-7 -left-2"
+            className="absolute -top-2 left-1"
+            style={{ 
+              transform: `translateX(${isOnline ? 'calc(100% - 8px)' : '0px'})`,
+              transition: 'transform 0.3s ease'
+            }}
           >
-            <Car 
-              size={18} 
-              className={`${isOnline ? 'text-green-500' : 'text-gray-400'} transform ${isOnline ? 'rotate-90' : 'rotate-0'}`}
-            />
+            <div className={`flex items-center justify-center w-7 h-7 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}>
+              <Car 
+                size={16} 
+                className="text-white" 
+                style={{ 
+                  transform: isOnline ? 'rotate(0deg)' : 'rotate(0deg)'
+                }}
+              />
+            </div>
           </motion.div>
+          
+          {/* Actual Toggle Switch (hidden but functional) */}
           <Switch 
             checked={isOnline} 
             onCheckedChange={onStatusChange} 
-            className={`${isOnline ? 'bg-green-500' : ''} h-6 w-11 relative`}
+            className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
           />
         </div>
       </div>
