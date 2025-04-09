@@ -20,6 +20,7 @@ import RideCompletion from "./pages/RideCompletion";
 import RideCancellation from "./pages/RideCancellation";
 import Profile from "./pages/Profile";
 import Rides from "./pages/Rides";
+import RideDetails from "./pages/RideDetails";
 import NotFound from "./pages/NotFound";
 
 // Driver Pages
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/ride-cancellation" element={<RideCancellation />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/rides" element={<Rides />} />
+            <Route path="/ride/:id" element={<RideDetails />} />
             
             {/* Driver Routes */}
             <Route path="/driver-signup" element={<DriverSignUp />} />

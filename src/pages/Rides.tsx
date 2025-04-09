@@ -51,7 +51,7 @@ const Rides: React.FC = () => {
 
   const handleRideDetails = (rideId: number) => {
     console.log("View details for ride:", rideId);
-    // In a real app, navigate to a ride details page
+    navigate(`/ride/${rideId}`);
   };
 
   return (
