@@ -85,7 +85,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car - Significantly larger size */}
+          {/* Moving Car - Better positioned within the toggle */}
           <motion.div
             initial={{ x: 0 }}
             animate={{ 
@@ -97,7 +97,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             style={{
               top: '50%',
               transform: 'translateY(-50%)',
-              left: isOnline ? '55%' : '20%',
+              left: isOnline ? '40%' : '20%', // Adjusted position to keep car inside toggle
               transition: 'left 0.3s ease'
             }}
           >
@@ -105,10 +105,10 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
               className={`flex items-center justify-center ${
                 isOnline ? 'bg-rideroot-primary shadow-lg' : 'bg-gray-500'
               } rounded-full`}
-              style={{ width: '28px', height: '28px' }} // Significantly increased car container size
+              style={{ width: '32px', height: '32px' }} // Further increased car container size
             >
               <Car 
-                size={22} // Significantly increased car icon size
+                size={24} // Further increased car icon size
                 className="text-white"
               />
             </div>
