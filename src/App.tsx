@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "./contexts/AppContext";
 
 // Pages
@@ -30,7 +30,14 @@ import DriverEarnings from "./pages/DriverEarnings";
 import DriverHelp from "./pages/DriverHelp";
 import DriverSubscription from "./pages/DriverSubscription";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -58,13 +65,14 @@ const App = () => (
             {/* Driver Routes */}
             <Route path="/driver-signup" element={<DriverSignUp />} />
             <Route path="/driver-home" element={<DriverHome />} />
-            {/* Removed separate driver-ride route and integrated into driver-home */}
             <Route path="/driver-earnings" element={<DriverEarnings />} />
             <Route path="/driver-help" element={<DriverHelp />} />
             <Route path="/driver-profile" element={<Profile />} />
-            <Route path="/driver-messages" element={<Profile />} /> {/* This will be developed in future */}
+            <Route path="/driver-messages" element={<Profile />} />
             <Route path="/driver-subscription" element={<DriverSubscription />} />
             
+            {/* Redirect index to home when logged in */}
+            <Route path="/index" element={<Navigate to="/home" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

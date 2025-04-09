@@ -1,10 +1,11 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, MapPin, Calendar, ChevronRight } from "lucide-react";
+import { Clock, MapPin, ChevronRight } from "lucide-react";
 import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const Rides: React.FC = () => {
   const navigate = useNavigate();
@@ -51,7 +52,12 @@ const Rides: React.FC = () => {
 
   const handleRideDetails = (rideId: number) => {
     console.log("View details for ride:", rideId);
+    toast.info("Loading ride details");
     navigate(`/ride/${rideId}`);
+  };
+
+  const handleBookRide = () => {
+    navigate("/book-ride");
   };
 
   return (
@@ -73,8 +79,8 @@ const Rides: React.FC = () => {
           </div>
           
           <button 
-            onClick={() => navigate("/book-ride")}
-            className="w-full py-3 bg-rideroot-primary text-white rounded-full font-medium"
+            onClick={handleBookRide}
+            className="w-full py-3 bg-rideroot-primary text-white rounded-full font-medium hover:bg-rideroot-primary/90 transition-all"
           >
             Book a Ride
           </button>
@@ -126,5 +132,8 @@ const Rides: React.FC = () => {
     </div>
   );
 };
+
+// Import Calendar icon that we use in the component
+import { Calendar } from "lucide-react";
 
 export default Rides;

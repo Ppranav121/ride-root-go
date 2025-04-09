@@ -8,6 +8,8 @@ import RideDetailsBanner from "@/components/ride/RideDetailsBanner";
 import RideDetailsPanel from "@/components/ride/RideDetailsPanel";
 import EmergencyButton from "@/components/ride/EmergencyButton";
 import RouteInfoCard from "@/components/ride/RouteInfoCard";
+import CancelRideButton from "@/components/ride/CancelRideButton";
+import { toast } from "sonner";
 
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
@@ -15,9 +17,12 @@ const RideTracking: React.FC = () => {
   // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
   const [secondsLeft, setSecondsLeft] = useState(10);
+  const [isSimulating, setIsSimulating] = useState(true);
 
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
+      console.log("No ride in progress, redirecting to home");
+      toast.error("No active ride found");
       navigate("/home");
       return;
     }
@@ -31,8 +36,8 @@ const RideTracking: React.FC = () => {
     // Animate driver moving toward pickup location
     const positionInterval = setInterval(() => {
       setDriverPosition(prev => ({
-        top: parseInt(prev.top) - 0.5 + "%",
-        left: parseInt(prev.left) + 0.3 + "%"
+        top: `${Math.max(20, parseFloat(prev.top) - 0.5)}%`,
+        left: `${Math.min(70, parseFloat(prev.left) + 0.3)}%`
       }));
     }, 200);
 
@@ -41,6 +46,7 @@ const RideTracking: React.FC = () => {
       setSecondsLeft(prev => {
         if (prev <= 1) {
           clearInterval(countdownInterval);
+          setIsSimulating(false);
           return 0;
         }
         return prev - 1;
@@ -55,18 +61,24 @@ const RideTracking: React.FC = () => {
 
   useEffect(() => {
     // When countdown reaches zero, navigate to completion page
-    if (secondsLeft === 0) {
-      console.log("Countdown reached zero, navigating to ride completion");
+    if (secondsLeft === 0 && !isSimulating) {
+      console.log("Ride completed, navigating to completion page");
+      toast.success("You've arrived at your destination!");
       setTimeout(() => {
         navigate("/ride-completion");
-      }, 500); // Short delay to ensure state updates complete before navigation
+      }, 1000);
     }
-  }, [secondsLeft, navigate]);
+  }, [secondsLeft, isSimulating, navigate]);
 
-  // Manual navigation handler
+  // Manual navigation handler for testing
   const goToCompletion = () => {
     console.log("Manual navigation to ride completion");
+    setIsSimulating(false);
     navigate("/ride-completion");
+  };
+
+  const handleCancelRide = () => {
+    navigate("/ride-cancellation");
   };
 
   if (!currentRide || !currentRide.driver) return null;
@@ -87,7 +99,6 @@ const RideTracking: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
           <RideDetailsPanel currentRide={currentRide} />
           
-          {/* Add RouteInfoCard with current ride details */}
           <RouteInfoCard
             pickupLocation={currentRide.pickupLocation}
             dropoffLocation={currentRide.dropoffLocation}
@@ -96,6 +107,10 @@ const RideTracking: React.FC = () => {
             distance={currentRide.distance}
             fare={currentRide.fare}
           />
+          
+          <div className="mt-4">
+            <CancelRideButton />
+          </div>
         </div>
       </div>
 

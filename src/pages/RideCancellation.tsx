@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { X, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
@@ -14,7 +14,9 @@ const RideCancellation: React.FC = () => {
   const { currentRide, setCurrentRide } = useApp();
 
   useEffect(() => {
+    // Fallback if coming directly to this page without a ride
     if (!currentRide) {
+      console.log("No current ride, redirecting to home");
       navigate("/home");
     }
   }, [currentRide, navigate]);
@@ -26,17 +28,20 @@ const RideCancellation: React.FC = () => {
         ...currentRide,
         status: "cancelled"
       });
-    }
-
-    toast.success("Ride cancelled successfully", {
-      description: "You will not be charged for this ride",
-      duration: 3000,
-    });
-    
-    // Navigate back to home
-    setTimeout(() => {
+      
+      toast.success("Ride cancelled successfully", {
+        description: "You will not be charged for this ride",
+        duration: 3000,
+      });
+      
+      // Navigate back to home
+      setTimeout(() => {
+        navigate("/home");
+      }, 1500);
+    } else {
+      // Fallback in case currentRide is null
       navigate("/home");
-    }, 1500);
+    }
   };
 
   const handleGoBack = () => {

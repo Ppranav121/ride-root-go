@@ -1,12 +1,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Star, ThumbsUp, ThumbsDown, Smile, Frown, Meh, Clock, MapPin } from "lucide-react";
+import { Check, Star, ThumbsUp, ThumbsDown, Smile, Frown, Meh } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -23,12 +22,21 @@ const RideCompletion: React.FC = () => {
   const [showCustomTip, setShowCustomTip] = useState(false);
 
   useEffect(() => {
-    // Only redirect if there's no current ride
+    // Redirect if no current ride
     if (!currentRide || !currentRide.driver) {
       console.log("No current ride data, redirecting to home");
       navigate("/home");
+      return;
     }
-  }, [currentRide, navigate]);
+    
+    // Update ride status to ensure proper flow
+    if (currentRide.status !== "completed") {
+      setCurrentRide({
+        ...currentRide,
+        status: "completed"
+      });
+    }
+  }, [currentRide, navigate, setCurrentRide]);
 
   if (!currentRide || !currentRide.driver) {
     return null;
@@ -72,7 +80,7 @@ const RideCompletion: React.FC = () => {
     // Show success message and redirect after delay
     setTimeout(() => {
       navigate("/home");
-    }, 4000);
+    }, 2000);
   };
 
   const renderStars = () => {
@@ -81,6 +89,7 @@ const RideCompletion: React.FC = () => {
         key={star}
         onClick={() => setRating(star)}
         className="focus:outline-none"
+        aria-label={`Rate ${star} stars`}
       >
         <Star
           size={40}
@@ -111,9 +120,10 @@ const RideCompletion: React.FC = () => {
             className={cn(
               "flex flex-col items-center p-3 rounded-full w-20 h-20 transition-all",
               mood === option.value
-                ? "bg-green-500 text-white"
+                ? "bg-rideroot-primary text-white"
                 : "bg-gray-800 text-gray-300"
             )}
+            aria-label={`Rate mood as ${option.label}`}
           >
             {option.icon}
             <span className="text-xs mt-1">{option.label}</span>
@@ -130,7 +140,7 @@ const RideCompletion: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center"
       >
-        <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mb-6">
+        <div className="w-24 h-24 bg-rideroot-primary/20 rounded-full flex items-center justify-center mb-6">
           <img
             src={`https://ui-avatars.com/api/?name=${currentRide.driver.name}&background=random`}
             alt={currentRide.driver.name}
@@ -153,7 +163,7 @@ const RideCompletion: React.FC = () => {
 
         <Button
           onClick={handleRatingSubmit}
-          className="w-full py-6 bg-green-500 hover:bg-green-600 text-white rounded-xl"
+          className="w-full py-6 bg-rideroot-primary hover:bg-rideroot-primary/90 text-white rounded-xl"
         >
           Submit Rating
         </Button>
@@ -177,7 +187,7 @@ const RideCompletion: React.FC = () => {
         className="flex flex-col"
       >
         <div className="flex items-center justify-center mb-6">
-          <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center">
+          <div className="w-24 h-24 bg-rideroot-primary/20 rounded-full flex items-center justify-center">
             <img
               src={`https://ui-avatars.com/api/?name=${currentRide.driver.name}&background=random`}
               alt={currentRide.driver.name}
@@ -213,7 +223,7 @@ const RideCompletion: React.FC = () => {
                 className={cn(
                   "py-4 rounded-xl transition-all",
                   (tipAmount === option.amount || (showCustomTip && option.amount === -1))
-                    ? "bg-green-500 text-white"
+                    ? "bg-rideroot-primary text-white"
                     : "bg-gray-700 text-white"
                 )}
               >
@@ -266,7 +276,7 @@ const RideCompletion: React.FC = () => {
           </Button>
           <Button
             onClick={handleTipSubmit}
-            className="py-6 bg-green-500 hover:bg-green-600 text-white"
+            className="py-6 bg-rideroot-primary hover:bg-rideroot-primary/90 text-white"
           >
             {tipAmount > 0 ? `Pay $${(currentRide.fare + tipAmount).toFixed(2)}` : 'Continue'}
           </Button>
@@ -302,7 +312,7 @@ const RideCompletion: React.FC = () => {
 
         <Button
           onClick={handleSubmitFeedback}
-          className="w-full py-6 mb-4 bg-green-500 hover:bg-green-600 text-white rounded-xl"
+          className="w-full py-6 mb-4 bg-rideroot-primary hover:bg-rideroot-primary/90 text-white rounded-xl"
         >
           {tipAmount > 0 ? `Submit & Pay $${(currentRide.fare + tipAmount).toFixed(2)}` : 'Submit Feedback'}
         </Button>
@@ -317,7 +327,7 @@ const RideCompletion: React.FC = () => {
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center h-full animate-fade-in"
       >
-        <div className="bg-green-500 rounded-full p-6 mb-6">
+        <div className="bg-rideroot-primary rounded-full p-6 mb-6">
           <Check className="h-12 w-12 text-white" />
         </div>
         <h2 className="text-2xl font-bold mb-2">Thanks for your feedback!</h2>
@@ -327,7 +337,7 @@ const RideCompletion: React.FC = () => {
         
         <Button
           onClick={() => navigate("/home")}
-          className="w-full py-6 bg-green-500 hover:bg-green-600 text-white rounded-xl"
+          className="w-full py-6 bg-rideroot-primary hover:bg-rideroot-primary/90 text-white rounded-xl"
         >
           Done
         </Button>
