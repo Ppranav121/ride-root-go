@@ -98,8 +98,8 @@ const Rides: React.FC = () => {
                 className="flex items-center cursor-pointer hover:bg-rideroot-lightGrey/50 p-3 rounded-lg transition-all"
                 onClick={() => handleRideDetails(ride.id)}
               >
-                <div className="w-10 h-10 bg-rideroot-lightGrey rounded-full flex items-center justify-center mr-3">
-                  <Clock size={18} className="text-rideroot-darkGrey" />
+                <div className="w-10 h-10 bg-rideroot-primary/20 rounded-full flex items-center justify-center mr-3">
+                  <Clock size={18} className="text-rideroot-primary" />
                 </div>
 
                 <div className="flex-1">
