@@ -42,14 +42,14 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
                   animate={{ scale: 1 }}
                   className="w-4 h-4 rounded-full bg-gray-400 mr-2"
                 />
-                <span className="text-gray-700">Ready to Drive?</span>
+                <span className="text-gray-700">Start Driving</span>
               </>
             )}
           </h2>
           <p className="text-sm text-rideroot-darkGrey">
             {isOnline 
               ? "You're receiving ride requests" 
-              : "Toggle to start your shift"}
+              : "Toggle to begin your journey"}
           </p>
         </div>
         
@@ -85,7 +85,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car - Improved size and positioning */}
+          {/* Moving Car - Significantly larger size */}
           <motion.div
             initial={{ x: 0 }}
             animate={{ 
@@ -105,10 +105,10 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
               className={`flex items-center justify-center ${
                 isOnline ? 'bg-rideroot-primary shadow-lg' : 'bg-gray-500'
               } rounded-full`}
-              style={{ width: '22px', height: '22px' }} // Increased car container size
+              style={{ width: '28px', height: '28px' }} // Significantly increased car container size
             >
               <Car 
-                size={18} // Increased car icon size
+                size={22} // Significantly increased car icon size
                 className="text-white"
               />
             </div>
