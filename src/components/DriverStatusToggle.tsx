@@ -42,14 +42,14 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
                   animate={{ scale: 1 }}
                   className="w-4 h-4 rounded-full bg-gray-400 mr-2"
                 />
-                <span className="text-gray-700">Go Online to Drive</span>
+                <span className="text-gray-700">Ready to Drive?</span>
               </>
             )}
           </h2>
           <p className="text-sm text-rideroot-darkGrey">
             {isOnline 
               ? "You're receiving ride requests" 
-              : "Toggle to start receiving requests"}
+              : "Toggle to start your shift"}
           </p>
         </div>
         
@@ -85,10 +85,13 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             </div>
           </div>
           
-          {/* Moving Car - Fixed positioning */}
+          {/* Moving Car - Fixed positioning and orientation */}
           <motion.div
             initial={{ x: 0 }}
-            animate={{ x: isOnline ? 10 : 0 }}
+            animate={{ 
+              x: isOnline ? 10 : 0,
+              rotate: 0 // Keep car straight
+            }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="absolute"
             style={{
@@ -105,8 +108,8 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             >
               <Car 
                 size={15} 
-                className="text-white" 
-                style={{ transform: 'rotate(90deg)' }}
+                className="text-white"
+                // Remove the rotation that was making the car appear upside down
               />
             </div>
           </motion.div>
