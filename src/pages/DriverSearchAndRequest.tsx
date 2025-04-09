@@ -51,6 +51,9 @@ const DriverSearchAndRequest: React.FC = () => {
           />
         </div>
       )}
+      
+      {/* Only show BottomNav on searching stage */}
+      {stage === "searching" && <DriverBottomNav />}
     </div>
   );
 };

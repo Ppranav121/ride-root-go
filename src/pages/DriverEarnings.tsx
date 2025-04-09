@@ -1,365 +1,489 @@
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Clock, Calendar, ChevronDown, ChevronUp, DollarSign, LineChart, Car } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { 
+  BarChart, DollarSign, Calendar, ChevronDown, 
+  TrendingUp, Clock, Award, Filter, Download, 
+  ChevronRight, ChevronLeft, CircleDollarSign 
+} from "lucide-react";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+
 import RootHeader from "@/components/RootHeader";
 import DriverBottomNav from "@/components/DriverBottomNav";
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-// Enhanced weekly bar chart with animated bars based on actual earnings data
-const WeeklyBarChart = ({ values = [] }: { values: number[] }) => {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const max = Math.max(...values);
-  
-  return (
-    <div className="flex h-[160px] items-end space-x-2">
-      {days.map((day, i) => (
-        <div key={day} className="flex flex-col items-center flex-1">
-          <motion.div 
-            initial={{ height: 0 }}
-            animate={{ height: `${(values[i] / (max || 1)) * 100}%` }}
-            transition={{ duration: 0.8, delay: i * 0.1 }}
-            className="w-full bg-gradient-to-t from-rideroot-primary to-blue-400 rounded-t-md hover:from-blue-500 hover:to-indigo-400 transition-colors"
-          />
-          <div className="text-xs mt-2 text-rideroot-darkGrey">{day}</div>
-          <div className="text-xs font-medium">${values[i]}</div>
-        </div>
-      ))}
-    </div>
-  );
-};
+// Sample data
+const earningsData = [
+  { date: "Mon", earnings: 85, rides: 7 },
+  { date: "Tue", earnings: 110, rides: 9 },
+  { date: "Wed", earnings: 95, rides: 8 },
+  { date: "Thu", earnings: 135, rides: 11 },
+  { date: "Fri", earnings: 170, rides: 13 },
+  { date: "Sat", earnings: 190, rides: 15 },
+  { date: "Sun", earnings: 150, rides: 12 },
+];
 
-interface EarningsProps {
-  amount: number;
-  rides: number;
-  onlineHours: number;
-  date: string;
-  isPrime: boolean;
-  weeklyTrend?: number[];
-  rideDetails: {
-    id: string;
-    time: string;
-    pickup: string;
-    dropoff: string;
-    fare: number;
-    platformFee: number;
-    peakBonus?: number;
-    isCompleted: boolean;
-  }[];
-}
+const timeframeOptions = ["This Week", "Last Week", "This Month", "Last Month", "Custom"];
+
+const rideHistory = [
+  {
+    id: "ride-1",
+    date: "Today, 4:30 PM",
+    pickup: "Downtown SF",
+    dropoff: "Mission District",
+    earnings: 18.75,
+    isPeakBonus: true,
+    isTipped: true,
+    tipAmount: 5.00,
+  },
+  {
+    id: "ride-2",
+    date: "Today, 2:15 PM",
+    pickup: "SFO Airport",
+    dropoff: "Financial District",
+    earnings: 42.50,
+    isPeakBonus: false,
+    isTipped: true,
+    tipAmount: 8.50,
+  },
+  {
+    id: "ride-3",
+    date: "Yesterday, 7:45 PM",
+    pickup: "Golden Gate Park",
+    dropoff: "Fisherman's Wharf",
+    earnings: 24.35,
+    isPeakBonus: true,
+    isTipped: false,
+    tipAmount: 0,
+  },
+  {
+    id: "ride-4",
+    date: "Yesterday, 5:20 PM",
+    pickup: "Sunset District",
+    dropoff: "UCSF Medical Center",
+    earnings: 15.90,
+    isPeakBonus: false,
+    isTipped: true,
+    tipAmount: 3.00,
+  },
+  {
+    id: "ride-5",
+    date: "Feb 12, 3:10 PM",
+    pickup: "Oracle Park",
+    dropoff: "Russian Hill",
+    earnings: 19.25,
+    isPeakBonus: true,
+    isTipped: true,
+    tipAmount: 4.50,
+  },
+];
 
 const DriverEarnings: React.FC = () => {
-  const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState("weekly");
-  const [expandedRide, setExpandedRide] = useState<string | null>(null);
-
-  // Simulated earnings data with weekly trend
-  const weeklyEarnings: EarningsProps = {
-    amount: 680.50,
-    rides: 32,
-    onlineHours: 24,
-    date: "Apr 1 - Apr 7, 2025",
-    isPrime: true,
-    weeklyTrend: [45, 65, 35, 50, 75, 90, 60], // Daily earnings amounts
-    rideDetails: [
-      {
-        id: "ride-1",
-        time: "Apr 7, 2:30 PM",
-        pickup: "Financial District",
-        dropoff: "Marina District",
-        fare: 16.50,
-        platformFee: 1.00,
-        peakBonus: 0.50,
-        isCompleted: true
-      },
-      {
-        id: "ride-2",
-        time: "Apr 7, 12:05 PM",
-        pickup: "Union Square",
-        dropoff: "Golden Gate Park",
-        fare: 21.50,
-        platformFee: 1.00,
-        isCompleted: true
-      },
-      {
-        id: "ride-3",
-        time: "Apr 6, 5:45 PM",
-        pickup: "Fisherman's Wharf",
-        dropoff: "Mission District",
-        fare: 18.75,
-        platformFee: 1.00,
-        peakBonus: 0.50,
-        isCompleted: true
-      },
-      {
-        id: "ride-4",
-        time: "Apr 6, 3:20 PM",
-        pickup: "Nob Hill",
-        dropoff: "SOMA",
-        fare: 12.25,
-        platformFee: 1.00,
-        isCompleted: true
-      },
-      {
-        id: "ride-5",
-        time: "Apr 5, 7:10 PM",
-        pickup: "Hayes Valley",
-        dropoff: "North Beach",
-        fare: 14.00,
-        platformFee: 1.00,
-        peakBonus: 0.50,
-        isCompleted: true
-      },
-    ]
+  const [selectedTimeframe, setSelectedTimeframe] = useState("This Week");
+  const [activeTab, setActiveTab] = useState("earnings");
+  
+  // Calculate summary stats
+  const totalEarnings = earningsData.reduce((sum, day) => sum + day.earnings, 0);
+  const totalRides = earningsData.reduce((sum, day) => sum + day.rides, 0);
+  const averagePerRide = totalEarnings / totalRides;
+  const bestDay = [...earningsData].sort((a, b) => b.earnings - a.earnings)[0];
+  
+  const handleTimeframeChange = (value: string) => {
+    setSelectedTimeframe(value);
   };
-
-  const dailyEarnings: EarningsProps = {
-    amount: 145.75,
-    rides: 7,
-    onlineHours: 6,
-    date: "Today, Apr 7, 2025",
-    isPrime: true,
-    weeklyTrend: [0, 0, 0, 0, 0, 0, 145.75], // Today's earnings only
-    rideDetails: [
-      {
-        id: "ride-1",
-        time: "2:30 PM",
-        pickup: "Financial District",
-        dropoff: "Marina District",
-        fare: 16.50,
-        platformFee: 1.00,
-        peakBonus: 0.50,
-        isCompleted: true
-      },
-      {
-        id: "ride-2",
-        time: "12:05 PM",
-        pickup: "Union Square",
-        dropoff: "Golden Gate Park",
-        fare: 21.50,
-        platformFee: 1.00,
-        isCompleted: true
-      },
-      {
-        id: "ride-3",
-        time: "10:45 AM",
-        pickup: "Embarcadero",
-        dropoff: "Sunset District",
-        fare: 19.75,
-        platformFee: 1.00,
-        peakBonus: 0.50,
-        isCompleted: true
-      }
-    ]
+  
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toFixed(2)}`;
   };
-
-  const handleExpandRide = (rideId: string) => {
-    if (expandedRide === rideId) {
-      setExpandedRide(null);
-    } else {
-      setExpandedRide(rideId);
-    }
-  };
-
-  const currentEarnings = selectedTab === "weekly" ? weeklyEarnings : dailyEarnings;
-
+  
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-50 to-rideroot-lightGrey">
-      <RootHeader title="Earnings" />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <RootHeader title="Earnings Dashboard" showBackButton />
       
-      <Tabs defaultValue="weekly" className="flex-1 flex flex-col">
-        <div className="px-4 pt-4">
-          <TabsList className="w-full grid grid-cols-2 mb-4">
-            <TabsTrigger 
-              value="daily" 
-              onClick={() => setSelectedTab("daily")}
-              className="data-[state=active]:bg-rideroot-primary data-[state=active]:text-white"
-            >
-              Daily
-            </TabsTrigger>
-            <TabsTrigger 
-              value="weekly" 
-              onClick={() => setSelectedTab("weekly")}
-              className="data-[state=active]:bg-rideroot-primary data-[state=active]:text-white"
-            >
-              Weekly
-            </TabsTrigger>
-          </TabsList>
-        </div>
-        
-        <TabsContent value="daily" className="flex-1 p-4 pb-24">
-          <EarningsContent 
-            earnings={dailyEarnings} 
-            expandedRide={expandedRide} 
-            onExpandRide={handleExpandRide} 
-            isWeekly={false}
-          />
-        </TabsContent>
-        
-        <TabsContent value="weekly" className="flex-1 p-4 pb-24">
-          <EarningsContent 
-            earnings={weeklyEarnings} 
-            expandedRide={expandedRide} 
-            onExpandRide={handleExpandRide} 
-            isWeekly={true}
-            showSubscription 
-          />
-        </TabsContent>
-      </Tabs>
-      
-      <div className="h-16"></div> {/* Spacer for bottom nav */}
-      <DriverBottomNav />
-    </div>
-  );
-};
-
-interface EarningsContentProps {
-  earnings: EarningsProps;
-  expandedRide: string | null;
-  onExpandRide: (id: string) => void;
-  isWeekly: boolean;
-  showSubscription?: boolean;
-}
-
-const EarningsContent: React.FC<EarningsContentProps> = ({ 
-  earnings, 
-  expandedRide, 
-  onExpandRide,
-  isWeekly,
-  showSubscription = false 
-}) => {
-  return (
-    <>
-      <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">{earnings.date}</h2>
-          <Button variant="outline" size="sm" className="text-xs">
-            <Calendar size={14} className="mr-1" />
-            Change
-          </Button>
-        </div>
-        
-        <div className="bg-gradient-to-r from-rideroot-primary/10 to-rideroot-secondary/10 p-4 rounded-lg mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-rideroot-darkGrey">Total Earnings</span>
-            <span className="text-xl font-bold text-rideroot-primary">
-              ${earnings.amount.toFixed(2)}
-            </span>
+      <div className="flex-1 overflow-auto p-4 pb-20 space-y-4">
+        {/* Timeframe Selector */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center">
+            <Calendar size={18} className="text-rideroot-darkGrey mr-2" />
+            <Select value={selectedTimeframe} onValueChange={handleTimeframeChange}>
+              <SelectTrigger className="w-[160px] h-9 text-sm bg-white">
+                <SelectValue placeholder="Select timeframe" />
+              </SelectTrigger>
+              <SelectContent>
+                {timeframeOptions.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
-          {showSubscription && earnings.isPrime && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-rideroot-darkGrey">After subscription fee</span>
-              <span className="font-medium">${(earnings.amount - 19.99).toFixed(2)}</span>
-            </div>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center mb-1">
-              <Car size={16} className="text-rideroot-primary mr-1" />
-              <span className="text-sm text-rideroot-darkGrey">Rides</span>
-            </div>
-            <p className="font-bold">{earnings.rides}</p>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <div className="flex items-center mb-1">
-              <Clock size={16} className="text-rideroot-primary mr-1" />
-              <span className="text-sm text-rideroot-darkGrey">Online Time</span>
-            </div>
-            <p className="font-bold">{earnings.onlineHours} hrs</p>
+          <div className="flex space-x-2">
+            <Button variant="outline" size="icon" className="h-9 w-9">
+              <ChevronLeft size={16} />
+            </Button>
+            <Button variant="outline" size="icon" className="h-9 w-9">
+              <ChevronRight size={16} />
+            </Button>
+            <Button variant="outline" size="icon" className="h-9 w-9">
+              <Download size={16} />
+            </Button>
           </div>
         </div>
         
-        {/* Enhanced weekly trend chart */}
-        <div className="mb-4">
-          <h3 className="text-sm font-medium mb-2">
-            {isWeekly ? "Weekly Trend" : "Daily Breakdown"}
-          </h3>
-          <WeeklyBarChart values={earnings.weeklyTrend || [0, 0, 0, 0, 0, 0, 0]} />
-        </div>
-      </div>
-      
-      <div className="bg-white rounded-xl shadow-md p-4">
-        <h3 className="text-md font-medium mb-3">Ride Details</h3>
-        
-        <div className="space-y-3">
-          {earnings.rideDetails.map((ride) => (
-            <motion.div
-              key={ride.id}
-              className={`border border-gray-100 rounded-lg overflow-hidden transition-all ${expandedRide === ride.id ? 'shadow-md' : ''}`}
-            >
-              <div 
-                className="p-3 bg-white flex justify-between items-center cursor-pointer"
-                onClick={() => onExpandRide(ride.id)}
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">{ride.time}</span>
-                  <span className="text-sm text-rideroot-darkGrey">
-                    {ride.pickup} → {ride.dropoff}
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <span className="font-bold text-rideroot-primary mr-2">${ride.fare.toFixed(2)}</span>
-                  {expandedRide === ride.id ? (
-                    <ChevronUp size={18} className="text-rideroot-darkGrey" />
-                  ) : (
-                    <ChevronDown size={18} className="text-rideroot-darkGrey" />
-                  )}
-                </div>
+        {/* Earnings Summary Card */}
+        <Card className="border-none shadow-md bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white">
+          <CardContent className="pt-6 pb-4">
+            <div className="flex flex-col">
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-white/80 text-sm">Total Earnings</p>
+                <motion.div 
+                  className="px-2 py-1 bg-white/20 rounded-full text-xs font-medium"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {selectedTimeframe}
+                </motion.div>
+              </div>
+              <h2 className="text-3xl font-bold mb-1">{formatCurrency(totalEarnings)}</h2>
+              <div className="flex items-center text-green-200 text-sm mb-4">
+                <TrendingUp size={14} className="mr-1" />
+                <span>15% more than last week</span>
               </div>
               
-              <AnimatePresence>
-                {expandedRide === ride.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="p-3 bg-gray-50 border-t border-gray-100"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-rideroot-darkGrey">Base fare</span>
-                        <span className="text-sm font-medium">
-                          ${(ride.fare - (ride.peakBonus || 0)).toFixed(2)}
-                        </span>
-                      </div>
-                      
-                      {ride.peakBonus && (
-                        <div className="flex justify-between">
-                          <span className="text-sm text-green-600">Peak bonus</span>
-                          <span className="text-sm font-medium text-green-600">
-                            +${ride.peakBonus.toFixed(2)}
-                          </span>
+              <Separator className="bg-white/20 mb-4" />
+              
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p className="text-white/80 text-xs mb-1">Rides</p>
+                  <p className="font-bold">{totalRides}</p>
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs mb-1">Avg/Ride</p>
+                  <p className="font-bold">{formatCurrency(averagePerRide)}</p>
+                </div>
+                <div>
+                  <p className="text-white/80 text-xs mb-1">Best Day</p>
+                  <p className="font-bold">{bestDay.date}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Tabs Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid grid-cols-3 w-full">
+            <TabsTrigger value="earnings">Earnings</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="stats">Stats</TabsTrigger>
+          </TabsList>
+          
+          {/* Earnings Tab */}
+          <TabsContent value="earnings" className="space-y-4 mt-2">
+            {/* Chart Card */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center">
+                  <BarChart size={16} className="text-rideroot-primary mr-2" />
+                  Earnings Overview
+                </CardTitle>
+                <CardDescription>Daily breakdown</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px] mt-1">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart data={earningsData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="date" axisLine={false} tickLine={false} />
+                      <YAxis 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tickFormatter={(value) => `$${value}`}
+                      />
+                      <Tooltip 
+                        formatter={(value) => [`$${value}`, 'Earnings']}
+                        labelStyle={{ color: '#333' }}
+                        contentStyle={{ 
+                          backgroundColor: 'white', 
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '8px',
+                          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+                        }}
+                      />
+                      <Bar 
+                        dataKey="earnings" 
+                        fill="#4F46E5" 
+                        radius={[4, 4, 0, 0]} 
+                      />
+                    </RechartsBarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Earnings Breakdown */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center">
+                  <CircleDollarSign size={16} className="text-rideroot-primary mr-2" />
+                  Earnings Breakdown
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Base Fares</span>
+                    <span className="font-medium">{formatCurrency(totalEarnings * 0.75)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tips</span>
+                    <span className="font-medium">{formatCurrency(totalEarnings * 0.15)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Peak Hour Bonuses</span>
+                    <span className="font-medium">{formatCurrency(totalEarnings * 0.1)}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="font-medium">Service Fee</span>
+                    <span className="font-medium text-red-500">-{formatCurrency(totalEarnings * 0.25)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Your Earnings</span>
+                    <span className="font-bold text-green-600">{formatCurrency(totalEarnings * 0.75)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Daily Goals */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center">
+                  <Award size={16} className="text-rideroot-primary mr-2" />
+                  Daily Goals
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm">Earnings Target</span>
+                      <span className="text-sm font-medium">{formatCurrency(150)} / {formatCurrency(200)}</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                      <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "75%" }}></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm">Rides Completed</span>
+                      <span className="text-sm font-medium">{totalRides} / 20</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                      <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${(totalRides / 20) * 100}%` }}></div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          {/* History Tab */}
+          <TabsContent value="history" className="space-y-4 mt-2">
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-500">
+                Showing {rideHistory.length} recent rides
+              </p>
+              <Button variant="outline" size="sm" className="h-8">
+                <Filter size={14} className="mr-1" /> 
+                Filter
+              </Button>
+            </div>
+            
+            <div className="space-y-3">
+              {rideHistory.map((ride) => (
+                <Card key={ride.id} className="overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-medium">{ride.date}</h3>
+                          <p className="text-xs text-gray-500">
+                            {ride.pickup} → {ride.dropoff}
+                          </p>
                         </div>
-                      )}
-                      
-                      <div className="flex justify-between">
-                        <span className="text-sm text-red-500">Platform fee</span>
-                        <span className="text-sm font-medium text-red-500">
-                          -${ride.platformFee.toFixed(2)}
-                        </span>
+                        <div className="text-right">
+                          <p className="font-bold text-rideroot-primary">
+                            {formatCurrency(ride.earnings)}
+                          </p>
+                          <div className="flex space-x-1 mt-1">
+                            {ride.isPeakBonus && (
+                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">
+                                Peak
+                              </span>
+                            )}
+                            {ride.isTipped && (
+                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs">
+                                +{formatCurrency(ride.tipAmount)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                       
-                      <div className="pt-2 border-t border-gray-200 flex justify-between">
-                        <span className="font-medium">Your earnings</span>
-                        <span className="font-bold text-rideroot-primary">
-                          ${(ride.fare - ride.platformFee).toFixed(2)}
-                        </span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-500">ID: #{ride.id}</span>
+                        <Button variant="ghost" size="sm" className="h-7 text-xs">
+                          View Details
+                        </Button>
                       </div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <Button variant="outline" className="w-full">
+              View All History
+            </Button>
+          </TabsContent>
+          
+          {/* Stats Tab */}
+          <TabsContent value="stats" className="space-y-4 mt-2">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex flex-col items-center">
+                    <DollarSign size={24} className="text-rideroot-primary mb-1" />
+                    <h3 className="text-sm text-gray-500 mb-1">Avg. Earnings/Hour</h3>
+                    <p className="text-xl font-bold">{formatCurrency(32.75)}</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex flex-col items-center">
+                    <Clock size={24} className="text-rideroot-primary mb-1" />
+                    <h3 className="text-sm text-gray-500 mb-1">Online Hours</h3>
+                    <p className="text-xl font-bold">24.5</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Performance Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm">Acceptance Rate</span>
+                      <span className="text-sm font-medium">92%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                      <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "92%" }}></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm">Completion Rate</span>
+                      <span className="text-sm font-medium">98%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                      <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "98%" }}></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm">Rating</span>
+                      <span className="text-sm font-medium">4.9/5.0</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                      <div className="bg-amber-400 h-2.5 rounded-full" style={{ width: "98%" }}></div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Monthly Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-sm text-gray-500">February 2025</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        February <ChevronDown size={14} className="ml-1" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>January</DropdownMenuItem>
+                      <DropdownMenuItem>February</DropdownMenuItem>
+                      <DropdownMenuItem>March</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total Rides</span>
+                    <span className="font-medium">142</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total Hours</span>
+                    <span className="font-medium">87.5</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Total Distance</span>
+                    <span className="font-medium">1,245 miles</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total Earnings</span>
+                    <span className="font-bold text-rideroot-primary">{formatCurrency(2875.50)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
-    </>
+      
+      <DriverBottomNav />
+    </div>
   );
 };
 

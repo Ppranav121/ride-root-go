@@ -31,6 +31,8 @@ import DriverHelp from "./pages/DriverHelp";
 import DriverSubscription from "./pages/DriverSubscription";
 import DriverSearchAndRequest from "./pages/DriverSearchAndRequest";
 import DriverRide from "./pages/DriverRide";
+import DriverProfile from "./pages/DriverProfile";
+import DriverRatings from "./pages/DriverRatings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,7 +71,8 @@ const App = () => (
             <Route path="/driver-home" element={<DriverHome />} />
             <Route path="/driver-earnings" element={<DriverEarnings />} />
             <Route path="/driver-help" element={<DriverHelp />} />
-            <Route path="/driver-profile" element={<Profile />} />
+            <Route path="/driver-profile" element={<DriverProfile />} />
+            <Route path="/driver-ratings" element={<DriverRatings />} />
             <Route path="/driver-messages" element={<Profile />} />
             <Route path="/driver-subscription" element={<DriverSubscription />} />
             <Route path="/driver-search" element={<DriverSearchAndRequest />} />
