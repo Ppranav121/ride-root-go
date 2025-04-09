@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, AlertCircle, Car, Road } from "lucide-react";
+import { Check, AlertCircle, Car } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 interface DriverStatusToggleProps {
