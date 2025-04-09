@@ -47,12 +47,11 @@ const LocationSearchDialog: React.FC<LocationSearchDialogProps> = ({
         
         <div className="flex flex-col gap-4">
           <Button 
-            variant="outline" 
-            className="flex items-center justify-start gap-2"
+            className="flex items-center justify-start gap-2 bg-rideroot-primary hover:bg-rideroot-primary/90 text-white"
             onClick={onUseCurrentLocation}
             disabled={isLoading}
           >
-            <Compass className="h-4 w-4 text-rideroot-primary" />
+            <Compass className="h-4 w-4" />
             Use current location
             {isLoading && searchType === "pickup" && <span className="ml-2 loading">...</span>}
           </Button>
@@ -73,7 +72,7 @@ const LocationSearchDialog: React.FC<LocationSearchDialogProps> = ({
                       <CommandItem
                         key={location.id}
                         onSelect={() => onSelectLocation(location.address)}
-                        className="flex items-start p-2"
+                        className="flex items-start p-2 hover:bg-rideroot-primary/5"
                       >
                         <MapPin size={16} className="text-rideroot-primary mr-2 mt-0.5 flex-shrink-0" />
                         <div>
@@ -90,9 +89,9 @@ const LocationSearchDialog: React.FC<LocationSearchDialogProps> = ({
                     <CommandItem
                       key={location.id}
                       onSelect={() => onSelectLocation(location.address)}
-                      className="flex items-start p-2"
+                      className="flex items-start p-2 hover:bg-rideroot-primary/5"
                     >
-                      <Clock size={16} className="text-rideroot-accent mr-2 mt-0.5 flex-shrink-0" />
+                      <Clock size={16} className="text-rideroot-primary mr-2 mt-0.5 flex-shrink-0" />
                       <div>
                         <p className="font-medium">{location.name}</p>
                         <p className="text-sm text-rideroot-darkGrey">{location.address}</p>

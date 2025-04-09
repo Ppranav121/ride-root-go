@@ -40,6 +40,15 @@ const Profile: React.FC = () => {
     console.log("Navigate to subscription page");
   };
 
+  // Handler for profile settings
+  const handleProfileAction = (action: string) => {
+    toast({
+      title: `Accessing ${action}`,
+      description: `This would open the ${action} section in a real app`,
+    });
+    console.log(`User clicked: ${action}`);
+  };
+
   if (!user) {
     React.useEffect(() => {
       navigate("/signin");
@@ -121,9 +130,9 @@ const Profile: React.FC = () => {
         >
           <h3 className="font-semibold text-rideroot-text mb-4 px-2">Account Settings</h3>
           
-          <ProfileLink icon={CreditCard} label="Payment Methods" />
-          <ProfileLink icon={MapPin} label="Saved Addresses" />
-          <ProfileLink icon={Bell} label="Notifications" isLast={true} />
+          <ProfileLink icon={CreditCard} label="Payment Methods" onClick={() => handleProfileAction("Payment Methods")} />
+          <ProfileLink icon={MapPin} label="Saved Addresses" onClick={() => handleProfileAction("Saved Addresses")} />
+          <ProfileLink icon={Bell} label="Notifications" onClick={() => handleProfileAction("Notifications")} isLast={true} />
         </motion.div>
 
         {/* Additional Settings */}
@@ -135,10 +144,10 @@ const Profile: React.FC = () => {
         >
           <h3 className="font-semibold text-rideroot-text mb-4 px-2">More</h3>
           
-          <ProfileLink icon={History} label="Ride History" />
-          <ProfileLink icon={Settings} label="Preferences" />
-          <ProfileLink icon={Shield} label="Privacy & Security" />
-          <ProfileLink icon={HelpCircle} label="Help & Support" isLast={true} />
+          <ProfileLink icon={History} label="Ride History" onClick={() => navigate("/rides")} />
+          <ProfileLink icon={Settings} label="Preferences" onClick={() => handleProfileAction("Preferences")} />
+          <ProfileLink icon={Shield} label="Privacy & Security" onClick={() => handleProfileAction("Privacy & Security")} />
+          <ProfileLink icon={HelpCircle} label="Help & Support" onClick={() => handleProfileAction("Help & Support")} isLast={true} />
         </motion.div>
 
         {/* Logout Button */}
@@ -164,13 +173,17 @@ interface ProfileLinkProps {
   icon: React.ElementType;
   label: string;
   isLast?: boolean;
+  onClick: () => void;
 }
 
-const ProfileLink: React.FC<ProfileLinkProps> = ({ icon: Icon, label, isLast = false }) => {
+const ProfileLink: React.FC<ProfileLinkProps> = ({ icon: Icon, label, isLast = false, onClick }) => {
   return (
     <>
-      <button className="flex items-center w-full py-3 px-2 hover:bg-rideroot-lightGrey/50 rounded-lg transition-colors">
-        <Icon size={20} className="text-rideroot-darkGrey mr-3" />
+      <button 
+        className="flex items-center w-full py-3 px-2 hover:bg-rideroot-primary/5 rounded-lg transition-colors"
+        onClick={onClick}
+      >
+        <Icon size={20} className="text-rideroot-primary mr-3" />
         <span className="text-rideroot-text">{label}</span>
       </button>
       {!isLast && <Separator className="my-1 bg-rideroot-mediumGrey/30" />}

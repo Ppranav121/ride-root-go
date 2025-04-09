@@ -68,14 +68,14 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
 
       <div className="flex space-x-3 mb-4">
         <button 
-          className="flex-1 py-2 border border-rideroot-mediumGrey rounded-lg flex items-center justify-center text-rideroot-text"
+          className="flex-1 py-2 bg-rideroot-primary text-white rounded-lg flex items-center justify-center hover:bg-rideroot-primary/90 transition-colors"
           onClick={handleCallDriver}
         >
           <Phone size={18} className="mr-2" />
           Call
         </button>
         <button 
-          className="flex-1 py-2 border border-rideroot-mediumGrey rounded-lg flex items-center justify-center text-rideroot-text"
+          className="flex-1 py-2 bg-rideroot-accent text-white rounded-lg flex items-center justify-center hover:bg-rideroot-accent/90 transition-colors"
           onClick={() => setIsMessageOpen(true)}
         >
           <MessageSquare size={18} className="mr-2" />

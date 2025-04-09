@@ -32,15 +32,15 @@ const RecentLocations: React.FC<RecentLocationsProps> = ({
       className="overflow-hidden mb-5"
     >
       <h3 className="text-sm font-medium text-rideroot-darkGrey mb-2 flex items-center">
-        <Clock size={16} className="mr-1" />
+        <Clock size={16} className="text-rideroot-primary mr-1" />
         RECENT LOCATIONS
       </h3>
-      <div className="bg-rideroot-lightGrey rounded-xl p-2">
+      <div className="bg-rideroot-primary/5 rounded-xl p-2">
         {recentLocations.map((location) => (
           <button
             key={location.id}
             onClick={() => onSelectLocation(location.address)}
-            className="w-full flex items-start p-2 hover:bg-white rounded-lg transition-colors"
+            className="w-full flex items-start p-2 hover:bg-rideroot-primary/10 rounded-lg transition-colors"
           >
             <MapPin size={20} className="text-rideroot-primary mt-1 mr-3 flex-shrink-0" />
             <div className="text-left">
