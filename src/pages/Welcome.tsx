@@ -65,6 +65,12 @@ const WelcomePage: React.FC = () => {
     setCurrentSlide(index);
   };
 
+  // Handle carousel selection properly
+  const handleCarouselSelect = React.useCallback((api: any) => {
+    const selectedIndex = api.selectedScrollSnap();
+    setCurrentSlide(selectedIndex);
+  }, []);
+
   return (
     <AnimatePresence>
       {isLoaded && (
@@ -93,10 +99,10 @@ const WelcomePage: React.FC = () => {
           {/* Main carousel */}
           <Carousel 
             className="w-full h-full" 
-            onSelect={(index) => {
-              setCurrentSlide(index);
+            opts={{ startIndex: currentSlide }}
+            setApi={(api) => {
+              api?.on('select', () => handleCarouselSelect(api));
             }}
-            defaultIndex={currentSlide}
           >
             <CarouselContent className="h-screen">
               {slides.map((slide, index) => (
