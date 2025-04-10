@@ -13,13 +13,11 @@ import DriverStatusToggle from "@/components/DriverStatusToggle";
 import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
 import MapBackground from "@/components/ride/MapBackground";
-import DriverSearching from "@/components/ride/DriverSearching";
 import { toast } from "sonner";
+
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    toast: shadcnToast
-  } = useToast();
+  const { toast: shadcnToast } = useToast();
   const [isOnline, setIsOnline] = useState(false);
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
   const [todayEarnings, setTodayEarnings] = useState(50);
@@ -27,13 +25,7 @@ const DriverHome: React.FC = () => {
   const [isPeakTime, setIsPeakTime] = useState(true);
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
-  const [isSearching, setIsSearching] = useState(false);
-  useEffect(() => {
-    if (isOnline && !isSearching) {
-      setIsSearching(true);
-    }
-  }, [isOnline]);
-
+  
   // Clear popup after 2 seconds
   useEffect(() => {
     if (showEarningsBoost) {
@@ -43,6 +35,7 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
+  
   const toggleOnlineStatus = () => {
     if (!isOnline) {
       setIsOnline(true);
@@ -50,9 +43,8 @@ const DriverHome: React.FC = () => {
         title: "You're now online",
         description: "Searching for ride requests..."
       });
+      // When going online, navigation to driver-ride is handled by DriverStatusToggle
     } else {
-      // This will be handled by the cancel search function
-      setIsSearching(false);
       setIsOnline(false);
       shadcnToast({
         title: "You've gone offline",
@@ -61,6 +53,7 @@ const DriverHome: React.FC = () => {
       });
     }
   };
+  
   const toggleDriverTier = (newValue: boolean) => {
     if (!newValue) {
       setIsPrimeDriver(false);
@@ -94,12 +87,9 @@ const DriverHome: React.FC = () => {
       }, 1000);
     }
   };
-  const cancelSearch = () => {
-    setIsSearching(false);
-    setIsOnline(false);
-    navigate("/driver-home");
-  };
-  return <div className="flex flex-col min-h-screen relative">
+  
+  return (
+    <div className="flex flex-col min-h-screen relative">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100" />
@@ -288,21 +278,8 @@ const DriverHome: React.FC = () => {
       </div>
       
       <DriverBottomNav />
-      
-      {/* Searching overlay */}
-      <AnimatePresence>
-        {isSearching && <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} exit={{
-        opacity: 0
-      }} transition={{
-        duration: 0.3
-      }} className="absolute inset-0 z-50">
-            <DriverSearching onCancel={cancelSearch} />
-          </motion.div>}
-      </AnimatePresence>
-    </div>;
+    </div>
+  );
 };
+
 export default DriverHome;

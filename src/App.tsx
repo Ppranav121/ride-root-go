@@ -30,7 +30,6 @@ import DriverHome from "./pages/DriverHome";
 import DriverEarnings from "./pages/DriverEarnings";
 import DriverHelp from "./pages/DriverHelp";
 import DriverSubscription from "./pages/DriverSubscription";
-import DriverSearchAndRequest from "./pages/DriverSearchAndRequest";
 import DriverRide from "./pages/DriverRide";
 import DriverProfile from "./pages/DriverProfile";
 import DriverRatings from "./pages/DriverRatings";
@@ -77,7 +76,7 @@ const App = () => (
             <Route path="/driver-ratings" element={<DriverRatings />} />
             <Route path="/driver-messages" element={<Profile />} />
             <Route path="/driver-subscription" element={<DriverSubscription />} />
-            <Route path="/driver-search" element={<DriverSearchAndRequest />} />
+            {/* Remove the driver-search route */}
             <Route path="/driver-ride" element={<DriverRide />} />
             
             {/* Fallback route */}
