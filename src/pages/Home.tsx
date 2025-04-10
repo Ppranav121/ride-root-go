@@ -110,7 +110,10 @@ const Home: React.FC = () => {
           }}
           orientation="horizontal"
           onSelect={(api) => {
-            if (api) handleCarouselChange(api.selectedScrollSnap());
+            if (api) {
+              const selectedSnapIndex = api.selectedScrollSnap();
+              handleCarouselChange(selectedSnapIndex);
+            }
           }}
         >
           <CarouselContent className="h-full">
