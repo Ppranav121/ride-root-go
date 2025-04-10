@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Search } from "lucide-react";
@@ -6,11 +7,13 @@ import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
 import MapBackground from "@/components/ride/MapBackground";
+
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const {
     user
   } = useApp();
+  
   const [recentLocations] = useState([{
     id: "1",
     name: "Home",
@@ -24,6 +27,7 @@ const Home: React.FC = () => {
     name: "Gym",
     address: "789 Fitness Blvd"
   }]);
+  
   const handleWhereToClick = () => {
     navigate("/book-ride");
   };
@@ -41,6 +45,7 @@ const Home: React.FC = () => {
       }
     }
   };
+  
   const itemVariants = {
     hidden: {
       y: 20,
@@ -54,8 +59,13 @@ const Home: React.FC = () => {
       }
     }
   };
+  
   return <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-rideroot-lightGrey">
-      <RootHeader title="RideRoot" showBackButton={false} />
+      {/* Enhanced header with gradient text */}
+      <RootHeader 
+        title={<span className="text-gradient font-bold tracking-tight text-xl">RideRoot</span>}
+        showBackButton={false} 
+      />
 
       {/* Map section with gradient overlay */}
       <div className="relative h-60 overflow-hidden">
@@ -88,7 +98,7 @@ const Home: React.FC = () => {
         delay: 0.3,
         duration: 0.5
       }} className="mb-6">
-          <h2 className="text-xl font-heading font-semibold text-rideroot-text mb-2">
+          <h2 className="text-xl font-heading font-semibold mb-2 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary bg-clip-text text-transparent">
             {user ? `Hello, ${user.name?.split(" ")[0]}` : "Hello there"}
           </h2>
           <p className="text-rideroot-darkGrey text-sm">Where would you like to go today?</p>
@@ -164,4 +174,5 @@ const Home: React.FC = () => {
       <BottomNav />
     </div>;
 };
+
 export default Home;
