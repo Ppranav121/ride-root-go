@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Phone, Lock, User, ChevronRight } from "lucide-react";
+import { Mail, Phone, Lock, User, ChevronRight, Car } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +41,9 @@ const SignUp: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="mb-10"
         >
-          <div className="w-16 h-16 bg-rideroot-primary rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
-            <svg viewBox="0 0 24 24" width="32" height="32" className="text-white">
-              <path 
-                fill="currentColor" 
-                d="M12,4C5.383,4,0,9.383,0,16h2c0-5.514,4.486-10,10-10s10,4.486,10,10h2C24,9.383,18.617,4,12,4z M12,8c-3.309,0-6,2.691-6,6h2c0-2.206,1.794-4,4-4s4,1.794,4,4h2C18,10.691,15.309,8,12,8z M12,12c-1.103,0-2,0.897-2,2h4C14,12.897,13.103,12,12,12z"
-              />
-            </svg>
+          {/* Updated logo to match RideRoot branding */}
+          <div className="w-20 h-20 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
+            <Car size={36} className="text-white" />
           </div>
           
           <h1 className="text-3xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">Create Account</h1>
