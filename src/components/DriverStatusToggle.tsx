@@ -32,13 +32,13 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
         {isOnline ? (
           <div className="absolute inset-0 bg-gradient-to-r from-rideroot-primary to-rideroot-accent" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-400" />
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-300 to-blue-300" />
         )}
       </div>
       
       <div className="relative z-10 flex justify-between items-center">
         <div className="flex flex-col">
-          <h2 className="text-xl font-semibold mb-1 flex items-center">
+          <h2 className="text-xl font-heading font-semibold mb-1 flex items-center">
             {isOnline ? (
               <>
                 <motion.div 
@@ -53,27 +53,27 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-4 h-4 rounded-full bg-gray-400 mr-2"
+                  className="w-4 h-4 rounded-full bg-rideroot-primary mr-2"
                 />
-                <span className="text-gray-700">Start Driving</span>
+                <span className="text-rideroot-primary font-heading font-bold">Start Driving</span>
               </>
             )}
           </h2>
-          <p className="text-sm text-rideroot-darkGrey">
+          <p className="text-sm text-rideroot-darkGrey font-sans">
             {isOnline 
               ? "You're receiving ride requests" 
               : "Toggle to begin your journey"}
           </p>
         </div>
         
-        {/* Simple Professional Toggle */}
+        {/* Enhanced Professional Toggle */}
         <div className="relative flex items-center">
           <Switch 
             checked={isOnline} 
             onCheckedChange={handleStatusChange}
-            className={`${isOnline ? 'bg-green-500' : 'bg-gray-300'} relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
+            className={`${isOnline ? 'bg-green-500' : 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary'} relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
           />
-          <span className="ml-3 text-sm font-medium text-gray-700">
+          <span className={`ml-3 text-sm font-medium ${isOnline ? 'text-green-600' : 'text-rideroot-primary'}`}>
             {isOnline ? 'Online' : 'Offline'}
           </span>
         </div>
