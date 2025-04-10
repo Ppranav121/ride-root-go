@@ -83,13 +83,11 @@ const DriverSignUp: React.FC = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col"
     >
-      {/* Add Back Button */}
       <BackButton 
         onClick={() => navigate('/signup')} 
-        className="top-6 left-6 z-50"
+        className="top-6 left-6 z-50 bg-black/60 backdrop-blur-md"
       />
       
-      {/* Logo and header */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -105,7 +103,6 @@ const DriverSignUp: React.FC = () => {
           <p className="text-gray-400 text-center">Join RideRoot as a driver</p>
         </motion.div>
 
-        {/* Progress indicator */}
         <div className="w-full max-w-md mb-8">
           <div className="flex items-center justify-between">
             {[1, 2, 3].map((step) => (
@@ -137,7 +134,6 @@ const DriverSignUp: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 1: Personal Info */}
         {currentStep === 1 && (
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -202,7 +198,6 @@ const DriverSignUp: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Step 2: Vehicle Details */}
         {currentStep === 2 && (
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
@@ -343,7 +338,6 @@ const DriverSignUp: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Step 3: Driver tier selection */}
         {currentStep === 3 && (
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
@@ -354,7 +348,6 @@ const DriverSignUp: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Choose Your Plan</h2>
             
             <div className="space-y-4">
-              {/* Driver tier selector */}
               <div className="flex flex-col mb-6 bg-black/40 border border-gray-700 rounded-lg p-4 backdrop-blur-sm">
                 <h3 className="text-sm font-medium text-gray-300 mb-4">SELECT DRIVER TIER:</h3>
                 <div className="grid grid-cols-1 gap-4">
@@ -397,6 +390,17 @@ const DriverSignUp: React.FC = () => {
                     <p className="mt-3 text-sm text-gray-400">
                       Great for part-time drivers. No subscription fee, just pay per ride you complete.
                     </p>
+                    
+                    <ul className="mt-3 text-sm text-gray-300 space-y-2">
+                      <li className="flex items-start">
+                        <ChevronRight size={16} className="text-blue-400 mr-1 flex-shrink-0 mt-0.5" />
+                        <span>Flexible schedule - drive when you want</span>
+                      </li>
+                      <li className="flex items-start">
+                        <ChevronRight size={16} className="text-blue-400 mr-1 flex-shrink-0 mt-0.5" />
+                        <span>No weekly commitment required</span>
+                      </li>
+                    </ul>
                   </button>
                   
                   <button
@@ -442,7 +446,7 @@ const DriverSignUp: React.FC = () => {
                       </li>
                       <li className="flex items-start">
                         <ChevronRight size={16} className="text-rideroot-primary mr-1 flex-shrink-0 mt-0.5" />
-                        <span>Peak-time bonuses (+$0.50/ride)</span>
+                        <span>Peak-time bonuses</span>
                       </li>
                       <li className="flex items-start">
                         <ChevronRight size={16} className="text-rideroot-primary mr-1 flex-shrink-0 mt-0.5" />
@@ -472,7 +476,6 @@ const DriverSignUp: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Social login buttons - only show on first step */}
         {currentStep === 1 && (
           <>
             <div className="w-full max-w-md flex items-center my-6">
@@ -504,7 +507,6 @@ const DriverSignUp: React.FC = () => {
           </>
         )}
 
-        {/* Sign in link */}
         <Button
           variant="outline"
           onClick={goToSignIn}
@@ -513,7 +515,6 @@ const DriverSignUp: React.FC = () => {
           Already a driver? Sign in
         </Button>
 
-        {/* Footer */}
         <div className="mt-10 flex items-center justify-center w-full max-w-md text-xs text-gray-500">
           <span>Privacy Policy</span>
           <span className="mx-2">•</span>
