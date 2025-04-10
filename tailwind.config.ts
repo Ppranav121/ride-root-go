@@ -67,13 +67,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Updated RideRoot custom colors - modern purple-blue palette
+				// Enhanced RideRoot custom colors with more vibrant palette
 				rideroot: {
-					primary: '#6366F1', // Indigo
-					accent: '#3B82F6', // Blue
-					secondary: '#8B5CF6', // Purple
-					background: '#F8FAFC', // Light gray background
-					text: '#1E293B', // Slate dark
+					primary: '#5A63F4', // More vibrant indigo
+					accent: '#3272F8', // More vibrant blue
+					secondary: '#8443FF', // More vibrant purple
+					background: '#F9FAFB', // Slightly warmer light background
+					text: '#1A202C', // Deeper text color for better contrast
 					lightGrey: '#F1F5F9', // Slate 100
 					mediumGrey: '#E2E8F0', // Slate 200
 					darkGrey: '#64748B', // Slate 500
@@ -85,8 +85,8 @@ export default {
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				md: 'calc(var(--radius) - 4px)',
+				sm: 'calc(var(--radius) - 6px)'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -143,10 +143,10 @@ export default {
 				'bounce-soft': 'bounce-soft 3s ease-in-out infinite'
 			},
 			boxShadow: {
-				'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-				'card-soft': '0 2px 10px rgba(0, 0, 0, 0.05)',
-				'button': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-				'button-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+				'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+				'card-soft': '0 2px 10px rgba(0, 0, 0, 0.04)',
+				'button': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.03)',
+				'button-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.02)'
 			}
 		}
 	},

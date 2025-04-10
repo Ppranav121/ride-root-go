@@ -34,7 +34,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 244 75% 67%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -84,6 +84,7 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   p, span, button, input, textarea, select {
@@ -113,15 +114,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-rideroot-primary text-white font-medium py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
+    @apply bg-rideroot-primary text-white font-semibold py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
   }
   
   .btn-secondary {
-    @apply bg-rideroot-accent text-white font-medium py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
+    @apply bg-rideroot-accent text-white font-semibold py-3 px-6 rounded-xl shadow-button hover:shadow-button-hover transition-all duration-300 hover:brightness-105 hover:scale-[1.02];
   }
   
   .btn-outline {
-    @apply border-2 border-rideroot-primary text-rideroot-primary font-medium py-3 px-6 rounded-xl hover:bg-rideroot-primary/10 transition-all duration-300;
+    @apply border-2 border-rideroot-primary text-rideroot-primary font-semibold py-3 px-6 rounded-xl hover:bg-rideroot-primary/10 transition-all duration-300;
   }
   
   .card-shadow {
@@ -141,11 +142,19 @@
   }
   
   .section-header {
-    @apply text-xl font-semibold text-rideroot-text mb-4;
+    @apply text-xl font-semibold text-rideroot-text mb-4 font-heading;
   }
   
   .pill-badge {
     @apply px-3 py-1 rounded-full text-xs font-medium bg-rideroot-primary/10 text-rideroot-primary;
+  }
+
+  .brand-gradient {
+    @apply bg-gradient-to-r from-rideroot-primary to-rideroot-secondary;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary;
   }
 }
 
@@ -173,6 +182,15 @@ body {
 
 .scroll-item {
   scroll-snap-align: start;
+}
+
+.brand-circle {
+  @apply w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-md;
+}
+
+.fade-mask {
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
 }
 
 @media (prefers-reduced-motion: no-preference) {

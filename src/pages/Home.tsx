@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Search, Star, Clock, ChevronRight, Navigation, Bell, Calendar, Shield } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   const handleWhereToClick = () => {
     navigate("/book-ride");
   };
-
+  
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -42,173 +42,139 @@ const Home: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-rideroot-lightGrey">
       <RootHeader title="RideRoot" showBackButton={false} />
 
-      {/* Greeting with notification bell */}
-      <div className="p-5 bg-white shadow-sm flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-heading font-bold text-rideroot-primary mb-1">
+      {/* Hero section with gradient background */}
+      <div className="relative h-60 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary flex items-center justify-center text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+          className="relative z-10 text-center px-6"
+        >
+          <h1 className="text-3xl font-heading font-bold mb-2">Welcome to RideRoot</h1>
+          <p className="text-white/90">Your journey begins here</p>
+        </motion.div>
+      </div>
+      
+      {/* Main content */}
+      <div className="px-5 py-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="mb-6"
+        >
+          <h2 className="text-xl font-heading font-semibold text-rideroot-text mb-2">
             {user ? `Hello, ${user.name?.split(" ")[0]}` : "Hello there"}
           </h2>
           <p className="text-rideroot-darkGrey text-sm">Where would you like to go today?</p>
-        </div>
-        <Button variant="ghost" size="icon" className="rounded-full bg-rideroot-lightGrey">
-          <Bell size={20} className="text-rideroot-primary" />
-        </Button>
-      </div>
+        </motion.div>
 
-      {/* Quick action buttons */}
-      <motion.div 
-        className="grid grid-cols-4 gap-2 p-4 bg-white"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <Button 
-            onClick={() => navigate("/book-ride")}
-            variant="ghost" 
-            size="icon" 
-            className="h-14 w-14 rounded-full bg-rideroot-primary/10 mb-1 hover:bg-rideroot-primary/20"
-          >
-            <Navigation size={20} className="text-rideroot-primary" />
-          </Button>
-          <span className="text-xs text-center">Ride</span>
-        </motion.div>
-        
-        <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <Button 
-            onClick={() => navigate("/rides")}
-            variant="ghost" 
-            size="icon" 
-            className="h-14 w-14 rounded-full bg-rideroot-secondary/10 mb-1 hover:bg-rideroot-secondary/20"
-          >
-            <Calendar size={20} className="text-rideroot-secondary" />
-          </Button>
-          <span className="text-xs text-center">History</span>
-        </motion.div>
-        
-        <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <Button 
-            onClick={() => navigate("/profile")}
-            variant="ghost" 
-            size="icon" 
-            className="h-14 w-14 rounded-full bg-rideroot-accent/10 mb-1 hover:bg-rideroot-accent/20"
-          >
-            <Shield size={20} className="text-rideroot-accent" />
-          </Button>
-          <span className="text-xs text-center">Safety</span>
-        </motion.div>
-        
-        <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="h-14 w-14 rounded-full bg-rideroot-success/10 mb-1 hover:bg-rideroot-success/20"
-          >
-            <Star size={20} className="text-rideroot-success" />
-          </Button>
-          <span className="text-xs text-center">Rewards</span>
-        </motion.div>
-      </motion.div>
-
-      {/* Map View */}
-      <div className="relative flex-1 min-h-[200px]">
-        {/* Map background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-blue-200 z-0" />
-        
-        {/* Map content overlay */}
+        {/* Quick actions cards */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="absolute inset-0 z-10 flex items-center justify-center"
+          className="grid grid-cols-2 gap-4 mb-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <div className="flex flex-col items-center">
-            <div className="bg-white/80 backdrop-blur-sm px-5 py-3 rounded-xl shadow-md">
-              <p className="text-rideroot-darkGrey font-medium flex items-center">
-                <MapPin className="text-rideroot-primary mr-1" size={16} />
-                Interactive map would appear here
-              </p>
-            </div>
-            
-            {/* Current location pulse animation */}
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.7, 0.3, 0.7]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-              }}
-              className="w-6 h-6 bg-rideroot-primary rounded-full mt-8 relative"
-            >
-              <motion.div 
-                animate={{ 
-                  scale: [1, 2],
-                  opacity: [0.5, 0]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-                className="absolute inset-0 bg-rideroot-primary rounded-full"
-              />
-            </motion.div>
-          </div>
+          <motion.div 
+            variants={itemVariants} 
+            onClick={() => navigate("/book-ride")}
+            className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
+          >
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-r from-rideroot-primary to-rideroot-secondary flex items-center justify-center text-white text-lg font-bold">R</div>
+            <span className="text-center font-medium">Book a Ride</span>
+          </motion.div>
+          
+          <motion.div 
+            variants={itemVariants}
+            onClick={() => navigate("/rides")}
+            className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
+          >
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-secondary to-rideroot-accent flex items-center justify-center text-white text-lg font-bold">H</div>
+            <span className="text-center font-medium">Ride History</span>
+          </motion.div>
+          
+          <motion.div 
+            variants={itemVariants}
+            onClick={() => navigate("/profile")}
+            className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
+          >
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-accent to-rideroot-info flex items-center justify-center text-white text-lg font-bold">P</div>
+            <span className="text-center font-medium">Profile</span>
+          </motion.div>
+          
+          <motion.div 
+            variants={itemVariants}
+            className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
+            onClick={() => navigate("/book-ride")}
+          >
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-info to-rideroot-success flex items-center justify-center text-white text-lg font-bold">S</div>
+            <span className="text-center font-medium">Safety Features</span>
+          </motion.div>
         </motion.div>
-      </div>
 
-      {/* Ride booking card */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="bg-white rounded-t-3xl shadow-xl p-5 -mt-6 relative z-20"
-      >
-        <div className="mb-5">
+        {/* Search box */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="mb-6"
+        >
           <button
             onClick={handleWhereToClick}
-            className="flex items-center w-full bg-rideroot-lightGrey p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+            className="flex items-center w-full bg-white p-4 rounded-xl shadow-card-soft hover:shadow-card-hover transition-all duration-300 border border-rideroot-mediumGrey"
           >
             <Search size={20} className="text-rideroot-primary mr-3" />
             <span className="text-rideroot-darkGrey font-medium">Where to?</span>
           </button>
-        </div>
+        </motion.div>
 
-        <div className="mb-5">
-          <h3 className="text-sm font-medium text-rideroot-darkGrey mb-3 flex items-center">
-            <Clock size={16} className="mr-2" />
-            RECENT LOCATIONS
-          </h3>
-          <div className="space-y-3">
-            {recentLocations.map((location) => (
-              <motion.button
+        {/* Recent locations */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <h3 className="font-heading font-semibold text-rideroot-text mb-3">Recent Destinations</h3>
+          <div className="bg-white rounded-xl shadow-card-soft overflow-hidden">
+            {recentLocations.map((location, index) => (
+              <motion.div
                 key={location.id}
-                whileHover={{ scale: 1.01, backgroundColor: "rgba(241, 245, 249, 0.5)" }}
+                whileHover={{ backgroundColor: "rgba(241, 245, 249, 0.5)" }}
                 onClick={() => navigate("/book-ride")}
-                className="flex items-start w-full p-3 rounded-lg transition-colors border border-transparent hover:border-rideroot-mediumGrey"
+                className={`flex items-start p-4 ${
+                  index !== recentLocations.length - 1 ? "border-b border-rideroot-mediumGrey" : ""
+                }`}
               >
                 <MapPin size={20} className="text-rideroot-primary mt-1 mr-3 flex-shrink-0" />
-                <div className="text-left">
+                <div>
                   <p className="font-medium text-rideroot-text">{location.name}</p>
                   <p className="text-sm text-rideroot-darkGrey">{location.address}</p>
                 </div>
-                <ChevronRight size={18} className="text-rideroot-darkGrey ml-auto self-center" />
-              </motion.button>
+              </motion.div>
             ))}
           </div>
-        </div>
-
-        <motion.button
-          whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(99, 102, 241, 0.2)" }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate("/book-ride")}
-          className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full flex items-center justify-center py-4 rounded-xl text-white font-bold shadow-md transition-all"
+        </motion.div>
+        
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="mt-8 mb-16"
         >
-          <Star size={18} className="mr-2" />
-          Book a Ride Now
-        </motion.button>
-      </motion.div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate("/book-ride")}
+            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full py-4 rounded-xl text-white font-bold shadow-md"
+          >
+            Book Your Ride Now
+          </motion.button>
+        </motion.div>
+      </div>
 
       <div className="h-16"></div> {/* Spacer for bottom nav */}
       <BottomNav />
