@@ -33,6 +33,7 @@ import DriverSubscription from "./pages/DriverSubscription";
 import DriverRide from "./pages/DriverRide";
 import DriverProfile from "./pages/DriverProfile";
 import DriverRatings from "./pages/DriverRatings";
+import DriverSettings from "./pages/DriverSettings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,9 +75,9 @@ const App = () => (
             <Route path="/driver-help" element={<DriverHelp />} />
             <Route path="/driver-profile" element={<DriverProfile />} />
             <Route path="/driver-ratings" element={<DriverRatings />} />
+            <Route path="/driver-settings" element={<DriverSettings />} />
             <Route path="/driver-messages" element={<Profile />} />
             <Route path="/driver-subscription" element={<DriverSubscription />} />
-            {/* Remove the driver-search route */}
             <Route path="/driver-ride" element={<DriverRide />} />
             
             {/* Fallback route */}

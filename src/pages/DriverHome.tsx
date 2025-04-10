@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Car, BarChart2, User, HelpCircle, MessageCircle, Crown, Zap } from "lucide-react";
+import { Menu, Car, User, HelpCircle, MessageCircle, Crown, Zap, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -26,7 +26,6 @@ const DriverHome: React.FC = () => {
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
   
-  // Clear popup after 2 seconds
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -43,7 +42,6 @@ const DriverHome: React.FC = () => {
         title: "You're now online",
         description: "Searching for ride requests..."
       });
-      // When going online, navigation to driver-ride is handled by DriverStatusToggle
     } else {
       setIsOnline(false);
       shadcnToast({
@@ -61,7 +59,6 @@ const DriverHome: React.FC = () => {
       return;
     }
 
-    // If trying to switch to Prime, redirect to subscription page
     if (!isPrimeDriver) {
       navigate("/driver-subscription");
       return;
@@ -73,7 +70,6 @@ const DriverHome: React.FC = () => {
         description: "You now have access to premium benefits and priority rides."
       });
 
-      // Simulate earnings boost after small delay with 2 second auto dismissal
       setTimeout(() => {
         setShowEarningsBoost(true);
         let count = 0;
@@ -90,7 +86,6 @@ const DriverHome: React.FC = () => {
   
   return (
     <div className="flex flex-col min-h-screen relative">
-      {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100" />
         
@@ -125,7 +120,6 @@ const DriverHome: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Header with menu */}
       <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md shadow-sm z-10">
         <Sheet>
           <SheetTrigger asChild>
@@ -159,21 +153,13 @@ const DriverHome: React.FC = () => {
               
               <nav className="flex-1">
                 <div className="space-y-1">
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-home")}>
-                    <Car className="mr-2" size={20} />
-                    Dashboard
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-earnings")}>
-                    <BarChart2 className="mr-2" size={20} />
-                    Earnings
-                  </Button>
                   <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-profile")}>
                     <User className="mr-2" size={20} />
                     Profile
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-help")}>
-                    <HelpCircle className="mr-2" size={20} />
-                    Help Center
+                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-settings")}>
+                    <Settings className="mr-2" size={20} />
+                    Settings
                   </Button>
                   <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-messages")}>
                     <MessageCircle className="mr-2" size={20} />
@@ -194,16 +180,12 @@ const DriverHome: React.FC = () => {
       </div>
       
       <div className="flex-1 overflow-auto p-4 z-10 space-y-4 pb-24">
-        {/* Driver status toggle */}
         <DriverStatusToggle isOnline={isOnline} onStatusChange={toggleOnlineStatus} />
         
-        {/* Driver tier selector */}
         <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
         
-        {/* Driver stats panel */}
         <DriverStatsPanel todayEarnings={todayEarnings} todayRides={todayRides} isPrimeDriver={isPrimeDriver} />
         
-        {/* Prime badges */}
         {isPrimeDriver && <div className="mb-4">
             <div className="flex space-x-2">
               {isPeakTime && <motion.span whileHover={{
@@ -220,7 +202,6 @@ const DriverHome: React.FC = () => {
             </div>
           </div>}
         
-        {/* Earnings boost animation */}
         <AnimatePresence>
           {showEarningsBoost && <motion.div initial={{
           opacity: 0,
@@ -237,7 +218,6 @@ const DriverHome: React.FC = () => {
             </motion.div>}
         </AnimatePresence>
         
-        {/* Enhanced Go Online Button with improved car animation */}
         <motion.div className="mt-8 sticky bottom-20 z-20" initial={{
         scale: 1
       }} whileHover={{
@@ -246,7 +226,6 @@ const DriverHome: React.FC = () => {
         scale: 0.98
       }}>
           <div className="relative">
-            {/* Car animation on the button */}
             <AnimatePresence>
               {isOnline && <motion.div initial={{
               opacity: 0,
@@ -271,8 +250,6 @@ const DriverHome: React.FC = () => {
                   </motion.div>
                 </motion.div>}
             </AnimatePresence>
-            
-            
           </div>
         </motion.div>
       </div>
