@@ -6,7 +6,8 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/");
+    // Redirect to welcome page instead of root path
+    navigate("/welcome");
   }, [navigate]);
 
   return (

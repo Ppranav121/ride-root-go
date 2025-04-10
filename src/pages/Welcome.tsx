@@ -9,8 +9,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 
 interface OnboardingSlide {
@@ -95,11 +93,10 @@ const WelcomePage: React.FC = () => {
           {/* Main carousel */}
           <Carousel 
             className="w-full h-full" 
-            setApi={(api) => {
-              api?.on('select', () => {
-                setCurrentSlide(api.selectedScrollSnap());
-              });
+            onSelect={(index) => {
+              setCurrentSlide(index);
             }}
+            defaultIndex={currentSlide}
           >
             <CarouselContent className="h-screen">
               {slides.map((slide, index) => (

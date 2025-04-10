@@ -8,6 +8,7 @@ import { AppProvider } from "./contexts/AppContext";
 
 // Pages
 import Splash from "./pages/Splash";
+import Index from "./pages/Index"; // Add explicit import for Index
 import Onboarding from "./pages/Onboarding";
 import Welcome from "./pages/Welcome";
 import SignUp from "./pages/SignUp";
@@ -52,6 +53,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Splash />} />
+            <Route path="/index" element={<Index />} />
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/signup" element={<SignUp />} />
@@ -78,8 +80,7 @@ const App = () => (
             <Route path="/driver-search" element={<DriverSearchAndRequest />} />
             <Route path="/driver-ride" element={<DriverRide />} />
             
-            {/* Redirect index to home when logged in */}
-            <Route path="/index" element={<Navigate to="/home" replace />} />
+            {/* Fallback route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
