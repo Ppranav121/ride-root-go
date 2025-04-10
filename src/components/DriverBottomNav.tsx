@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, BarChart2, User, Star, HelpCircle } from "lucide-react";
+import { Car, BarChart2, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 const DriverBottomNav: React.FC = () => {
@@ -40,20 +40,6 @@ const DriverBottomNav: React.FC = () => {
           isActive={isActive("/driver-ratings")} 
           onClick={() => navigate("/driver-ratings")}
         />
-        
-        <NavButton 
-          label="Profile" 
-          icon={User} 
-          isActive={isActive("/driver-profile")} 
-          onClick={() => navigate("/driver-profile")}
-        />
-        
-        <NavButton 
-          label="Help" 
-          icon={HelpCircle} 
-          isActive={isActive("/driver-help")} 
-          onClick={() => navigate("/driver-help")}
-        />
       </div>
     </motion.nav>
   );
@@ -71,7 +57,7 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className={`flex flex-col items-center justify-center w-1/5 pt-1 pb-1 relative ${
+      className={`flex flex-col items-center justify-center w-1/3 pt-1 pb-1 relative ${
         isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
       }`}
     >

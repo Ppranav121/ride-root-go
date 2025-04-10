@@ -30,9 +30,9 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
     <div className="relative rounded-xl bg-white shadow-lg p-5 border border-gray-100 overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         {isOnline ? (
-          <div className="absolute inset-0 bg-gradient-to-r from-rideroot-primary to-rideroot-accent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-rideroot-primary/80 to-rideroot-accent/80" />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-300 to-blue-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-300/80 to-blue-300/80" />
         )}
       </div>
       
@@ -44,7 +44,7 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-4 h-4 rounded-full bg-green-500 mr-2"
+                  className="w-4 h-4 rounded-full bg-green-500/90 mr-2"
                 />
                 <span className="text-gray-900">You're Online</span>
               </>
@@ -53,13 +53,13 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="w-4 h-4 rounded-full bg-rideroot-primary mr-2"
+                  className="w-4 h-4 rounded-full bg-rideroot-primary/90 mr-2"
                 />
-                <span className="text-rideroot-primary font-heading font-bold">Start Driving</span>
+                <span className="text-gray-700 font-heading font-bold">Start Driving</span>
               </>
             )}
           </h2>
-          <p className="text-sm text-rideroot-darkGrey font-sans">
+          <p className="text-sm text-gray-500 font-sans">
             {isOnline 
               ? "You're receiving ride requests" 
               : "Toggle to begin your journey"}
@@ -71,9 +71,9 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
           <Switch 
             checked={isOnline} 
             onCheckedChange={handleStatusChange}
-            className={`${isOnline ? 'bg-green-500' : 'bg-gradient-to-r from-rideroot-primary to-rideroot-secondary'} relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
+            className={`${isOnline ? 'bg-green-500/90' : 'bg-gradient-to-r from-rideroot-primary/90 to-rideroot-secondary/90'} relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
           />
-          <span className={`ml-3 text-sm font-medium ${isOnline ? 'text-green-600' : 'text-rideroot-primary'}`}>
+          <span className={`ml-3 text-sm font-medium ${isOnline ? 'text-green-600/90' : 'text-gray-600'}`}>
             {isOnline ? 'Online' : 'Offline'}
           </span>
         </div>
@@ -90,9 +90,9 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
             <motion.div 
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="w-2 h-2 bg-green-500 rounded-full mr-2"
+              className="w-2 h-2 bg-green-500/90 rounded-full mr-2"
             />
-            <span className="text-sm font-medium text-green-600">Active & Ready for Requests</span>
+            <span className="text-sm font-medium text-green-600/90">Active & Ready for Requests</span>
           </div>
         </motion.div>
       )}
