@@ -19,7 +19,12 @@ const DriverBottomNav: React.FC = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
     >
-      <div className="flex justify-around items-center h-16 px-6 w-60">
+      <div className="flex justify-around items-center h-16 px-8 w-72 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/50 to-white/70 backdrop-blur-md z-0"></div>
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-rideroot-primary/30 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-rideroot-secondary/30 to-transparent"></div>
+        
         <NavButton 
           label="Dashboard" 
           icon={Car} 
@@ -52,7 +57,7 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.9 }}
-      className="flex flex-col items-center justify-center w-24 py-1 relative"
+      className="flex flex-col items-center justify-center w-24 py-1 relative z-10"
     >
       <motion.div
         className={`flex flex-col items-center relative ${
