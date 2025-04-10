@@ -19,11 +19,11 @@ const EmergencyButton: React.FC = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4">
       <motion.button 
-        className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white font-bold py-3 flex items-center justify-center gap-2 shadow-lg border border-red-700 rounded-lg"
+        className="w-full bg-red-600 text-white font-bold py-2.5 flex items-center justify-center gap-3 shadow-lg border border-red-700 rounded-md"
         onClick={handleSosClick}
         whileTap={{ scale: 0.98 }}
         animate={{ 
-          backgroundColor: ['rgba(220, 38, 38, 0.9)', 'rgba(239, 68, 68, 0.95)', 'rgba(220, 38, 38, 0.9)'],
+          boxShadow: ['0 4px 12px rgba(220, 38, 38, 0.3)', '0 4px 20px rgba(220, 38, 38, 0.5)', '0 4px 12px rgba(220, 38, 38, 0.3)'],
         }}
         transition={{
           duration: 2,
@@ -32,9 +32,9 @@ const EmergencyButton: React.FC = () => {
         }}
       >
         <div className="bg-white p-1 rounded-full">
-          <AlertTriangle size={18} strokeWidth={2.5} className="text-red-600" />
+          <AlertTriangle size={20} strokeWidth={2.5} className="text-red-600" />
         </div>
-        <span className="text-base font-semibold tracking-wide">EMERGENCY ASSISTANCE</span>
+        <span className="text-base font-bold tracking-normal">EMERGENCY ASSISTANCE</span>
       </motion.button>
     </div>
   );
