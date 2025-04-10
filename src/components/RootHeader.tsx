@@ -9,6 +9,7 @@ interface RootHeaderProps {
   showBackButton?: boolean;
   showProfileButton?: boolean;
   transparent?: boolean;
+  children?: React.ReactNode; // Added children prop
 }
 
 const RootHeader: React.FC<RootHeaderProps> = ({
@@ -16,6 +17,7 @@ const RootHeader: React.FC<RootHeaderProps> = ({
   showBackButton = true,
   showProfileButton = true,
   transparent = false,
+  children, // Added children to props
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useApp();
@@ -38,6 +40,8 @@ const RootHeader: React.FC<RootHeaderProps> = ({
           </h1>
         )}
       </div>
+
+      {children}
 
       {showProfileButton && isAuthenticated && (
         <button
