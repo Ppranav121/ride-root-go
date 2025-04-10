@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, Star } from "lucide-react";
+import { Car, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 
 const DriverBottomNav: React.FC = () => {
@@ -13,28 +13,30 @@ const DriverBottomNav: React.FC = () => {
   };
 
   return (
-    <motion.nav 
-      className="fixed bottom-0 w-full bg-white/95 border-t border-gray-200 shadow-lg backdrop-blur-lg z-30"
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
+    <motion.div 
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 z-30"
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
     >
-      <div className="max-w-md mx-auto flex justify-around items-center h-16">
+      <div className="flex justify-around items-center h-16 px-4 w-48">
         <NavButton 
-          label="Home" 
+          label="Dashboard" 
           icon={Car} 
           isActive={isActive("/driver-home")} 
           onClick={() => navigate("/driver-home")}
         />
 
+        <div className="h-8 w-px bg-gray-200"></div>
+
         <NavButton 
-          label="Ratings" 
-          icon={Star} 
-          isActive={isActive("/driver-ratings")} 
-          onClick={() => navigate("/driver-ratings")}
+          label="Map" 
+          icon={MapPin} 
+          isActive={isActive("/driver-ride")} 
+          onClick={() => navigate("/driver-ride")}
         />
       </div>
-    </motion.nav>
+    </motion.div>
   );
 };
 
@@ -49,24 +51,26 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
   return (
     <motion.button
       onClick={onClick}
-      whileTap={{ scale: 0.95 }}
-      className={`flex flex-col items-center justify-center w-1/2 pt-1 pb-1 relative ${
-        isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
-      }`}
+      whileTap={{ scale: 0.9 }}
+      className="flex flex-col items-center justify-center w-20 py-1 relative"
     >
-      {isActive && (
-        <motion.div 
-          layoutId="driverActiveTab"
-          className="absolute -top-1 w-full h-1 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        />
-      )}
       <motion.div
+        className={`flex flex-col items-center relative ${
+          isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
+        }`}
         whileHover={{ y: -2 }}
-        transition={{ type: "spring", stiffness: 300 }}
-        className="flex flex-col items-center"
+        transition={{ type: "spring", stiffness: 400 }}
       >
-        <Icon size={isActive ? 24 : 20} className="mb-1 transition-all" />
+        <div className="relative">
+          {isActive && (
+            <motion.div
+              layoutId="activeNavBackground"
+              className="absolute inset-0 -m-2 bg-rideroot-primary/10 rounded-full"
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+          )}
+          <Icon size={isActive ? 24 : 20} className="mb-1 transition-all" />
+        </div>
         <span className={`text-xs transition-all ${isActive ? 'font-medium' : 'font-normal'}`}>{label}</span>
       </motion.div>
     </motion.button>
