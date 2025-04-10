@@ -14,12 +14,12 @@ const DriverBottomNav: React.FC = () => {
 
   return (
     <motion.div 
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-100 z-30"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md rounded-full shadow-lg z-30 border border-gray-100"
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
     >
-      <div className="flex justify-around items-center h-16 px-4 w-48">
+      <div className="flex justify-around items-center h-16 px-6 w-60">
         <NavButton 
           label="Dashboard" 
           icon={Car} 
@@ -27,7 +27,7 @@ const DriverBottomNav: React.FC = () => {
           onClick={() => navigate("/driver-home")}
         />
 
-        <div className="h-8 w-px bg-gray-200"></div>
+        <div className="h-12 w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent"></div>
 
         <NavButton 
           label="Map" 
@@ -52,7 +52,7 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.9 }}
-      className="flex flex-col items-center justify-center w-20 py-1 relative"
+      className="flex flex-col items-center justify-center w-24 py-1 relative"
     >
       <motion.div
         className={`flex flex-col items-center relative ${
@@ -65,13 +65,16 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
           {isActive && (
             <motion.div
               layoutId="activeNavBackground"
-              className="absolute inset-0 -m-2 bg-rideroot-primary/10 rounded-full"
+              className="absolute inset-0 -m-2 bg-gradient-to-r from-rideroot-primary/20 to-rideroot-secondary/20 rounded-full"
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
           )}
-          <Icon size={isActive ? 24 : 20} className="mb-1 transition-all" />
+          <Icon 
+            size={isActive ? 24 : 20} 
+            className={`mb-1 transition-all ${isActive ? 'stroke-[2.5px]' : 'stroke-[1.5px]'}`} 
+          />
         </div>
-        <span className={`text-xs transition-all ${isActive ? 'font-medium' : 'font-normal'}`}>{label}</span>
+        <span className={`text-xs transition-all ${isActive ? 'font-semibold' : 'font-medium'}`}>{label}</span>
       </motion.div>
     </motion.button>
   );
