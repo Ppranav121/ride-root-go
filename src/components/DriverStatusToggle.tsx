@@ -17,12 +17,13 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
   const navigate = useNavigate();
   
   const handleStatusChange = (online: boolean) => {
+    // Always notify the parent component about the status change
     onStatusChange(online);
     
-    // If turning online, navigate directly to the driver-ride page
-    // with replace: true to prevent back navigation issues
+    // If turning online, navigate to the driver-ride page
+    // We've removed the replace:true so the user can easily go back
     if (online) {
-      navigate("/driver-ride", { replace: true });
+      navigate("/driver-ride");
     }
   };
   

@@ -1,12 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
+import DriverSearching from "@/components/ride/DriverSearching";
 
 // Simulated ride states
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
@@ -95,6 +97,22 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
+  
+  // Handle going offline or returning to dashboard
+  const handleGoOffline = () => {
+    navigate("/driver-home");
+    // This will allow the parent component to update the isOnline state
+    toast({
+      title: "You've gone offline",
+      description: "You won't receive any more ride requests."
+    });
+  };
+
+  // New functions to make it easier to go back to dashboard while staying online
+  const handleReturnToDashboard = () => {
+    navigate("/driver-home");
+  };
+  
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -117,6 +135,7 @@ const DriverRide: React.FC = () => {
       });
     }, 5000);
   };
+  
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -126,6 +145,7 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
+  
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -142,52 +162,55 @@ const DriverRide: React.FC = () => {
       });
     }, 8000);
   };
+  
   const handleCompleteRide = () => {
     navigate("/driver-home");
   };
+  
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
-  const renderSearchingAnimation = () => {
-    return <div className="flex items-center justify-center h-full">
-        <div className="relative">
-          <motion.div animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3]
-        }} transition={{
-          duration: 3,
-          repeat: Infinity,
-          repeatType: "loop"
-        }} className="absolute inset-0 bg-blue-400 rounded-full" />
-          
-          
-          <motion.div animate={{
-          scale: pulseSize / 100,
-          opacity: pulseOpacity
-        }} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-400/30 rounded-full -z-10" />
-          
-          <motion.div animate={{
-          scale: (pulseSize + 20) / 100,
-          opacity: pulseOpacity - 0.2
-        }} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-blue-400/20 rounded-full -z-20" />
-        </div>
-      </div>;
-  };
 
-  // Generate searching dots based on interval
-  const renderSearchingDots = () => {
-    const dots = '.'.repeat(searchInterval);
-    return dots;
-  };
+  // If searching state, render DriverSearching component
+  if (rideState === 'searching') {
+    return <DriverSearching 
+      onCancel={handleGoOffline}
+      onRideFound={() => {
+        // This would be replaced with actual ride request data from the API
+        setRideRequest({
+          id: "ride-123",
+          rider: "Jessica M.",
+          pickupLocation: "1234 Market Street",
+          dropoffLocation: "Golden Gate Park",
+          distance: 4.2,
+          estimatedTime: "15 mins",
+          fare: 17.50,
+          rideType: "Premium",
+          isPremium: true,
+          isPeakBonus: true
+        });
+        setRideState('request');
+      }}
+    />;
+  }
+
   return <div className="flex flex-col min-h-screen bg-rideroot-lightGrey">
-      <RootHeader title="Active Ride" />
+      <RootHeader title="Active Ride">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="ml-auto mr-2 flex items-center gap-1" 
+          onClick={handleReturnToDashboard}
+        >
+          <Home size={18} />
+          <span className="hidden sm:inline">Dashboard</span>
+        </Button>
+      </RootHeader>
       
       {/* Map view */}
       <div className="flex-1 bg-gradient-to-b from-blue-50 to-blue-200 relative">
-        {rideState === 'searching' && renderSearchingAnimation()}
-        
         {/* Animated pulsing location */}
-        {rideState !== 'searching' && <motion.div animate={{
+        <motion.div animate={{
         scale: [1, 1.1, 1],
         opacity: [0.7, 1, 0.7]
       }} transition={{
@@ -200,7 +223,7 @@ const DriverRide: React.FC = () => {
                 <div className="w-6 h-6 bg-rideroot-primary rounded-full"></div>
               </div>
             </div>
-          </motion.div>}
+          </motion.div>
         
         {/* Map placeholder message */}
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
@@ -212,10 +235,6 @@ const DriverRide: React.FC = () => {
           opacity: 1
         }} className="bg-white/90 backdrop-blur-sm px-5 py-2 rounded-xl shadow-md">
             <p className="text-rideroot-darkGrey text-sm font-medium flex items-center">
-              {rideState === 'searching' && <>
-                  <Search size={16} className="mr-2 text-blue-500" />
-                  <span>Searching for ride requests{renderSearchingDots()}</span>
-                </>}
               {rideState === 'request' && <>
                   <AlertTriangle size={16} className="mr-2 text-amber-500" />
                   <span>New ride request!</span>
@@ -398,9 +417,14 @@ const DriverRide: React.FC = () => {
             </div>
           </div>
           
-          <Button className="w-full bg-rideroot-primary hover:bg-rideroot-primary/90" onClick={handleStartRide}>
-            Start Ride
-          </Button>
+          <div className="flex space-x-3">
+            <Button variant="outline" className="flex-1" onClick={handleGoOffline}>
+              Cancel Ride
+            </Button>
+            <Button className="flex-1 bg-rideroot-primary hover:bg-rideroot-primary/90" onClick={handleStartRide}>
+              Start Ride
+            </Button>
+          </div>
         </motion.div>}
       
       {/* Ride in progress */}
@@ -507,8 +531,8 @@ const DriverRide: React.FC = () => {
           </div>
           
           <div className="flex space-x-3">
-            <Button variant="outline" className="flex-1" onClick={() => navigate("/driver-earnings")}>
-              View Earnings
+            <Button variant="outline" className="flex-1" onClick={handleGoOffline}>
+              Go Offline
             </Button>
             <Button className="flex-1 bg-rideroot-primary hover:bg-rideroot-primary/90" onClick={handleCompleteRide}>
               Done
@@ -535,131 +559,6 @@ const DriverRide: React.FC = () => {
               <span className="text-green-500 font-bold text-lg mb-1">+$0.50</span>
               <span className="text-sm text-gray-600">Peak Time Bonus</span>
             </div>
-          </div>
-        </motion.div>}
-      
-      {/* Searching state with enhanced UI */}
-      {rideState === 'searching' && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
-          <div className="flex flex-col items-center mb-6">
-            <motion.div animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.7, 1, 0.7]
-        }} transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatType: "loop"
-        }} className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 relative">
-              <div className="absolute inset-0 bg-blue-200 rounded-full animate-ping opacity-75"></div>
-              <Search size={28} className="text-blue-600 relative z-10" />
-            </motion.div>
-            
-            <h2 className="text-xl font-semibold text-center">Looking for Rides</h2>
-            <p className="text-rideroot-darkGrey text-center">
-              You'll be notified when a ride request comes in
-            </p>
-          </div>
-          
-          {/* Animated searching indicators */}
-          <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} transition={{
-        delay: 0.5
-      }} className="mb-6">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                    <Clock size={18} className="text-blue-600" />
-                  </div>
-                  <p className="font-medium text-blue-800">Average Wait Time</p>
-                </div>
-                <span className="text-blue-800 font-bold">~3 min</span>
-              </div>
-              
-              {/* Pulse bars animation */}
-              <div className="flex items-end h-12 gap-1">
-                {[3, 7, 5, 8, 4, 6, 9, 7, 5, 4, 6, 8].map((height, index) => <motion.div key={index} className="bg-blue-400 rounded-sm flex-1" initial={{
-              height: 0
-            }} animate={{
-              height: `${height * 8}%`,
-              opacity: Math.random() * 0.5 + 0.5
-            }} transition={{
-              duration: 1,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: index * 0.1
-            }} />)}
-              </div>
-            </div>
-          </motion.div>
-          
-          <Drawer>
-            <DrawerTrigger asChild>
-              <Button variant="outline" className="w-full">
-                Driver Preferences
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <div className="mx-auto w-full max-w-sm">
-                <DrawerHeader>
-                  <DrawerTitle>Driver Preferences</DrawerTitle>
-                  <DrawerDescription>Customize your ride preferences</DrawerDescription>
-                </DrawerHeader>
-                <div className="p-4 pb-0">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Accept Premium Rides</h4>
-                        <p className="text-sm text-muted-foreground">Higher fares but may be longer distances</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Enabled
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Maximum Distance</h4>
-                        <p className="text-sm text-muted-foreground">How far you'll travel for pickups</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        5 miles
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Ride Duration</h4>
-                        <p className="text-sm text-muted-foreground">Maximum ride length preference</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Any
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <DrawerFooter>
-                  <Button>Save Preferences</Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </div>
-            </DrawerContent>
-          </Drawer>
-          
-          <div className="mt-4">
-            <Button variant="outline" className="w-full border-red-500 text-red-500 hover:bg-red-50" onClick={() => navigate("/driver-home")}>
-              Stop Searching
-            </Button>
           </div>
         </motion.div>}
       
