@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Search } from "lucide-react";
@@ -109,11 +108,10 @@ const Home: React.FC = () => {
             dragFree: false,
           }}
           orientation="horizontal"
-          onSelect={(api) => {
-            if (api) {
-              const selectedSnapIndex = api.selectedScrollSnap();
-              handleCarouselChange(selectedSnapIndex);
-            }
+          setApi={(api) => {
+            api?.on("select", () => {
+              handleCarouselChange(api.selectedScrollSnap());
+            });
           }}
         >
           <CarouselContent className="h-full">
