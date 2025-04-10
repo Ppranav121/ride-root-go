@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Search } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import MapBackground from "@/components/ride/MapBackground";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -42,19 +42,19 @@ const Home: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-rideroot-lightGrey">
       <RootHeader title="RideRoot" showBackButton={false} />
 
-      {/* Hero section with gradient background */}
-      <div className="relative h-60 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary flex items-center justify-center text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          className="relative z-10 text-center px-6"
-        >
-          <h1 className="text-3xl font-heading font-bold mb-2">Welcome to RideRoot</h1>
-          <p className="text-white/90">Your journey begins here</p>
-        </motion.div>
+      {/* Map section with gradient overlay */}
+      <div className="relative h-60 overflow-hidden">
+        <MapBackground />
+        <div className="absolute inset-0 flex items-end justify-center pb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="bg-white/70 backdrop-blur-md px-6 py-3 rounded-xl shadow-lg"
+          >
+            <p className="text-rideroot-primary font-heading font-bold">Your ride awaits</p>
+          </motion.div>
+        </div>
       </div>
       
       {/* Main content */}
@@ -83,8 +83,7 @@ const Home: React.FC = () => {
             onClick={() => navigate("/book-ride")}
             className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
           >
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-r from-rideroot-primary to-rideroot-secondary flex items-center justify-center text-white text-lg font-bold">R</div>
-            <span className="text-center font-medium">Book a Ride</span>
+            <span className="font-heading font-semibold text-center">Book a Ride</span>
           </motion.div>
           
           <motion.div 
@@ -92,8 +91,7 @@ const Home: React.FC = () => {
             onClick={() => navigate("/rides")}
             className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
           >
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-secondary to-rideroot-accent flex items-center justify-center text-white text-lg font-bold">H</div>
-            <span className="text-center font-medium">Ride History</span>
+            <span className="font-heading font-semibold text-center">Ride History</span>
           </motion.div>
           
           <motion.div 
@@ -101,8 +99,7 @@ const Home: React.FC = () => {
             onClick={() => navigate("/profile")}
             className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
           >
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-accent to-rideroot-info flex items-center justify-center text-white text-lg font-bold">P</div>
-            <span className="text-center font-medium">Profile</span>
+            <span className="font-heading font-semibold text-center">Profile</span>
           </motion.div>
           
           <motion.div 
@@ -110,8 +107,7 @@ const Home: React.FC = () => {
             className="bg-white rounded-xl shadow-card-soft p-4 flex flex-col items-center justify-center h-28 hover:shadow-card-hover transition-all duration-300"
             onClick={() => navigate("/book-ride")}
           >
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rideroot-info to-rideroot-success flex items-center justify-center text-white text-lg font-bold">S</div>
-            <span className="text-center font-medium">Safety Features</span>
+            <span className="font-heading font-semibold text-center">Safety Features</span>
           </motion.div>
         </motion.div>
 
@@ -169,7 +165,7 @@ const Home: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/book-ride")}
-            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full py-4 rounded-xl text-white font-bold shadow-md"
+            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full py-4 rounded-xl text-white font-bold font-heading shadow-md"
           >
             Book Your Ride Now
           </motion.button>
