@@ -5,7 +5,7 @@ import { ChevronLeft, User } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 
 interface RootHeaderProps {
-  title?: string;
+  title?: React.ReactNode; // Changed from string to ReactNode
   showBackButton?: boolean;
   showProfileButton?: boolean;
   transparent?: boolean;
