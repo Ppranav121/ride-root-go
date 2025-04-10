@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Check, AlertCircle } from "lucide-react";
@@ -19,9 +18,10 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
   const handleStatusChange = (online: boolean) => {
     onStatusChange(online);
     
-    // If turning online, navigate to the search page
+    // If turning online, navigate to the search page with replace: true 
+    // to prevent back navigation issues
     if (online) {
-      navigate("/driver-search");
+      navigate("/driver-search", { replace: true });
     }
   };
   

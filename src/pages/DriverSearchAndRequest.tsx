@@ -23,7 +23,8 @@ const DriverSearchAndRequest: React.FC = () => {
   // which has the full ride management interface
   const handleAcceptRide = () => {
     toast.success("Ride accepted! Navigate to pickup location.");
-    navigate("/driver-ride");
+    // Navigate directly to the driver-ride page and don't return to this page
+    navigate("/driver-ride", { replace: true });
   };
   
   const handleDeclineRide = () => {
