@@ -585,19 +585,7 @@ const DriverRide: React.FC = () => {
                 <span className="text-blue-800 font-bold">~3 min</span>
               </div>
               
-              <div className="flex items-end h-12 gap-1">
-                {[3, 7, 5, 8, 4, 6, 9, 7, 5, 4, 6, 8].map((height, index) => <motion.div key={index} className="bg-blue-400 rounded-sm flex-1" initial={{
-              height: 0
-            }} animate={{
-              height: `${height * 8}%`,
-              opacity: Math.random() * 0.5 + 0.5
-            }} transition={{
-              duration: 1,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: index * 0.1
-            }} />)}
-              </div>
+              
             </div>
           </motion.div>
           
