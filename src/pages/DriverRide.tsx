@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle, ArrowLeft, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
+
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
 interface RideRequest {
   id: string;
@@ -21,6 +22,7 @@ interface RideRequest {
   isPremium: boolean;
   isPeakBonus: boolean;
 }
+
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -39,6 +41,7 @@ const DriverRide: React.FC = () => {
     top: "45%",
     left: "45%"
   });
+
   const hotspots = [{
     id: 1,
     location: {
@@ -75,6 +78,7 @@ const DriverRide: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => prev === 100 ? 120 : 100);
@@ -82,6 +86,7 @@ const DriverRide: React.FC = () => {
     }, 1500);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
@@ -110,6 +115,7 @@ const DriverRide: React.FC = () => {
       };
     }
   }, [rideState]);
+
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -126,6 +132,7 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
+
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -153,6 +160,7 @@ const DriverRide: React.FC = () => {
       }
     }, 150);
   };
+
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -162,6 +170,7 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
+
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -185,13 +194,16 @@ const DriverRide: React.FC = () => {
       }
     }, 200);
   };
+
   const handleCompleteRide = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
+
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -201,10 +213,12 @@ const DriverRide: React.FC = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
   };
+
   return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition}>
         {rideState !== 'searching' && <motion.div animate={{
@@ -233,7 +247,61 @@ const DriverRide: React.FC = () => {
           {rideState === 'searching' ? 'Finding Rides' : 'Active Ride'}
         </h1>
         
-        <div className="w-10" />
+        {rideState === 'searching' && (
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Settings size={22} className="text-rideroot-text" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <div className="mx-auto w-full max-w-sm">
+                <DrawerHeader>
+                  <DrawerTitle>Driver Preferences</DrawerTitle>
+                  <DrawerDescription>Customize your ride preferences</DrawerDescription>
+                </DrawerHeader>
+                <div className="p-4 pb-0">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-medium">Accept Premium Rides</h4>
+                        <p className="text-sm text-muted-foreground">Higher fares but may be longer distances</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Enabled
+                      </Button>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-medium">Maximum Distance</h4>
+                        <p className="text-sm text-muted-foreground">How far you'll travel for pickups</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        5 miles
+                      </Button>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-medium">Ride Duration</h4>
+                        <p className="text-sm text-muted-foreground">Maximum ride length preference</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Any
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <DrawerFooter>
+                  <Button>Save Preferences</Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </div>
+            </DrawerContent>
+          </Drawer>
+        )}
+        {!rideState === 'searching' && <div className="w-10" />}
       </div>
       
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30">
@@ -566,70 +634,6 @@ const DriverRide: React.FC = () => {
       damping: 30
     }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
           
-          
-          <motion.div initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} transition={{
-        delay: 0.5
-      }} className="mb-6">
-            
-          </motion.div>
-          
-          <Drawer>
-            <DrawerTrigger asChild>
-              <Button variant="outline" className="w-full">
-                Driver Preferences
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <div className="mx-auto w-full max-w-sm">
-                <DrawerHeader>
-                  <DrawerTitle>Driver Preferences</DrawerTitle>
-                  <DrawerDescription>Customize your ride preferences</DrawerDescription>
-                </DrawerHeader>
-                <div className="p-4 pb-0">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Accept Premium Rides</h4>
-                        <p className="text-sm text-muted-foreground">Higher fares but may be longer distances</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Enabled
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Maximum Distance</h4>
-                        <p className="text-sm text-muted-foreground">How far you'll travel for pickups</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        5 miles
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Ride Duration</h4>
-                        <p className="text-sm text-muted-foreground">Maximum ride length preference</p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Any
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <DrawerFooter>
-                  <Button>Save Preferences</Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </div>
-            </DrawerContent>
-          </Drawer>
-          
           <div className="mt-4">
             <Button variant="outline" className="w-full border-red-500 text-red-500 hover:bg-red-50" onClick={() => navigate("/driver-home")}>
               Stop Searching
@@ -640,4 +644,5 @@ const DriverRide: React.FC = () => {
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
     </div>;
 };
+
 export default DriverRide;
