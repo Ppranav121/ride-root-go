@@ -19,18 +19,7 @@ const DriverBottomNav: React.FC = () => {
     type: "spring",
     stiffness: 300
   }}>
-      <div className="flex justify-around items-center h-16 px-8 w-72 relative overflow-hidden">
-        {/* Decorative background elements */}
-        
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-rideroot-primary/30 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-rideroot-secondary/30 to-transparent"></div>
-        
-        <NavButton label="Dashboard" icon={Car} isActive={isActive("/driver-home")} onClick={() => navigate("/driver-home")} />
-
-        <div className="h-12 w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent"></div>
-
-        <NavButton label="Map" icon={MapPin} isActive={isActive("/driver-ride")} onClick={() => navigate("/driver-ride")} />
-      </div>
+      
     </motion.div>;
 };
 interface NavButtonProps {
