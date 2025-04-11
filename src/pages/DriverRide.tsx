@@ -152,9 +152,7 @@ const DriverRide: React.FC = () => {
           repeat: Infinity,
           repeatType: "loop"
         }} className="absolute inset-0 bg-blue-400 rounded-full" />
-          <div className="relative z-10 flex items-center justify-center w-20 h-20 rounded-full bg-blue-500 text-white shadow-lg">
-            
-          </div>
+          
           
           <motion.div animate={{
           scale: pulseSize / 100,
