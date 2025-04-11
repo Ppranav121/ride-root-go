@@ -25,9 +25,7 @@ interface RideRequest {
 
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [rideState, setRideState] = useState<RideState>('searching');
   const [secondsLeft, setSecondsLeft] = useState(15);
   const [rideRequest, setRideRequest] = useState<RideRequest | null>(null);
@@ -604,6 +602,59 @@ const DriverRide: React.FC = () => {
             </Button>
           </div>
         </motion.div>}
+      
+      {rideState === 'searching' && (
+        <motion.div 
+          initial={{y: 300}}
+          animate={{y: 0}}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8"
+        >
+          <div className="flex items-center justify-center mb-3">
+            <motion.div
+              initial={{ opacity: 0.5 }}
+              animate={{ 
+                opacity: [0.5, 0.8, 0.5],
+                scale: [1, 1.05, 1]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop"
+              }}
+              className="h-1 w-16 rounded-full bg-purple-400/70"
+            />
+          </div>
+          
+          <div className="flex items-center justify-center mb-6">
+            <motion.div
+              animate={{ 
+                opacity: [0.6, 1, 0.6]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop"
+              }}
+              className="text-white/80 text-sm font-medium"
+            >
+              Searching for rides{renderSearchingDots()}
+            </motion.div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            className="w-full bg-black/30 border border-white/10 text-white backdrop-blur-md hover:bg-black/40 hover:text-white transition-all shadow-lg" 
+            onClick={() => navigate("/driver-home")}
+          >
+            Stop Searching
+          </Button>
+        </motion.div>
+      )}
       
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
     </div>;
