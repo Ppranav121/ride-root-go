@@ -15,33 +15,36 @@ const CancelRideButton: React.FC = () => {
       // First log the current state before any changes
       console.log("Current ride before cancellation:", currentRide);
       
-      // Update ride status to cancelled in state
-      const updatedRide = {
-        ...currentRide,
-        status: "cancelled" as const
-      };
-      
-      // Set the updated ride in context
-      setCurrentRide(updatedRide);
-      
-      console.log("Updated ride after cancellation:", updatedRide);
-      
-      // Show confirmation toast
-      toast.success("Ride cancelled successfully", {
-        description: "You will not be charged for this ride",
-        duration: 3000,
-      });
-      
-      // Store ride data in sessionStorage as backup
-      sessionStorage.setItem('cancelledRide', JSON.stringify(updatedRide));
-      
-      console.log("Attempting to navigate to ride-cancellation");
-      
-      // Use a longer delay to ensure state is properly updated
-      setTimeout(() => {
-        console.log("Navigating to ride-cancellation now");
-        navigate("/ride-cancellation");
-      }, 2000);
+      try {
+        // Update ride status to cancelled in state
+        const updatedRide = {
+          ...currentRide,
+          status: "cancelled" as const
+        };
+        
+        // Store ride data in sessionStorage BEFORE state update
+        console.log("Storing cancelled ride in sessionStorage:", updatedRide);
+        sessionStorage.setItem('cancelledRide', JSON.stringify(updatedRide));
+        
+        // Set the updated ride in context
+        setCurrentRide(updatedRide);
+        
+        console.log("Updated ride after cancellation:", updatedRide);
+        
+        // Show confirmation toast
+        toast.success("Ride cancelled successfully", {
+          description: "You will not be charged for this ride",
+          duration: 3000,
+        });
+        
+        console.log("Navigating to ride-cancellation immediately");
+        
+        // Force immediate navigation
+        window.location.href = "/ride-cancellation";
+      } catch (error) {
+        console.error("Error during cancellation process:", error);
+        toast.error("Failed to cancel ride. Please try again.");
+      }
     } else {
       console.log("No current ride found, navigating to home");
       navigate("/home");

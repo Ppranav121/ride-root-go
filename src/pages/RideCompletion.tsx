@@ -17,6 +17,7 @@ const RideCompletion: React.FC = () => {
 
     // First try to use ride data from context
     if (currentRide && currentRide.status === "completed") {
+      console.log("RideCompletion - Using ride data from context");
       setRideData(currentRide);
       return;
     }

@@ -71,25 +71,29 @@ const RideTracking: React.FC = () => {
       
       // Update ride status to completed
       if (currentRide) {
-        // Create the updated ride object
-        const updatedRide = {
-          ...currentRide,
-          status: "completed" as const
-        };
-        
-        // Update the state
-        setCurrentRide(updatedRide);
-        
-        // Store in session storage as backup
-        sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
-        
-        console.log("Updated ride after completion:", updatedRide);
-        
-        // Add a longer delay before navigation to ensure state updates
-        setTimeout(() => {
-          console.log("Navigating to ride-completion");
-          navigate("/ride-completion");
-        }, 2000);
+        try {
+          // Create the updated ride object
+          const updatedRide = {
+            ...currentRide,
+            status: "completed" as const
+          };
+          
+          // Store in session storage BEFORE updating state
+          console.log("Storing completed ride in sessionStorage:", updatedRide);
+          sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+          
+          // Update the state
+          setCurrentRide(updatedRide);
+          
+          console.log("Updated ride after completion:", updatedRide);
+          console.log("Navigating to ride-completion immediately");
+          
+          // Force immediate navigation
+          window.location.href = "/ride-completion";
+        } catch (error) {
+          console.error("Error during ride completion process:", error);
+          toast.error("Failed to complete ride. Please try again.");
+        }
       }
     }
   }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
@@ -101,25 +105,29 @@ const RideTracking: React.FC = () => {
     
     // Update ride status to completed
     if (currentRide) {
-      // Create updated ride object
-      const updatedRide = {
-        ...currentRide,
-        status: "completed" as const
-      };
-      
-      // Update state
-      setCurrentRide(updatedRide);
-      
-      // Store in session storage as backup
-      sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
-      
-      console.log("Manual ride completion, updated ride:", updatedRide);
-      
-      // Force navigation with a longer delay to ensure state is updated
-      setTimeout(() => {
-        console.log("Manually navigating to ride-completion now");
-        navigate("/ride-completion");
-      }, 2000);
+      try {
+        // Create updated ride object
+        const updatedRide = {
+          ...currentRide,
+          status: "completed" as const
+        };
+        
+        // Store in session storage BEFORE updating state
+        console.log("Manually storing completed ride in sessionStorage:", updatedRide);
+        sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+        
+        // Update state
+        setCurrentRide(updatedRide);
+        
+        console.log("Manual ride completion, updated ride:", updatedRide);
+        console.log("Manually navigating to ride-completion immediately");
+        
+        // Force immediate navigation
+        window.location.href = "/ride-completion";
+      } catch (error) {
+        console.error("Error during manual ride completion:", error);
+        toast.error("Failed to complete ride. Please try again.");
+      }
     }
   };
 

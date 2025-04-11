@@ -17,6 +17,7 @@ const RideCancellation: React.FC = () => {
     
     // First try to use ride data from context
     if (currentRide && currentRide.status === "cancelled") {
+      console.log("RideCancellation - Using ride data from context");
       setRideData(currentRide);
       return;
     }
