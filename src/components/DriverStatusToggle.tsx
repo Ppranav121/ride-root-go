@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Check, AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface DriverStatusToggleProps {
   isOnline: boolean;
@@ -22,8 +23,13 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
     // If turning online, navigate directly to the driver-ride page
     // with replace: true to prevent back navigation issues
     if (online) {
-      navigate("/driver-ride", { replace: true });
+      navigate("/driver-ride", { replace: false });
     }
+  };
+  
+  // Added function to navigate to driver ride if already online
+  const goToRideView = () => {
+    navigate("/driver-ride");
   };
   
   return (
@@ -86,13 +92,24 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
           transition={{ delay: 0.2 }}
           className="mt-4 pt-3 border-t border-gray-100"
         >
-          <div className="flex items-center">
-            <motion.div 
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-2 h-2 bg-green-500/90 rounded-full mr-2"
-            />
-            <span className="text-sm font-medium text-green-600/90">Active & Ready for Requests</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <motion.div 
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="w-2 h-2 bg-green-500/90 rounded-full mr-2"
+              />
+              <span className="text-sm font-medium text-green-600/90">Active & Ready for Requests</span>
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs border-green-500/70 text-green-600 hover:bg-green-50"
+              onClick={goToRideView}
+            >
+              View Ride Screen
+            </Button>
           </div>
         </motion.div>
       )}

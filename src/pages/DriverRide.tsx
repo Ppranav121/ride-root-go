@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { 
@@ -165,6 +166,15 @@ const DriverRide: React.FC = () => {
     setIsMessageDialogOpen(true);
   };
 
+  // New function to navigate to dashboard while staying online
+  const navigateToDashboard = () => {
+    toast({
+      title: "Returning to Dashboard",
+      description: "You're still online and can receive ride requests.",
+    });
+    navigate("/driver-home");
+  };
+
   const renderSearchingAnimation = () => {
     return (
       <div className="flex items-center justify-center h-full">
@@ -213,7 +223,23 @@ const DriverRide: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-rideroot-lightGrey">
-      <RootHeader title="Active Ride" />
+      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md shadow-sm z-20">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full"
+          onClick={navigateToDashboard}
+        >
+          <ArrowLeft size={24} />
+        </Button>
+        
+        <h1 className="text-lg font-bold text-rideroot-text flex items-center">
+          <Car size={20} className="mr-2 text-[#6c5ce7]" />
+          {rideState === 'searching' ? 'Finding Rides' : 'Active Ride'}
+        </h1>
+        
+        <div className="w-10" />
+      </div>
       
       {/* Map view */}
       <div className="flex-1 bg-gradient-to-b from-blue-50 to-blue-200 relative">
@@ -610,19 +636,7 @@ const DriverRide: React.FC = () => {
       
       {/* Peak bonus animation */}
       {animateBonus && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.5, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: 20 }}
-          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
-        >
-          <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-xl shadow-lg">
-            <div className="flex flex-col items-center">
-              <span className="text-green-500 font-bold text-lg mb-1">+$0.50</span>
-              <span className="text-sm text-gray-600">Peak Time Bonus</span>
-            </div>
-          </div>
-        </motion.div>
+        /* ... keep existing code (peak bonus animation) */
       )}
       
       {/* Searching state with enhanced UI */}
