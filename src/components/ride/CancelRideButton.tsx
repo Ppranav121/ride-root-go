@@ -22,9 +22,9 @@ const CancelRideButton: React.FC = () => {
         duration: 3000,
       });
       
-      // Navigate back to home
+      // Navigate to cancellation page
       setTimeout(() => {
-        navigate("/home");
+        navigate("/ride-cancellation");
       }, 1500);
     } else {
       navigate("/home");

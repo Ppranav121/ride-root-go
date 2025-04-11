@@ -59,9 +59,9 @@ const RideTracking: React.FC = () => {
   }, [currentRide, navigate, setCurrentRide]);
 
   useEffect(() => {
-    // When countdown reaches zero, navigate to home instead of completion
+    // When countdown reaches zero, navigate to completion page
     if (secondsLeft === 0 && !isSimulating) {
-      console.log("Ride completed, navigating to home");
+      console.log("Ride completed, navigating to completion page");
       toast.success("You've arrived at your destination!");
       
       // Update ride status to completed
@@ -73,14 +73,14 @@ const RideTracking: React.FC = () => {
       }
       
       setTimeout(() => {
-        navigate("/home");
+        navigate("/ride-completion");
       }, 1000);
     }
   }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
 
   // Manual navigation handler for testing
-  const goToHome = () => {
-    console.log("Manual navigation to home");
+  const goToCompletion = () => {
+    console.log("Manual navigation to completion page");
     setIsSimulating(false);
     
     // Update ride status to completed
@@ -91,7 +91,7 @@ const RideTracking: React.FC = () => {
       });
     }
     
-    navigate("/home");
+    navigate("/ride-completion");
   };
 
   const handleCancelRide = () => {
@@ -106,9 +106,9 @@ const RideTracking: React.FC = () => {
         duration: 3000,
       });
       
-      // Navigate back to home
+      // Navigate to cancellation page
       setTimeout(() => {
-        navigate("/home");
+        navigate("/ride-cancellation");
       }, 1500);
     } else {
       navigate("/home");
@@ -125,7 +125,7 @@ const RideTracking: React.FC = () => {
         <MapView 
           driverPosition={driverPosition} 
           secondsLeft={secondsLeft} 
-          onComplete={goToHome} 
+          onComplete={goToCompletion} 
         />
 
         <RideDetailsBanner secondsLeft={secondsLeft} />
