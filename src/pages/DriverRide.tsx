@@ -334,7 +334,7 @@ const DriverRide: React.FC = () => {
             <div className="flex justify-between mb-2">
               <div className="flex items-center">
                 <Clock size={16} className="text-rideroot-darkGrey mr-1" />
-                <span className="text-sm">{rideRequest.estimatedTime}</span>
+                
               </div>
               <span className="text-sm">{rideRequest.distance} miles</span>
             </div>
