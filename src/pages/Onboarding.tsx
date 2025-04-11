@@ -134,15 +134,16 @@ const Onboarding: React.FC = () => {
 
         <Button 
           onClick={goToSignup} 
-          className="w-full mb-4 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary hover:opacity-90 transition-opacity text-white py-3 rounded-xl font-medium text-base tracking-wide"
+          className="w-full max-w-xs mx-auto mb-4 bg-white text-rideroot-primary hover:bg-white/90 hover:scale-105 transition-transform duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg"
         >
           Create Account
+          <ChevronRight className="ml-1 animate-pulse" size={20} />
         </Button>
         
         <Button 
           onClick={goToSignIn} 
           variant="outline" 
-          className="w-full border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5 tracking-wide"
+          className="w-full max-w-xs mx-auto border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5 tracking-wide rounded-full py-6"
         >
           Already have an account? Sign In
         </Button>
