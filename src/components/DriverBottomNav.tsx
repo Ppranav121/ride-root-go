@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, Star } from "lucide-react";
+import { Home, MapPin, BarChart3, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const DriverBottomNav: React.FC = () => {
@@ -14,24 +14,38 @@ const DriverBottomNav: React.FC = () => {
 
   return (
     <motion.nav 
-      className="fixed bottom-0 w-full bg-white/95 border-t border-gray-200 shadow-lg backdrop-blur-lg z-30"
+      className="fixed bottom-0 w-full bg-white border-t border-gray-200 shadow-lg z-30"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-md mx-auto flex justify-around items-center h-16">
         <NavButton 
-          label="Home" 
-          icon={Car} 
+          label="Dashboard" 
+          icon={Home} 
           isActive={isActive("/driver-home")} 
           onClick={() => navigate("/driver-home")}
         />
-
+        
         <NavButton 
-          label="Ratings" 
-          icon={Star} 
-          isActive={isActive("/driver-ratings")} 
-          onClick={() => navigate("/driver-ratings")}
+          label="Map" 
+          icon={MapPin} 
+          isActive={isActive("/driver-ride")} 
+          onClick={() => navigate("/driver-ride")}
+        />
+        
+        <NavButton 
+          label="Earnings" 
+          icon={BarChart3} 
+          isActive={isActive("/driver-earnings")} 
+          onClick={() => navigate("/driver-earnings")}
+        />
+        
+        <NavButton 
+          label="Profile" 
+          icon={User} 
+          isActive={isActive("/driver-profile")} 
+          onClick={() => navigate("/driver-profile")}
         />
       </div>
     </motion.nav>
@@ -50,14 +64,14 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className={`flex flex-col items-center justify-center w-1/2 pt-1 pb-1 relative ${
-        isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
+      className={`flex flex-col items-center justify-center pt-1 pb-1 relative ${
+        isActive ? "text-rideroot-primary" : "text-gray-500"
       }`}
     >
       {isActive && (
         <motion.div 
           layoutId="driverActiveTab"
-          className="absolute -top-1 w-full h-1 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
+          className="absolute -top-1 w-10 h-1 rounded-full bg-rideroot-primary" 
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       )}
