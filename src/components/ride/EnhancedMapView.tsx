@@ -36,14 +36,14 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           initial={{ scale: 0 }} 
           animate={{ scale: [1, 1.1, 1] }} 
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
-          className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-blue-400/20"
+          className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-indigo-500/20"
         />
         
         <motion.div 
           initial={{ scale: 0 }} 
           animate={{ scale: [1, 1.2, 1] }} 
           transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }} 
-          className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-indigo-400/20"
+          className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-purple-500/20"
         />
         
         {children}
