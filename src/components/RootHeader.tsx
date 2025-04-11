@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, User } from "lucide-react";
+import { ChevronLeft, User, Menu } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
@@ -40,6 +40,22 @@ const RootHeader: React.FC<RootHeaderProps> = ({
           >
             <ChevronLeft size={24} />
           </button>
+        )}
+        {!showBackButton && showDriverSidebar && (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors"
+              >
+                <Menu size={24} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[320px] p-0">
+              <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
+            </SheetContent>
+          </Sheet>
         )}
         {title && (
           <h1 className="text-lg font-semibold text-rideroot-text tracking-tight">

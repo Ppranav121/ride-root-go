@@ -7,6 +7,8 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import DriverSidebar from "./DriverSidebar";
 import { useApp } from "@/contexts/AppContext";
 
+// This component is being phased out as we're moving to a sidebar-only navigation
+// It's kept for reference but will be hidden
 const DriverBottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,52 +22,8 @@ const DriverBottomNav: React.FC = () => {
     return location.pathname === path;
   };
 
-  return (
-    <motion.nav 
-      className="fixed bottom-0 w-full bg-white/95 border-t border-gray-200 shadow-lg backdrop-blur-lg z-30"
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="max-w-md mx-auto flex justify-around items-center h-16">
-        <Sheet>
-          <SheetTrigger asChild>
-            <div className="flex-1">
-              <NavButton 
-                label="Menu" 
-                icon={Menu} 
-                isActive={false} 
-              />
-            </div>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-[320px] p-0">
-            <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
-          </SheetContent>
-        </Sheet>
-
-        <NavButton 
-          label="Home" 
-          icon={Car} 
-          isActive={isActive("/driver-home")} 
-          onClick={() => navigate("/driver-home")}
-        />
-
-        <NavButton 
-          label="Map" 
-          icon={Map} 
-          isActive={isActive("/driver-map")} 
-          onClick={() => navigate("/driver-map")}
-        />
-
-        <NavButton 
-          label="Ratings" 
-          icon={Star} 
-          isActive={isActive("/driver-ratings")} 
-          onClick={() => navigate("/driver-ratings")}
-        />
-      </div>
-    </motion.nav>
-  );
+  // Return null to hide the bottom nav
+  return null;
 };
 
 interface NavButtonProps {

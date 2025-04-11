@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { 
   User, 
   Wallet, 
@@ -10,13 +10,18 @@ import {
   HelpCircle, 
   Gift, 
   Crown, 
-  X
+  X,
+  Car,
+  Map,
+  LogOut,
+  Bell
 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator"; 
 import { SheetClose } from "@/components/ui/sheet";
 import { motion } from "framer-motion";
 import { useApp } from "@/contexts/AppContext";
+import { cn } from "@/lib/utils";
 
 interface DriverSidebarProps {
   firstName?: string;
@@ -28,22 +33,29 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
   isPrimeDriver = true 
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useApp();
   const rating = 4.9;
   const totalRides = 420;
 
   const menuItems = [
-    { icon: User, label: "Profile", path: "/driver-profile" },
+    { icon: Car, label: "Home", path: "/driver-home" },
+    { icon: Map, label: "Map", path: "/driver-map" },
     { icon: Wallet, label: "Earnings", path: "/driver-earnings" },
     { icon: Star, label: "Ratings", path: "/driver-ratings" },
-    { icon: Settings, label: "Settings", path: "/driver-settings" },
+    { icon: Bell, label: "Notifications", path: "/driver-notifications", badge: 3 },
     { icon: MessageCircle, label: "Messages", path: "/driver-messages" },
-    { icon: HelpCircle, label: "Help Center", path: "/driver-help" },
     { icon: Gift, label: "Referrals", path: "/driver-referrals" },
+    { icon: Settings, label: "Settings", path: "/driver-settings" },
+    { icon: HelpCircle, label: "Help Center", path: "/driver-help" },
   ];
 
   const handleNavigation = (path: string) => {
     navigate(path);
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -57,9 +69,13 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
       {/* Profile Section */}
       <div className="flex flex-col items-center px-6 pb-6">
         <Avatar className="w-24 h-24 bg-[#6c5ce7] mb-4">
-          <AvatarFallback className="text-white text-3xl">
-            {firstName.charAt(0)}
-          </AvatarFallback>
+          {user?.photoURL ? (
+            <AvatarImage src={user.photoURL} alt={firstName} />
+          ) : (
+            <AvatarFallback className="text-white text-3xl">
+              {firstName.charAt(0)}
+            </AvatarFallback>
+          )}
         </Avatar>
         
         <h2 className="text-2xl font-semibold mb-3">
@@ -75,17 +91,33 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
       </div>
 
       {/* Menu Items */}
-      <nav className="flex-1 px-4">
-        {menuItems.map((item, index) => (
+      <nav className="flex-1 px-2 overflow-y-auto">
+        {menuItems.map((item) => (
           <motion.button
             key={item.label}
-            className="flex items-center w-full py-3.5 hover:bg-gray-50 rounded-md px-4 mb-1 transition-colors"
+            className={cn(
+              "flex items-center w-full py-3.5 rounded-lg px-4 mb-1 transition-all",
+              isActive(item.path)
+                ? "bg-[#6c5ce7]/10 text-[#6c5ce7]" 
+                : "hover:bg-gray-50 text-gray-700"
+            )}
             onClick={() => handleNavigation(item.path)}
             whileHover={{ x: 5 }}
             whileTap={{ scale: 0.98 }}
           >
             <item.icon size={22} className="mr-4" />
-            <span className="font-medium">{item.label}</span>
+            <span className="font-medium flex-1 text-left">{item.label}</span>
+            {item.badge && (
+              <span className="bg-[#6c5ce7] text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                {item.badge}
+              </span>
+            )}
+            {isActive(item.path) && (
+              <motion.div
+                layoutId="sidebar-active"
+                className="absolute left-0 w-1 h-8 bg-[#6c5ce7] rounded-r-md"
+              />
+            )}
           </motion.button>
         ))}
       </nav>
@@ -95,7 +127,7 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
       {/* Rating Card */}
       <div className="mx-4 mb-6">
         <motion.div 
-          className="bg-[#6c5ce7] text-white p-4 rounded-2xl"
+          className="bg-gradient-to-r from-[#6c5ce7] to-[#5046af] text-white p-4 rounded-2xl"
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -110,6 +142,17 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
           </div>
           <p className="text-sm opacity-80 mt-1">Based on {totalRides} rides</p>
         </motion.div>
+      </div>
+
+      {/* Logout Button */}
+      <div className="px-4 mb-6">
+        <button 
+          onClick={() => navigate("/signin")}
+          className="flex items-center w-full py-3.5 px-4 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+        >
+          <LogOut size={22} className="mr-4" />
+          <span className="font-medium">Sign Out</span>
+        </button>
       </div>
     </div>
   );
