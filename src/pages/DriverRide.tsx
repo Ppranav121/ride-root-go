@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
-
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
 interface RideRequest {
   id: string;
@@ -22,7 +21,6 @@ interface RideRequest {
   isPremium: boolean;
   isPeakBonus: boolean;
 }
-
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -41,7 +39,6 @@ const DriverRide: React.FC = () => {
     top: "45%",
     left: "45%"
   });
-
   const hotspots = [{
     id: 1,
     location: {
@@ -78,7 +75,6 @@ const DriverRide: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
-
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => prev === 100 ? 120 : 100);
@@ -86,7 +82,6 @@ const DriverRide: React.FC = () => {
     }, 1500);
     return () => clearInterval(interval);
   }, []);
-
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
@@ -115,7 +110,6 @@ const DriverRide: React.FC = () => {
       };
     }
   }, [rideState]);
-
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -132,7 +126,6 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
-
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -160,7 +153,6 @@ const DriverRide: React.FC = () => {
       }
     }, 150);
   };
-
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -170,7 +162,6 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
-
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -194,16 +185,13 @@ const DriverRide: React.FC = () => {
       }
     }, 200);
   };
-
   const handleCompleteRide = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
-
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
-
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -213,12 +201,10 @@ const DriverRide: React.FC = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
-
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
   };
-
   return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition}>
         {rideState !== 'searching' && <motion.div animate={{
@@ -247,8 +233,7 @@ const DriverRide: React.FC = () => {
           {rideState === 'searching' ? 'Finding Rides' : 'Active Ride'}
         </h1>
         
-        {rideState === 'searching' && (
-          <Drawer>
+        {rideState === 'searching' && <Drawer>
             <DrawerTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Settings size={22} className="text-rideroot-text" />
@@ -299,46 +284,12 @@ const DriverRide: React.FC = () => {
                 </DrawerFooter>
               </div>
             </DrawerContent>
-          </Drawer>
-        )}
+          </Drawer>}
         {!rideState === 'searching' && <div className="w-10" />}
       </div>
       
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30">
-        <motion.div initial={{
-        y: -10,
-        opacity: 0
-      }} animate={{
-        y: 0,
-        opacity: 1
-      }} className="bg-white/90 backdrop-blur-sm px-5 py-2 rounded-xl shadow-md">
-          <p className="text-rideroot-darkGrey text-sm font-medium flex items-center">
-            {rideState === 'searching' && <>
-                <Search size={16} className="mr-2 text-blue-500" />
-                <span>Searching for ride requests{renderSearchingDots()}</span>
-              </>}
-            {rideState === 'request' && <>
-                <AlertTriangle size={16} className="mr-2 text-amber-500" />
-                <span>New ride request!</span>
-              </>}
-            {rideState === 'accepted' && <>
-                <MapPin size={16} className="mr-2 text-green-500" />
-                <span>Navigating to pickup location...</span>
-              </>}
-            {rideState === 'arrived' && <>
-                <Clock size={16} className="mr-2 text-blue-500" />
-                <span>Waiting for rider...</span>
-              </>}
-            {rideState === 'inProgress' && <>
-                <Car size={16} className="mr-2 text-green-500" />
-                <span>Navigating to destination...</span>
-              </>}
-            {rideState === 'completed' && <>
-                <CheckCircle size={16} className="mr-2 text-green-500" />
-                <span>Ride completed!</span>
-              </>}
-          </p>
-        </motion.div>
+        
       </div>
       
       {rideState === 'request' && rideRequest && <motion.div initial={{
@@ -644,5 +595,4 @@ const DriverRide: React.FC = () => {
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
     </div>;
 };
-
 export default DriverRide;
