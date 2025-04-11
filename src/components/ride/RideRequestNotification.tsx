@@ -1,11 +1,12 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Car, MapPin, X, DollarSign, Clock } from "lucide-react";
+import { Bell, Car, MapPin, X, DollarSign, Clock, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RideRequestNotificationProps {
   isVisible: boolean;
@@ -31,14 +32,15 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
   }
 }) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   if (!isVisible) return null;
   
   const handleView = () => {
     onView();
     navigate('/driver-ride');
-    toast("Navigating to ride request", {
-      description: "Opening ride details",
+    toast("Opening ride request", {
+      description: "Navigating to ride details",
       icon: <Car className="h-4 w-4" />,
     });
   };
@@ -50,13 +52,13 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="fixed top-20 inset-x-4 z-50"
+          className="fixed top-16 inset-x-3 z-50 max-w-md mx-auto"
         >
-          <Card className="border-[#6c5ce7] border-l-4 shadow-lg">
-            <CardContent className="pt-6 pb-2">
+          <Card className="border-[#6c5ce7] border-l-4 shadow-lg rounded-xl overflow-hidden">
+            <CardContent className={`pt-5 pb-2 ${isMobile ? 'px-4' : 'px-6'}`}>
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center">
-                  <div className="bg-[#6c5ce7]/10 p-2 rounded-full mr-3">
+                  <div className="bg-[#6c5ce7]/10 p-2 rounded-full mr-2.5">
                     <Bell size={16} className="text-[#6c5ce7]" />
                   </div>
                   <div>
@@ -69,13 +71,13 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
                 </div>
                 <button 
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100"
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100 -mt-1 -mr-1"
                 >
-                  <X size={16} />
+                  <X size={18} />
                 </button>
               </div>
               
-              <div className="mt-3 space-y-3 bg-gray-50 p-3 rounded-lg">
+              <div className="mt-3 space-y-2.5 bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center text-sm">
                   <Car size={15} className="mr-2.5 text-[#6c5ce7]" />
                   <span className="font-medium w-16">Rider:</span>
@@ -96,21 +98,22 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
               </div>
             </CardContent>
             
-            <CardFooter className="pt-2 pb-4 flex justify-end gap-2">
+            <CardFooter className={`pt-2 pb-4 flex justify-between gap-2 ${isMobile ? 'px-4' : 'px-6'}`}>
               <Button 
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="text-gray-600 border-gray-300"
+                className="text-gray-600 border-gray-300 rounded-full px-4"
               >
                 Dismiss
               </Button>
               <Button 
                 size="sm"
                 onClick={handleView}
-                className="bg-[#6c5ce7] hover:bg-[#5b4dc4]"
+                className="bg-[#6c5ce7] hover:bg-[#5b4dc4] rounded-full px-4 flex items-center"
               >
                 View Request
+                <ArrowRight size={14} className="ml-1.5" />
               </Button>
             </CardFooter>
           </Card>
