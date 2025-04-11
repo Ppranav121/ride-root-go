@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Car, MapPin, Clock, Settings, X, Home } from "lucide-react";
+import { Search, Car, MapPin, Clock, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import BackButton from "@/components/common/BackButton";
 
 interface DriverSearchingProps {
   onCancel: () => void;
@@ -47,10 +46,6 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel, onRideFound
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleReturnToDashboard = () => {
-    navigate("/driver-home");
-  };
-
   return (
     <div className="fixed inset-0 bg-gradient-to-b from-blue-50 to-indigo-100 flex flex-col z-50">
       {/* Header */}
@@ -59,20 +54,9 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel, onRideFound
           <Car className="mr-2 text-rideroot-primary" size={20} />
           Searching for Rides
         </h1>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex items-center gap-1" 
-            onClick={handleReturnToDashboard}
-          >
-            <Home size={18} />
-            <span className="hidden sm:inline">Dashboard</span>
-          </Button>
-          <Button variant="ghost" size="icon" onClick={onCancel}>
-            <X size={20} />
-          </Button>
-        </div>
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <X size={20} />
+        </Button>
       </div>
       
       {/* Search animation */}
@@ -242,24 +226,15 @@ const DriverSearching: React.FC<DriverSearchingProps> = ({ onCancel, onRideFound
         </div>
       </div>
       
-      {/* Bottom action buttons */}
-      <div className="bg-white p-4 border-t border-gray-200 shadow-md">
-        <div className="flex gap-3 justify-between">
-          <Button
-            variant="outline" 
-            onClick={handleReturnToDashboard}
-            className="flex-1"
-          >
-            Return to Dashboard
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={onCancel}
-            className="flex-1"
-          >
-            Go Offline
-          </Button>
-        </div>
+      {/* Cancel button - Moved from bottom bar to floating button */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+        <Button
+          variant="destructive"
+          className="px-6 py-2 rounded-full shadow-lg"
+          onClick={onCancel}
+        >
+          Cancel Search
+        </Button>
       </div>
     </div>
   );
