@@ -586,22 +586,9 @@ const DriverRide: React.FC = () => {
           </div>
         </motion.div>}
       
-      {rideState === 'searching' && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
-          
-          <div className="mt-4">
-            <Button variant="outline" className="w-full border-red-500 text-red-500 hover:bg-red-50" onClick={() => navigate("/driver-home")}>
-              Stop Searching
-            </Button>
-          </div>
-        </motion.div>}
+      {rideState === 'searching' && <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
+          {/* Empty div to replace the white background panel */}
+        </div>}
       
       {rideState === 'searching' && (
         <motion.div 
