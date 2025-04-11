@@ -33,7 +33,7 @@ const RideTracking: React.FC = () => {
     // Update ride status to in-progress
     setCurrentRide({
       ...currentRide,
-      status: "in-progress"
+      status: "in-progress" as const
     });
 
     // Animate driver moving toward pickup location
@@ -74,7 +74,7 @@ const RideTracking: React.FC = () => {
         // Create the updated ride object
         const updatedRide = {
           ...currentRide,
-          status: "completed"
+          status: "completed" as const
         };
         
         // Update the state
@@ -104,7 +104,7 @@ const RideTracking: React.FC = () => {
       // Create updated ride object
       const updatedRide = {
         ...currentRide,
-        status: "completed"
+        status: "completed" as const
       };
       
       // Update state

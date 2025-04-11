@@ -18,7 +18,7 @@ const CancelRideButton: React.FC = () => {
       // Update ride status to cancelled in state
       const updatedRide = {
         ...currentRide,
-        status: "cancelled"
+        status: "cancelled" as const
       };
       
       // Set the updated ride in context
