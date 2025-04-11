@@ -134,7 +134,7 @@ const Onboarding: React.FC = () => {
 
         <Button 
           onClick={goToSignup} 
-          className="w-full max-w-xs mx-auto mb-4 bg-white text-rideroot-primary hover:bg-white/90 hover:scale-105 transition-transform duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg"
+          className="w-full max-w-xs mx-auto mb-4 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white hover:opacity-95 hover:scale-105 transition-all duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg"
         >
           Create Account
           <ChevronRight className="ml-1 animate-pulse" size={20} />
