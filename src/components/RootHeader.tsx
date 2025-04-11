@@ -2,13 +2,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, User } from "lucide-react";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
+import DriverSidebar from "./DriverSidebar";
 
 interface RootHeaderProps {
-  title?: React.ReactNode; // Changed from string to ReactNode
+  title?: React.ReactNode;
   showBackButton?: boolean;
   showProfileButton?: boolean;
   transparent?: boolean;
+  showDriverSidebar?: boolean;
 }
 
 const RootHeader: React.FC<RootHeaderProps> = ({
@@ -16,9 +20,14 @@ const RootHeader: React.FC<RootHeaderProps> = ({
   showBackButton = true,
   showProfileButton = true,
   transparent = false,
+  showDriverSidebar = false,
 }) => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, user } = useApp();
+
+  // Get first name for driver sidebar welcome message
+  const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
+  const isPrimeDriver = user?.isSubscribed || false;
 
   return (
     <header className={`flex items-center justify-between px-4 py-4 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'} z-10`}>
@@ -40,13 +49,30 @@ const RootHeader: React.FC<RootHeaderProps> = ({
       </div>
 
       {showProfileButton && isAuthenticated && (
-        <button
-          onClick={() => navigate("/profile")}
-          className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
-          aria-label="View profile"
-        >
-          <User size={22} />
-        </button>
+        showDriverSidebar ? (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
+              >
+                <User size={22} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[320px] p-0">
+              <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <button
+            onClick={() => navigate("/profile")}
+            className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
+            aria-label="View profile"
+          >
+            <User size={22} />
+          </button>
+        )
       )}
     </header>
   );

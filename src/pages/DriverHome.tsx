@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Car, User, HelpCircle, MessageCircle, Crown, Zap, Settings } from "lucide-react";
+import { Car, User, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -12,6 +13,7 @@ import DriverBottomNav from "@/components/DriverBottomNav";
 import DriverStatusToggle from "@/components/DriverStatusToggle";
 import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
+import DriverSidebar from "@/components/DriverSidebar";
 import MapBackground from "@/components/ride/MapBackground";
 import { toast } from "sonner";
 
@@ -124,50 +126,11 @@ const DriverHome: React.FC = () => {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-              <Menu size={24} />
+              <User size={24} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[270px] bg-white">
-            <div className="flex flex-col h-full">
-              <div className="py-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-4 mx-auto">
-                  <Car size={32} className="text-white" />
-                </div>
-                <h2 className="text-xl font-semibold text-center">
-                  Driver Portal
-                </h2>
-                <div className="flex items-center justify-center mt-2 bg-gradient-to-r from-amber-100 to-amber-200 rounded-full py-1 px-3">
-                  {isPrimeDriver ? <>
-                      <Crown size={16} className="text-amber-500 mr-1" />
-                      <p className="text-center text-amber-600 font-medium text-sm">
-                        Prime Driver
-                      </p>
-                    </> : <>
-                      <Zap size={16} className="text-blue-500 mr-1" />
-                      <p className="text-center text-blue-600 font-medium text-sm">
-                        Pay-Per-Ride Driver
-                      </p>
-                    </>}
-                </div>
-              </div>
-              
-              <nav className="flex-1">
-                <div className="space-y-1">
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-profile")}>
-                    <User className="mr-2" size={20} />
-                    Profile
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-settings")}>
-                    <Settings className="mr-2" size={20} />
-                    Settings
-                  </Button>
-                  <Button variant="ghost" className="w-full justify-start rounded-lg py-5 font-medium" onClick={() => navigate("/driver-messages")}>
-                    <MessageCircle className="mr-2" size={20} />
-                    Messages
-                  </Button>
-                </div>
-              </nav>
-            </div>
+          <SheetContent side="left" className="w-[320px] p-0">
+            <DriverSidebar isPrimeDriver={isPrimeDriver} />
           </SheetContent>
         </Sheet>
         

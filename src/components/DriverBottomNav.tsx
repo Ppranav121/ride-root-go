@@ -1,12 +1,20 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Car, Star } from "lucide-react";
+import { Car, Star, Menu, Map } from "lucide-react";
 import { motion } from "framer-motion";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import DriverSidebar from "./DriverSidebar";
+import { useApp } from "@/contexts/AppContext";
 
 const DriverBottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useApp();
+
+  // Get first name for driver sidebar welcome message
+  const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
+  const isPrimeDriver = user?.isSubscribed || false;
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -20,11 +28,33 @@ const DriverBottomNav: React.FC = () => {
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-md mx-auto flex justify-around items-center h-16">
+        <Sheet>
+          <SheetTrigger asChild>
+            <div className="flex-1">
+              <NavButton 
+                label="Menu" 
+                icon={Menu} 
+                isActive={false} 
+              />
+            </div>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[320px] p-0">
+            <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
+          </SheetContent>
+        </Sheet>
+
         <NavButton 
           label="Home" 
           icon={Car} 
           isActive={isActive("/driver-home")} 
           onClick={() => navigate("/driver-home")}
+        />
+
+        <NavButton 
+          label="Map" 
+          icon={Map} 
+          isActive={isActive("/driver-map")} 
+          onClick={() => navigate("/driver-map")}
         />
 
         <NavButton 
@@ -41,8 +71,8 @@ const DriverBottomNav: React.FC = () => {
 interface NavButtonProps {
   label: string;
   icon: React.ElementType;
-  isActive: boolean;
-  onClick: () => void;
+  isActive?: boolean;
+  onClick?: () => void;
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onClick }) => {
@@ -50,14 +80,14 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
     <motion.button
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className={`flex flex-col items-center justify-center w-1/2 pt-1 pb-1 relative ${
-        isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
+      className={`flex flex-col items-center justify-center flex-1 pt-1 pb-1 relative ${
+        isActive ? "text-[#6c5ce7]" : "text-rideroot-darkGrey"
       }`}
     >
       {isActive && (
         <motion.div 
           layoutId="driverActiveTab"
-          className="absolute -top-1 w-full h-1 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary" 
+          className="absolute -top-1 w-full h-1 bg-[#6c5ce7]" 
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       )}
