@@ -26,11 +26,13 @@ import { cn } from "@/lib/utils";
 interface DriverSidebarProps {
   firstName?: string;
   isPrimeDriver?: boolean;
+  currentPath?: string;
 }
 
 const DriverSidebar: React.FC<DriverSidebarProps> = ({ 
   firstName = "Alex", 
-  isPrimeDriver = true 
+  isPrimeDriver = true,
+  currentPath = ""
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,14 +57,14 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
   };
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname === path || currentPath === path;
   };
 
   return (
     <div className="flex flex-col h-full bg-white">
       <div className="flex justify-end p-4">
-        <SheetClose className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
-          <X size={20} />
+        <SheetClose className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all hover:scale-105 group">
+          <X size={20} className="text-gray-500 group-hover:text-gray-700" />
         </SheetClose>
       </div>
 
@@ -116,6 +118,30 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
             )}
           </motion.button>
         ))}
+
+        {/* Add View Ride Screen button in the menu */}
+        {currentPath === "/driver-home" && (
+          <motion.button
+            className={cn(
+              "flex items-center w-full py-3.5 rounded-lg px-4 mb-1 transition-all",
+              isActive("/driver-ride")
+                ? "bg-[#6c5ce7]/10 text-[#6c5ce7]" 
+                : "bg-gradient-to-r from-rideroot-primary/10 to-rideroot-secondary/10 text-[#6c5ce7] hover:bg-gradient-to-r hover:from-rideroot-primary/20 hover:to-rideroot-secondary/20"
+            )}
+            onClick={() => handleNavigation("/driver-ride")}
+            whileHover={{ x: 5 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Map size={22} className="mr-4" />
+            <span className="font-medium flex-1 text-left">View Ride Screen</span>
+            {isActive("/driver-ride") && (
+              <motion.div
+                layoutId="sidebar-active-ride"
+                className="absolute left-0 w-1 h-8 bg-[#6c5ce7] rounded-r-md"
+              />
+            )}
+          </motion.button>
+        )}
       </nav>
 
       <Separator className="mb-4 mt-2" />

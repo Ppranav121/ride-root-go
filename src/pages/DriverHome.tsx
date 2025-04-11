@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Car, Zap, Menu, MapPin, MapPinned, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-
-// Custom Components
+import { ScrollArea } from "@/components/ui/scroll-area";
 import DriverStatusToggle from "@/components/DriverStatusToggle";
 import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
@@ -16,13 +15,14 @@ import EnhancedMapView from "@/components/ride/EnhancedMapView";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
 
-// Use sessionStorage to persist driver online status
 const getStoredOnlineStatus = () => {
   const stored = sessionStorage.getItem('driverOnlineStatus');
   return stored === 'true';
 };
+
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     toast: shadcnToast
   } = useToast();
@@ -30,7 +30,6 @@ const DriverHome: React.FC = () => {
     user
   } = useApp();
 
-  // Initialize isOnline from sessionStorage or default to false
   const [isOnline, setIsOnline] = useState(getStoredOnlineStatus());
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
   const [todayEarnings, setTodayEarnings] = useState(135.48);
@@ -40,63 +39,64 @@ const DriverHome: React.FC = () => {
   const [boostAmount, setBoostAmount] = useState(0);
   const [showHotspots, setShowHotspots] = useState(true);
 
-  // Mock hotspot data - in a real app, this would come from an API
-  // Fixed the type of demandLevel to be one of the allowed values: "high", "medium", or "low"
-  const hotspots = [{
-    id: 1,
-    location: {
-      top: "30%",
-      left: "40%"
+  const hotspots = [
+    {
+      id: 1,
+      location: {
+        top: "30%",
+        left: "40%"
+      },
+      demandLevel: "high" as const
     },
-    demandLevel: "high" as const
-  }, {
-    id: 2,
-    location: {
-      top: "50%",
-      left: "60%"
+    {
+      id: 2,
+      location: {
+        top: "50%",
+        left: "60%"
+      },
+      demandLevel: "medium" as const
     },
-    demandLevel: "medium" as const
-  }, {
-    id: 3,
-    location: {
-      top: "70%",
-      left: "30%"
+    {
+      id: 3,
+      location: {
+        top: "70%",
+        left: "30%"
+      },
+      demandLevel: "low" as const
     },
-    demandLevel: "low" as const
-  }, {
-    id: 4,
-    location: {
-      top: "20%",
-      left: "65%"
+    {
+      id: 4,
+      location: {
+        top: "20%",
+        left: "65%"
+      },
+      demandLevel: "high" as const
     },
-    demandLevel: "high" as const
-  }, {
-    id: 5,
-    location: {
-      top: "60%",
-      left: "20%"
-    },
-    demandLevel: "medium" as const
-  }];
+    {
+      id: 5,
+      location: {
+        top: "60%",
+        left: "20%"
+      },
+      demandLevel: "medium" as const
+    }
+  ];
 
-  // Driver position for the map
   const driverPosition = {
     top: "45%",
     left: "45%"
   };
 
-  // Get first name for driver sidebar welcome message
   const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
 
-  // Check the URL to see if we're coming from the ride screen
   useEffect(() => {
-    // If coming back from the ride screen, ensure driver stays online
     const fromRide = sessionStorage.getItem('fromRide') === 'true';
     if (fromRide) {
       setIsOnline(true);
-      sessionStorage.removeItem('fromRide'); // Clear the flag
+      sessionStorage.removeItem('fromRide');
     }
   }, []);
+
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -105,17 +105,15 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
+
   const toggleOnlineStatus = (newStatus: boolean) => {
     setIsOnline(newStatus);
-    // Store online status in sessionStorage
     sessionStorage.setItem('driverOnlineStatus', String(newStatus));
     if (newStatus) {
       shadcnToast({
         title: "You're now online",
         description: "Searching for ride requests..."
       });
-
-      // Navigate to driver-ride when going online
       navigate('/driver-ride');
     } else {
       shadcnToast({
@@ -125,6 +123,7 @@ const DriverHome: React.FC = () => {
       });
     }
   };
+
   const toggleDriverTier = (newValue: boolean) => {
     if (!newValue) {
       setIsPrimeDriver(false);
@@ -154,6 +153,7 @@ const DriverHome: React.FC = () => {
       }, 1000);
     }
   };
+
   const toggleHotspots = () => {
     setShowHotspots(prev => !prev);
     if (!showHotspots) {
@@ -162,11 +162,13 @@ const DriverHome: React.FC = () => {
       toast("Hotspots disabled.");
     }
   };
-  return <div className="flex flex-col min-h-screen relative">
-      {/* Full-screen map view */}
-      <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition} />
+
+  const currentPath = location.pathname;
+
+  return (
+    <div className="flex flex-col min-h-screen relative">
+      <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition} allowScroll={true} />
       
-      {/* Header with transparency */}
       <div className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex items-center justify-between p-4">
           <Sheet>
@@ -176,7 +178,11 @@ const DriverHome: React.FC = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[320px] p-0">
-              <DriverSidebar isPrimeDriver={isPrimeDriver} firstName={firstName} />
+              <DriverSidebar 
+                isPrimeDriver={isPrimeDriver} 
+                firstName={firstName} 
+                currentPath={currentPath}
+              />
             </SheetContent>
           </Sheet>
           
@@ -189,11 +195,9 @@ const DriverHome: React.FC = () => {
         </div>
       </div>
       
-      {/* Main content - Using absolute positioning for overlay on map */}
-      <div className="fixed inset-x-0 top-16 bottom-0 z-10 pointer-events-none">
-        <div className="h-full p-4 flex flex-col">
-          {/* Status and earning components - These need pointer events */}
-          <div className="space-y-4 pointer-events-auto">
+      <ScrollArea className="fixed inset-x-0 top-16 bottom-0 z-10">
+        <div className="p-4 flex flex-col min-h-[calc(100vh-4rem)]">
+          <div className="space-y-4 mb-6">
             <DriverStatusToggle isOnline={isOnline} onStatusChange={toggleOnlineStatus} />
             
             <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
@@ -203,9 +207,7 @@ const DriverHome: React.FC = () => {
           
           <div className="flex-1" />  {/* Spacer */}
           
-          {/* Bottom controls - These need pointer events */}
-          <div className="space-y-4 mb-20 pointer-events-auto">
-            {/* Prime Driver Tags */}
+          <div className="space-y-4 mb-20">
             {isPrimeDriver && <div className="mb-4 flex flex-wrap gap-2">
                 {isPeakTime && <motion.span whileHover={{
               scale: 1.05
@@ -220,9 +222,6 @@ const DriverHome: React.FC = () => {
                 </motion.span>
               </div>}
           
-            {/* Hotspot toggle button */}
-            
-            
             <AnimatePresence>
               {showEarningsBoost && <motion.div initial={{
               opacity: 0,
@@ -253,7 +252,9 @@ const DriverHome: React.FC = () => {
               </motion.div>}
           </div>
         </div>
-      </div>
-    </div>;
+      </ScrollArea>
+    </div>
+  );
 };
+
 export default DriverHome;

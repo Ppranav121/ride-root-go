@@ -15,16 +15,18 @@ interface EnhancedMapViewProps {
   }[];
   driverPosition?: { top: string; left: string };
   children?: React.ReactNode;
+  allowScroll?: boolean;
 }
 
 const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({ 
   showHotspots, 
   hotspots,
   driverPosition = { top: "50%", left: "50%" },
-  children
+  children,
+  allowScroll = false
 }) => {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className={`absolute inset-0 z-0 ${allowScroll ? 'overflow-auto' : ''}`}>
       <MapBackground>
         {showHotspots && (
           <HotspotOverlay hotspots={hotspots} />
