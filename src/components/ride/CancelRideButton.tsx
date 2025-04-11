@@ -12,6 +12,7 @@ const CancelRideButton: React.FC = () => {
 
   const handleCancel = () => {
     if (currentRide) {
+      // Update ride status to cancelled
       setCurrentRide({
         ...currentRide,
         status: "cancelled"
@@ -22,8 +23,12 @@ const CancelRideButton: React.FC = () => {
         duration: 3000,
       });
       
-      // Navigate to cancellation page
+      // Add console log to track navigation intent
+      console.log("Attempting to navigate to ride-cancellation");
+      
+      // Navigate to cancellation page with a slight delay to ensure state updates
       setTimeout(() => {
+        console.log("Navigating to ride-cancellation now");
         navigate("/ride-cancellation");
       }, 1500);
     } else {

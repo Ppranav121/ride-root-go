@@ -8,6 +8,7 @@ import RideDetailsBanner from "@/components/ride/RideDetailsBanner";
 import RideDetailsPanel from "@/components/ride/RideDetailsPanel";
 import EmergencyButton from "@/components/ride/EmergencyButton";
 import RouteInfoCard from "@/components/ride/RouteInfoCard";
+import CancelRideButton from "@/components/ride/CancelRideButton";
 import { toast } from "sonner";
 
 const RideTracking: React.FC = () => {
@@ -70,11 +71,13 @@ const RideTracking: React.FC = () => {
           ...currentRide,
           status: "completed"
         });
+        
+        // Add a small delay before navigation to ensure state updates
+        setTimeout(() => {
+          console.log("Navigating to ride-completion");
+          navigate("/ride-completion");
+        }, 1500);
       }
-      
-      setTimeout(() => {
-        navigate("/ride-completion");
-      }, 1000);
     }
   }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
 
@@ -89,29 +92,13 @@ const RideTracking: React.FC = () => {
         ...currentRide,
         status: "completed"
       });
-    }
-    
-    navigate("/ride-completion");
-  };
-
-  const handleCancelRide = () => {
-    if (currentRide) {
-      setCurrentRide({
-        ...currentRide,
-        status: "cancelled"
-      });
       
-      toast.success("Ride cancelled successfully", {
-        description: "You will not be charged for this ride",
-        duration: 3000,
-      });
-      
-      // Navigate to cancellation page
+      // Add a console log to track navigation
+      console.log("Manually navigating to ride-completion");
+      // Force navigation with a delay to ensure state is updated
       setTimeout(() => {
-        navigate("/ride-cancellation");
-      }, 1500);
-    } else {
-      navigate("/home");
+        navigate("/ride-completion");
+      }, 1000);
     }
   };
 
@@ -143,12 +130,7 @@ const RideTracking: React.FC = () => {
           />
           
           <div className="mt-4">
-            <button
-              onClick={handleCancelRide}
-              className="w-full bg-rideroot-danger text-white rounded-xl py-4 font-medium border border-rideroot-danger/20 hover:bg-rideroot-danger/90 transition-colors shadow-button hover:shadow-button-hover flex items-center justify-center"
-            >
-              Cancel Ride
-            </button>
+            <CancelRideButton />
           </div>
         </div>
       </div>

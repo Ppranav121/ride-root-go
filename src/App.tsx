@@ -8,7 +8,7 @@ import { AppProvider } from "./contexts/AppContext";
 
 // Pages
 import Splash from "./pages/Splash";
-import Index from "./pages/Index"; // Add explicit import for Index
+import Index from "./pages/Index"; 
 import Onboarding from "./pages/Onboarding";
 import Welcome from "./pages/Welcome";
 import SignUp from "./pages/SignUp";
