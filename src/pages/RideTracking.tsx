@@ -19,6 +19,7 @@ const RideTracking: React.FC = () => {
   const [secondsLeft, setSecondsLeft] = useState(10);
   const [isSimulating, setIsSimulating] = useState(true);
 
+  // Check if we have a current ride
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
       console.log("No ride in progress, redirecting to home");
@@ -26,6 +27,8 @@ const RideTracking: React.FC = () => {
       navigate("/home");
       return;
     }
+
+    console.log("Current ride detected:", currentRide);
 
     // Update ride status to in-progress
     setCurrentRide({
@@ -59,6 +62,7 @@ const RideTracking: React.FC = () => {
     };
   }, [currentRide, navigate, setCurrentRide]);
 
+  // Handle ride completion
   useEffect(() => {
     // When countdown reaches zero, navigate to completion page
     if (secondsLeft === 0 && !isSimulating) {
@@ -67,16 +71,25 @@ const RideTracking: React.FC = () => {
       
       // Update ride status to completed
       if (currentRide) {
-        setCurrentRide({
+        // Create the updated ride object
+        const updatedRide = {
           ...currentRide,
           status: "completed"
-        });
+        };
         
-        // Add a small delay before navigation to ensure state updates
+        // Update the state
+        setCurrentRide(updatedRide);
+        
+        // Store in session storage as backup
+        sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+        
+        console.log("Updated ride after completion:", updatedRide);
+        
+        // Add a longer delay before navigation to ensure state updates
         setTimeout(() => {
           console.log("Navigating to ride-completion");
           navigate("/ride-completion");
-        }, 1500);
+        }, 2000);
       }
     }
   }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
@@ -88,17 +101,25 @@ const RideTracking: React.FC = () => {
     
     // Update ride status to completed
     if (currentRide) {
-      setCurrentRide({
+      // Create updated ride object
+      const updatedRide = {
         ...currentRide,
         status: "completed"
-      });
+      };
       
-      // Add a console log to track navigation
-      console.log("Manually navigating to ride-completion");
-      // Force navigation with a delay to ensure state is updated
+      // Update state
+      setCurrentRide(updatedRide);
+      
+      // Store in session storage as backup
+      sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+      
+      console.log("Manual ride completion, updated ride:", updatedRide);
+      
+      // Force navigation with a longer delay to ensure state is updated
       setTimeout(() => {
+        console.log("Manually navigating to ride-completion now");
         navigate("/ride-completion");
-      }, 1000);
+      }, 2000);
     }
   };
 

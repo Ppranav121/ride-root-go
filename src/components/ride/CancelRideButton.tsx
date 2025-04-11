@@ -12,26 +12,38 @@ const CancelRideButton: React.FC = () => {
 
   const handleCancel = () => {
     if (currentRide) {
-      // Update ride status to cancelled
-      setCurrentRide({
+      // First log the current state before any changes
+      console.log("Current ride before cancellation:", currentRide);
+      
+      // Update ride status to cancelled in state
+      const updatedRide = {
         ...currentRide,
         status: "cancelled"
-      });
+      };
       
+      // Set the updated ride in context
+      setCurrentRide(updatedRide);
+      
+      console.log("Updated ride after cancellation:", updatedRide);
+      
+      // Show confirmation toast
       toast.success("Ride cancelled successfully", {
         description: "You will not be charged for this ride",
         duration: 3000,
       });
       
-      // Add console log to track navigation intent
+      // Store ride data in sessionStorage as backup
+      sessionStorage.setItem('cancelledRide', JSON.stringify(updatedRide));
+      
       console.log("Attempting to navigate to ride-cancellation");
       
-      // Navigate to cancellation page with a slight delay to ensure state updates
+      // Use a longer delay to ensure state is properly updated
       setTimeout(() => {
         console.log("Navigating to ride-cancellation now");
         navigate("/ride-cancellation");
-      }, 1500);
+      }, 2000);
     } else {
+      console.log("No current ride found, navigating to home");
       navigate("/home");
     }
   };

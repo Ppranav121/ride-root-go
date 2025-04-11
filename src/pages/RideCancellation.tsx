@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
 import { XCircle } from "lucide-react";
@@ -10,18 +10,42 @@ import { Button } from "@/components/ui/button";
 const RideCancellation: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide } = useApp();
+  const [rideData, setRideData] = useState(currentRide);
 
   useEffect(() => {
-    if (!currentRide || currentRide.status !== "cancelled") {
+    console.log("RideCancellation - Current ride from context:", currentRide);
+    
+    // First try to use ride data from context
+    if (currentRide && currentRide.status === "cancelled") {
+      setRideData(currentRide);
+      return;
+    }
+
+    // If no valid ride in context, try to recover from sessionStorage
+    try {
+      const storedRide = sessionStorage.getItem('cancelledRide');
+      if (storedRide) {
+        const parsedRide = JSON.parse(storedRide);
+        console.log("RideCancellation - Recovered ride from storage:", parsedRide);
+        setRideData(parsedRide);
+        return;
+      }
+    } catch (e) {
+      console.error("Error parsing stored ride:", e);
+    }
+
+    // If still no valid ride, redirect to home
+    if (!rideData || rideData.status !== "cancelled") {
+      console.log("RideCancellation - No cancelled ride found, redirecting to home");
       navigate("/home");
     }
-  }, [currentRide, navigate]);
+  }, [currentRide, navigate, rideData]);
 
   const handleGoHome = () => {
     navigate("/home");
   };
 
-  if (!currentRide) return null;
+  if (!rideData) return null;
 
   return (
     <div className="flex flex-col h-screen bg-white">
