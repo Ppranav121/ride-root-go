@@ -36,6 +36,7 @@ const DriverRide: React.FC = () => {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [searchInterval, setSearchInterval] = useState<number>(0);
   const [showHotspots, setShowHotspots] = useState(true);
+  const [driverPosition, setDriverPosition] = useState({ top: "45%", left: "45%" });
   
   const hotspots = [
     { id: 1, location: { top: "30%", left: "40%" }, demandLevel: "high" as const },
@@ -44,8 +45,6 @@ const DriverRide: React.FC = () => {
     { id: 4, location: { top: "20%", left: "65%" }, demandLevel: "high" as const },
     { id: 5, location: { top: "60%", left: "20%" }, demandLevel: "medium" as const }
   ];
-
-  const driverPosition = { top: "45%", left: "45%" };
 
   useEffect(() => {
     const interval = setInterval(() => {
