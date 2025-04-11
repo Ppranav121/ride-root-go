@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
@@ -16,8 +16,14 @@ import FareEstimate from "@/components/ride/FareEstimate";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
 import PaymentMethodSelector, { PaymentMethod } from "@/components/ride/PaymentMethodSelector";
 
+// Define a type for location state
+interface LocationState {
+  dropoffLocation?: string;
+}
+
 const BookRide: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { bookRide, rideOption, capacityOption, user } = useApp();
   const [pickupLocation, setPickupLocation] = useState("Current Location");
   const [dropoffLocation, setDropoffLocation] = useState("");
@@ -34,6 +40,23 @@ const BookRide: React.FC = () => {
     expiryDate: "12/25",
     isDefault: true
   });
+
+  // Get pre-selected location from navigation state if available
+  useEffect(() => {
+    const state = location.state as LocationState;
+    if (state?.dropoffLocation) {
+      setDropoffLocation(state.dropoffLocation);
+      
+      // Show a confirmation toast
+      toast.success("Destination selected", {
+        description: state.dropoffLocation,
+        duration: 2000,
+      });
+      
+      // Clear the state to prevent it from being reused on refresh
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
 
   // Mock recent locations
   const recentLocations = [

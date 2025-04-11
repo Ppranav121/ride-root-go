@@ -32,6 +32,11 @@ const Home: React.FC = () => {
     navigate("/book-ride");
   };
 
+  const handleLocationSelect = (address: string) => {
+    // Navigate to book-ride with the pre-selected dropoff location
+    navigate("/book-ride", { state: { dropoffLocation: address } });
+  };
+
   // Animation variants
   const containerVariants = {
     hidden: {
@@ -104,9 +109,6 @@ const Home: React.FC = () => {
           <p className="text-rideroot-darkGrey text-sm">Where would you like to go today?</p>
         </motion.div>
 
-        {/* Quick actions cards */}
-        
-
         {/* Search box */}
         <motion.div initial={{
         opacity: 0,
@@ -139,7 +141,7 @@ const Home: React.FC = () => {
           <div className="bg-white rounded-xl shadow-card-soft overflow-hidden">
             {recentLocations.map((location, index) => <motion.div key={location.id} whileHover={{
             backgroundColor: "rgba(241, 245, 249, 0.5)"
-          }} onClick={() => navigate("/book-ride")} className={`flex items-start p-4 ${index !== recentLocations.length - 1 ? "border-b border-rideroot-mediumGrey" : ""}`}>
+          }} onClick={() => handleLocationSelect(location.address)} className={`flex items-start p-4 cursor-pointer ${index !== recentLocations.length - 1 ? "border-b border-rideroot-mediumGrey" : ""}`}>
                 <MapPin size={20} className="text-rideroot-primary mt-1 mr-3 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-rideroot-text">{location.name}</p>
