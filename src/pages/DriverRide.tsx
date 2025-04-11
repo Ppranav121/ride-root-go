@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
+
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
 interface RideRequest {
   id: string;
@@ -21,6 +22,7 @@ interface RideRequest {
   isPremium: boolean;
   isPeakBonus: boolean;
 }
+
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
   const {
@@ -75,6 +77,7 @@ const DriverRide: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => prev === 100 ? 120 : 100);
@@ -82,6 +85,7 @@ const DriverRide: React.FC = () => {
     }, 1500);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
@@ -110,6 +114,7 @@ const DriverRide: React.FC = () => {
       };
     }
   }, [rideState]);
+
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -126,6 +131,7 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
+
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -153,6 +159,7 @@ const DriverRide: React.FC = () => {
       }
     }, 150);
   };
+
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -162,6 +169,7 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
+
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -185,13 +193,16 @@ const DriverRide: React.FC = () => {
       }
     }, 200);
   };
+
   const handleCompleteRide = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
+
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -201,10 +212,12 @@ const DriverRide: React.FC = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
   };
+
   return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition}>
         {rideState !== 'searching' && <motion.div animate={{
@@ -285,7 +298,7 @@ const DriverRide: React.FC = () => {
               </div>
             </DrawerContent>
           </Drawer>}
-        {!rideState === 'searching' && <div className="w-10" />}
+        {rideState !== 'searching' && <div className="w-10" />}
       </div>
       
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-30">
@@ -595,4 +608,5 @@ const DriverRide: React.FC = () => {
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
     </div>;
 };
+
 export default DriverRide;
