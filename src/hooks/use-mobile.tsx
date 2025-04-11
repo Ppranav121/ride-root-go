@@ -49,3 +49,28 @@ export function useTouchDevice() {
   
   return isTouch;
 }
+
+// New hook to detect if system fonts are loaded
+export function useFontsLoaded() {
+  const [fontsLoaded, setFontsLoaded] = React.useState(false);
+  
+  React.useEffect(() => {
+    // If the browser supports the Font Loading API
+    if ('fonts' in document) {
+      Promise.all([
+        (document as any).fonts.load('1em Poppins'),
+        (document as any).fonts.load('1em Montserrat')
+      ]).then(() => {
+        setFontsLoaded(true);
+      }).catch(() => {
+        // Fallback in case font loading fails
+        setTimeout(() => setFontsLoaded(true), 1000);
+      });
+    } else {
+      // Fallback for browsers that don't support the Font Loading API
+      setTimeout(() => setFontsLoaded(true), 1000);
+    }
+  }, []);
+  
+  return fontsLoaded;
+}

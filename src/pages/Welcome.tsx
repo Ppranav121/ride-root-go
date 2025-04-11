@@ -90,7 +90,7 @@ const WelcomePage: React.FC = () => {
             <Button 
               variant="outline" 
               onClick={skipToOnboarding}
-              className="text-gray-800 bg-white/80 backdrop-blur-sm hover:bg-white/90 border-none rounded-full px-6"
+              className="text-gray-800 bg-white/80 backdrop-blur-sm hover:bg-white/90 border-none rounded-full px-6 font-medium tracking-wide"
             >
               Skip
             </Button>
@@ -134,7 +134,7 @@ const WelcomePage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="text-5xl font-bold text-white mb-8 font-heading"
+                        className="text-5xl font-bold text-white mb-8 font-heading tracking-tight leading-tight"
                       >
                         {slide.title}
                       </motion.h1>
@@ -142,7 +142,7 @@ const WelcomePage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
-                        className="text-white/90 text-xl font-light leading-relaxed"
+                        className="text-white/90 text-xl font-light leading-relaxed tracking-wide"
                       >
                         {slide.description}
                       </motion.p>
@@ -180,7 +180,7 @@ const WelcomePage: React.FC = () => {
               {/* Next/Get Started button */}
               <Button
                 onClick={handleNext}
-                className="w-full max-w-xs bg-white text-rideroot-primary hover:bg-white/90 hover:scale-105 transition-transform duration-300 rounded-full py-7 text-lg shadow-lg font-medium"
+                className="w-full max-w-xs bg-white text-rideroot-primary hover:bg-white/90 hover:scale-105 transition-transform duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg"
               >
                 {currentSlide === slides.length - 1 ? "Get Started" : "Next"}
                 <ChevronRight className="ml-1 animate-pulse" size={20} />

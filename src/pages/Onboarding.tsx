@@ -63,7 +63,7 @@ const Onboarding: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-white via-rideroot-lightGrey to-white">
       {/* Header with logo */}
       <div className="pt-8 pb-4 flex justify-center">
-        <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">
+        <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary tracking-tight">
           RideRoot
         </div>
       </div>
@@ -79,11 +79,11 @@ const Onboarding: React.FC = () => {
           {slides[currentSlide].icon}
         </div>
 
-        <h1 className="text-2xl font-bold mb-3 text-rideroot-text animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">
+        <h1 className="text-2xl font-bold mb-3 text-rideroot-text animate-fade-in bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary tracking-tight">
           {slides[currentSlide].title}
         </h1>
         
-        <p className="text-center text-rideroot-darkGrey mb-10 max-w-xs animate-fade-in">
+        <p className="text-center text-rideroot-darkGrey mb-10 max-w-xs animate-fade-in leading-relaxed tracking-wide">
           {slides[currentSlide].description}
         </p>
 
@@ -110,7 +110,7 @@ const Onboarding: React.FC = () => {
           {currentSlide > 0 ? (
             <button
               onClick={prevSlide}
-              className="flex items-center text-rideroot-darkGrey hover:text-rideroot-primary transition-colors"
+              className="flex items-center text-rideroot-darkGrey hover:text-rideroot-primary transition-colors font-medium tracking-wide"
             >
               <ChevronLeft size={20} />
               <span>Back</span>
@@ -122,7 +122,7 @@ const Onboarding: React.FC = () => {
           {currentSlide < slides.length - 1 ? (
             <button
               onClick={nextSlide}
-              className="flex items-center text-rideroot-primary font-medium hover:text-rideroot-secondary transition-colors"
+              className="flex items-center text-rideroot-primary font-medium hover:text-rideroot-secondary transition-colors tracking-wide"
             >
               <span>Next</span>
               <ChevronRight size={20} />
@@ -134,7 +134,7 @@ const Onboarding: React.FC = () => {
 
         <Button 
           onClick={goToSignup} 
-          className="w-full mb-4 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary hover:opacity-90 transition-opacity text-white py-3 rounded-xl font-medium text-base"
+          className="w-full mb-4 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary hover:opacity-90 transition-opacity text-white py-3 rounded-xl font-medium text-base tracking-wide"
         >
           Create Account
         </Button>
@@ -142,7 +142,7 @@ const Onboarding: React.FC = () => {
         <Button 
           onClick={goToSignIn} 
           variant="outline" 
-          className="w-full border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5"
+          className="w-full border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5 tracking-wide"
         >
           Already have an account? Sign In
         </Button>
