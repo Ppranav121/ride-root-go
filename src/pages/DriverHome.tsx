@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Car, Zap, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,11 +17,20 @@ import MapBackground from "@/components/ride/MapBackground";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
 
+// Use sessionStorage to persist driver online status
+const getStoredOnlineStatus = () => {
+  const stored = sessionStorage.getItem('driverOnlineStatus');
+  return stored === 'true';
+};
+
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
   const { toast: shadcnToast } = useToast();
   const { user } = useApp();
-  const [isOnline, setIsOnline] = useState(false);
+  
+  // Initialize isOnline from sessionStorage or default to false
+  const [isOnline, setIsOnline] = useState(getStoredOnlineStatus());
+  
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
   const [todayEarnings, setTodayEarnings] = useState(50);
   const [todayRides, setTodayRides] = useState(5);
@@ -32,6 +41,16 @@ const DriverHome: React.FC = () => {
   // Get first name for driver sidebar welcome message
   const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
   
+  // Check the URL to see if we're coming from the ride screen
+  useEffect(() => {
+    // If coming back from the ride screen, ensure driver stays online
+    const fromRide = sessionStorage.getItem('fromRide') === 'true';
+    if (fromRide) {
+      setIsOnline(true);
+      sessionStorage.removeItem('fromRide'); // Clear the flag
+    }
+  }, []);
+  
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -41,15 +60,17 @@ const DriverHome: React.FC = () => {
     }
   }, [showEarningsBoost]);
   
-  const toggleOnlineStatus = () => {
-    if (!isOnline) {
-      setIsOnline(true);
+  const toggleOnlineStatus = (newStatus: boolean) => {
+    setIsOnline(newStatus);
+    // Store online status in sessionStorage
+    sessionStorage.setItem('driverOnlineStatus', String(newStatus));
+    
+    if (newStatus) {
       shadcnToast({
         title: "You're now online",
         description: "Searching for ride requests..."
       });
     } else {
-      setIsOnline(false);
       shadcnToast({
         title: "You've gone offline",
         description: "You won't receive ride requests.",

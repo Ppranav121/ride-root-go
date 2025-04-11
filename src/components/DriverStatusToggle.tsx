@@ -21,7 +21,6 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
     onStatusChange(online);
     
     // If turning online, navigate directly to the driver-ride page
-    // with replace: true to prevent back navigation issues
     if (online) {
       navigate("/driver-ride", { replace: false });
     }

@@ -149,6 +149,7 @@ const DriverRide: React.FC = () => {
   };
   
   const handleCompleteRide = () => {
+    sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
   
@@ -161,6 +162,8 @@ const DriverRide: React.FC = () => {
       title: "Returning to Dashboard",
       description: "You're still online and can receive ride requests.",
     });
+    sessionStorage.setItem('fromRide', 'true');
+    sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
 
