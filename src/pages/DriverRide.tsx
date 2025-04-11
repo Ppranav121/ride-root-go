@@ -614,45 +614,75 @@ const DriverRide: React.FC = () => {
           }} 
           className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8"
         >
-          <div className="flex items-center justify-center mb-3">
+          <div className="flex flex-col items-center justify-center mb-6">
+            <div className="relative mb-4">
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.2, 0.5, 0.2]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="absolute -inset-2 bg-purple-500/20 rounded-full"
+              />
+              <motion.div 
+                animate={{ 
+                  rotate: [0, 360]
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="w-10 h-10 bg-gradient-to-br from-purple-500/70 to-indigo-600/70 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/20"
+              >
+                <Search className="w-5 h-5 text-white" />
+              </motion.div>
+            </div>
+            
             <motion.div
-              initial={{ opacity: 0.5 }}
               animate={{ 
-                opacity: [0.5, 0.8, 0.5],
-                scale: [1, 1.05, 1]
+                opacity: [0.7, 1, 0.7]
               }}
               transition={{
-                duration: 1.5,
+                duration: 2,
                 repeat: Infinity,
-                repeatType: "loop"
+                repeatType: "mirror"
               }}
-              className="h-1 w-16 rounded-full bg-purple-400/70"
-            />
-          </div>
-          
-          <div className="flex items-center justify-center mb-6">
-            <motion.div
-              animate={{ 
-                opacity: [0.6, 1, 0.6]
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "loop"
-              }}
-              className="text-white/80 text-sm font-medium"
+              className="text-white text-sm font-medium tracking-wide mb-2"
             >
               Searching for rides{renderSearchingDots()}
             </motion.div>
+            
+            <motion.div
+              initial={{ width: "30%" }}
+              animate={{ width: ["30%", "70%", "30%"] }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }}
+              className="h-0.5 bg-gradient-to-r from-purple-400/50 via-indigo-400/70 to-purple-400/50 rounded-full mb-8"
+            />
           </div>
           
-          <Button 
-            variant="outline" 
-            className="w-full bg-black/30 border border-white/10 text-white backdrop-blur-md hover:bg-black/40 hover:text-white transition-all shadow-lg" 
-            onClick={() => navigate("/driver-home")}
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="w-full"
           >
-            Stop Searching
-          </Button>
+            <Button 
+              variant="outline" 
+              className="w-full bg-gradient-to-r from-black/40 to-indigo-950/40 border border-purple-400/30 text-white backdrop-blur-md hover:bg-indigo-900/40 hover:border-purple-400/50 transition-all shadow-lg shadow-purple-900/20 py-6 rounded-xl text-base font-medium" 
+              onClick={() => navigate("/driver-home")}
+            >
+              Stop Searching
+            </Button>
+          </motion.div>
         </motion.div>
       )}
       
