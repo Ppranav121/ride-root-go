@@ -574,19 +574,7 @@ const DriverRide: React.FC = () => {
       }} transition={{
         delay: 0.5
       }} className="mb-6">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
-                    <Clock size={18} className="text-blue-600" />
-                  </div>
-                  <p className="font-medium text-blue-800">Average Wait Time</p>
-                </div>
-                <span className="text-blue-800 font-bold">~3 min</span>
-              </div>
-              
-              
-            </div>
+            
           </motion.div>
           
           <Drawer>
