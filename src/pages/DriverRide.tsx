@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, Phone, MessageCircle, Clock, Shield, User, Search, X, AlertTriangle, Car, CheckCircle, ArrowLeft } from "lucide-react";
@@ -18,7 +17,6 @@ import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 
-// Simulated ride states
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
 
 interface RideRequest {
@@ -46,7 +44,6 @@ const DriverRide: React.FC = () => {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [searchInterval, setSearchInterval] = useState<number>(0);
   
-  // Simulate pulse animation
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => (prev === 100 ? 120 : 100));
@@ -55,7 +52,6 @@ const DriverRide: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
   
-  // Simulate ride request after a delay
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
@@ -74,7 +70,6 @@ const DriverRide: React.FC = () => {
         setRideState('request');
       }, 8000);
       
-      // Show searching animation progress
       let count = 0;
       const interval = setInterval(() => {
         count += 1;
@@ -88,7 +83,6 @@ const DriverRide: React.FC = () => {
     }
   }, [rideState]);
   
-  // Countdown timer for ride request
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -97,7 +91,6 @@ const DriverRide: React.FC = () => {
       
       return () => clearTimeout(timer);
     } else if (rideState === 'request' && secondsLeft === 0) {
-      // Request timed out
       setRideState('searching');
       setSecondsLeft(15);
       toast({
@@ -115,13 +108,11 @@ const DriverRide: React.FC = () => {
       description: "Navigate to pickup location.",
     });
     
-    // Show peak bonus animation if applicable
     if (rideRequest?.isPeakBonus) {
       setAnimateBonus(true);
       setTimeout(() => setAnimateBonus(false), 3000);
     }
     
-    // Simulate arriving at pickup after delay
     setTimeout(() => {
       setRideState('arrived');
       toast({
@@ -148,7 +139,6 @@ const DriverRide: React.FC = () => {
       description: "Navigate to the destination.",
     });
     
-    // Simulate completing ride after delay
     setTimeout(() => {
       setRideState('completed');
       toast({
@@ -166,7 +156,6 @@ const DriverRide: React.FC = () => {
     setIsMessageDialogOpen(true);
   };
 
-  // New function to navigate to dashboard while staying online
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -214,8 +203,7 @@ const DriverRide: React.FC = () => {
       </div>
     );
   };
-  
-  // Generate searching dots based on interval
+
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
@@ -241,11 +229,9 @@ const DriverRide: React.FC = () => {
         <div className="w-10" />
       </div>
       
-      {/* Map view */}
       <div className="flex-1 bg-gradient-to-b from-blue-50 to-blue-200 relative">
         {rideState === 'searching' && renderSearchingAnimation()}
         
-        {/* Animated pulsing location */}
         {rideState !== 'searching' && (
           <motion.div 
             animate={{ 
@@ -267,7 +253,6 @@ const DriverRide: React.FC = () => {
           </motion.div>
         )}
         
-        {/* Map placeholder message */}
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
           <motion.div 
             initial={{ y: -10, opacity: 0 }}
@@ -315,7 +300,6 @@ const DriverRide: React.FC = () => {
           </motion.div>
         </div>
         
-        {/* Ride points visualization for in-progress rides */}
         {(rideState === 'accepted' || rideState === 'arrived' || rideState === 'inProgress') && (
           <div className="absolute inset-0 flex items-center justify-center">
             <svg width="200" height="120" viewBox="0 0 200 120">
@@ -334,7 +318,6 @@ const DriverRide: React.FC = () => {
         )}
       </div>
       
-      {/* Ride request card */}
       {rideState === 'request' && rideRequest && (
         <motion.div
           initial={{ y: 300 }}
@@ -446,7 +429,6 @@ const DriverRide: React.FC = () => {
         </motion.div>
       )}
       
-      {/* Driver arrived at pickup */}
       {rideState === 'arrived' && rideRequest && (
         <motion.div
           initial={{ y: 300 }}
@@ -509,7 +491,6 @@ const DriverRide: React.FC = () => {
         </motion.div>
       )}
       
-      {/* Ride in progress */}
       {rideState === 'inProgress' && rideRequest && (
         <motion.div
           initial={{ y: 300 }}
@@ -572,7 +553,6 @@ const DriverRide: React.FC = () => {
         </motion.div>
       )}
       
-      {/* Ride completed */}
       {rideState === 'completed' && rideRequest && (
         <motion.div
           initial={{ y: 300 }}
@@ -634,12 +614,22 @@ const DriverRide: React.FC = () => {
         </motion.div>
       )}
       
-      {/* Peak bonus animation */}
       {animateBonus && (
-        /* ... keep existing code (peak bonus animation) */
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.5, y: 20 }}
+          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+        >
+          <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-xl shadow-lg">
+            <div className="flex flex-col items-center">
+              <span className="text-green-500 font-bold text-lg mb-1">+$0.50</span>
+              <span className="text-sm text-gray-600">Peak Time Bonus</span>
+            </div>
+          </div>
+        </motion.div>
       )}
       
-      {/* Searching state with enhanced UI */}
       {rideState === 'searching' && (
         <motion.div 
           initial={{ y: 300 }}
@@ -670,7 +660,6 @@ const DriverRide: React.FC = () => {
             </p>
           </div>
           
-          {/* Animated searching indicators */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -688,7 +677,6 @@ const DriverRide: React.FC = () => {
                 <span className="text-blue-800 font-bold">~3 min</span>
               </div>
               
-              {/* Pulse bars animation */}
               <div className="flex items-end h-12 gap-1">
                 {[3, 7, 5, 8, 4, 6, 9, 7, 5, 4, 6, 8].map((height, index) => (
                   <motion.div 
@@ -776,7 +764,6 @@ const DriverRide: React.FC = () => {
         </motion.div>
       )}
       
-      {/* Messaging Dialog */}
       <MessageDialog 
         isOpen={isMessageDialogOpen}
         onClose={() => setIsMessageDialogOpen(false)}
