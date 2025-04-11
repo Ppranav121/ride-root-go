@@ -17,8 +17,6 @@ import Home from "./pages/Home";
 import BookRide from "./pages/BookRide";
 import RideConfirmation from "./pages/RideConfirmation";
 import RideTracking from "./pages/RideTracking";
-import RideCompletion from "./pages/RideCompletion";
-import RideCancellation from "./pages/RideCancellation";
 import Profile from "./pages/Profile";
 import Rides from "./pages/Rides";
 import RideDetails from "./pages/RideDetails";
@@ -62,8 +60,9 @@ const App = () => (
             <Route path="/book-ride" element={<BookRide />} />
             <Route path="/ride-confirmation" element={<RideConfirmation />} />
             <Route path="/ride-tracking" element={<RideTracking />} />
-            <Route path="/ride-completion" element={<RideCompletion />} />
-            <Route path="/ride-cancellation" element={<RideCancellation />} />
+            
+            {/* Removed ride-completion and ride-cancellation routes */}
+            
             <Route path="/profile" element={<Profile />} />
             <Route path="/rides" element={<Rides />} />
             <Route path="/ride/:id" element={<RideDetails />} />

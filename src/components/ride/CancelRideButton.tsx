@@ -3,13 +3,32 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import { toast } from "sonner";
+import { useApp } from "@/contexts/AppContext";
 
 const CancelRideButton: React.FC = () => {
   const navigate = useNavigate();
+  const { currentRide, setCurrentRide } = useApp();
 
   const handleCancel = () => {
-    console.log("Navigating to ride cancellation page");
-    navigate("/ride-cancellation");
+    if (currentRide) {
+      setCurrentRide({
+        ...currentRide,
+        status: "cancelled"
+      });
+      
+      toast.success("Ride cancelled successfully", {
+        description: "You will not be charged for this ride",
+        duration: 3000,
+      });
+      
+      // Navigate back to home
+      setTimeout(() => {
+        navigate("/home");
+      }, 1500);
+    } else {
+      navigate("/home");
+    }
   };
 
   return (

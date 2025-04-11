@@ -8,7 +8,6 @@ import RideDetailsBanner from "@/components/ride/RideDetailsBanner";
 import RideDetailsPanel from "@/components/ride/RideDetailsPanel";
 import EmergencyButton from "@/components/ride/EmergencyButton";
 import RouteInfoCard from "@/components/ride/RouteInfoCard";
-import CancelRideButton from "@/components/ride/CancelRideButton";
 import { toast } from "sonner";
 
 const RideTracking: React.FC = () => {
@@ -60,25 +59,60 @@ const RideTracking: React.FC = () => {
   }, [currentRide, navigate, setCurrentRide]);
 
   useEffect(() => {
-    // When countdown reaches zero, navigate to completion page
+    // When countdown reaches zero, navigate to home instead of completion
     if (secondsLeft === 0 && !isSimulating) {
-      console.log("Ride completed, navigating to completion page");
+      console.log("Ride completed, navigating to home");
       toast.success("You've arrived at your destination!");
+      
+      // Update ride status to completed
+      if (currentRide) {
+        setCurrentRide({
+          ...currentRide,
+          status: "completed"
+        });
+      }
+      
       setTimeout(() => {
-        navigate("/ride-completion");
+        navigate("/home");
       }, 1000);
     }
-  }, [secondsLeft, isSimulating, navigate]);
+  }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
 
   // Manual navigation handler for testing
-  const goToCompletion = () => {
-    console.log("Manual navigation to ride completion");
+  const goToHome = () => {
+    console.log("Manual navigation to home");
     setIsSimulating(false);
-    navigate("/ride-completion");
+    
+    // Update ride status to completed
+    if (currentRide) {
+      setCurrentRide({
+        ...currentRide,
+        status: "completed"
+      });
+    }
+    
+    navigate("/home");
   };
 
   const handleCancelRide = () => {
-    navigate("/ride-cancellation");
+    if (currentRide) {
+      setCurrentRide({
+        ...currentRide,
+        status: "cancelled"
+      });
+      
+      toast.success("Ride cancelled successfully", {
+        description: "You will not be charged for this ride",
+        duration: 3000,
+      });
+      
+      // Navigate back to home
+      setTimeout(() => {
+        navigate("/home");
+      }, 1500);
+    } else {
+      navigate("/home");
+    }
   };
 
   if (!currentRide || !currentRide.driver) return null;
@@ -91,7 +125,7 @@ const RideTracking: React.FC = () => {
         <MapView 
           driverPosition={driverPosition} 
           secondsLeft={secondsLeft} 
-          onComplete={goToCompletion} 
+          onComplete={goToHome} 
         />
 
         <RideDetailsBanner secondsLeft={secondsLeft} />
@@ -109,7 +143,12 @@ const RideTracking: React.FC = () => {
           />
           
           <div className="mt-4">
-            <CancelRideButton />
+            <button
+              onClick={handleCancelRide}
+              className="w-full bg-rideroot-danger text-white rounded-xl py-4 font-medium border border-rideroot-danger/20 hover:bg-rideroot-danger/90 transition-colors shadow-button hover:shadow-button-hover flex items-center justify-center"
+            >
+              Cancel Ride
+            </button>
           </div>
         </div>
       </div>
