@@ -69,13 +69,9 @@ const DriverSidebar: React.FC<DriverSidebarProps> = ({
       {/* Profile Section */}
       <div className="flex flex-col items-center px-6 pb-6">
         <Avatar className="w-24 h-24 bg-[#6c5ce7] mb-4">
-          {user?.photoURL ? (
-            <AvatarImage src={user.photoURL} alt={firstName} />
-          ) : (
-            <AvatarFallback className="text-white text-3xl">
-              {firstName.charAt(0)}
-            </AvatarFallback>
-          )}
+          <AvatarFallback className="text-white text-3xl">
+            {firstName.charAt(0)}
+          </AvatarFallback>
         </Avatar>
         
         <h2 className="text-2xl font-semibold mb-3">
