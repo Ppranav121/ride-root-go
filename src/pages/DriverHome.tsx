@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,11 +21,14 @@ const getStoredOnlineStatus = () => {
   const stored = sessionStorage.getItem('driverOnlineStatus');
   return stored === 'true';
 };
-
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
-  const { toast: shadcnToast } = useToast();
-  const { user } = useApp();
+  const {
+    toast: shadcnToast
+  } = useToast();
+  const {
+    user
+  } = useApp();
 
   // Initialize isOnline from sessionStorage or default to false
   const [isOnline, setIsOnline] = useState(getStoredOnlineStatus());
@@ -40,16 +42,48 @@ const DriverHome: React.FC = () => {
 
   // Mock hotspot data - in a real app, this would come from an API
   // Fixed the type of demandLevel to be one of the allowed values: "high", "medium", or "low"
-  const hotspots = [
-    { id: 1, location: { top: "30%", left: "40%" }, demandLevel: "high" as const },
-    { id: 2, location: { top: "50%", left: "60%" }, demandLevel: "medium" as const },
-    { id: 3, location: { top: "70%", left: "30%" }, demandLevel: "low" as const },
-    { id: 4, location: { top: "20%", left: "65%" }, demandLevel: "high" as const },
-    { id: 5, location: { top: "60%", left: "20%" }, demandLevel: "medium" as const }
-  ];
+  const hotspots = [{
+    id: 1,
+    location: {
+      top: "30%",
+      left: "40%"
+    },
+    demandLevel: "high" as const
+  }, {
+    id: 2,
+    location: {
+      top: "50%",
+      left: "60%"
+    },
+    demandLevel: "medium" as const
+  }, {
+    id: 3,
+    location: {
+      top: "70%",
+      left: "30%"
+    },
+    demandLevel: "low" as const
+  }, {
+    id: 4,
+    location: {
+      top: "20%",
+      left: "65%"
+    },
+    demandLevel: "high" as const
+  }, {
+    id: 5,
+    location: {
+      top: "60%",
+      left: "20%"
+    },
+    demandLevel: "medium" as const
+  }];
 
   // Driver position for the map
-  const driverPosition = { top: "45%", left: "45%" };
+  const driverPosition = {
+    top: "45%",
+    left: "45%"
+  };
 
   // Get first name for driver sidebar welcome message
   const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
@@ -63,7 +97,6 @@ const DriverHome: React.FC = () => {
       sessionStorage.removeItem('fromRide'); // Clear the flag
     }
   }, []);
-  
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -72,7 +105,6 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
-  
   const toggleOnlineStatus = (newStatus: boolean) => {
     setIsOnline(newStatus);
     // Store online status in sessionStorage
@@ -82,7 +114,7 @@ const DriverHome: React.FC = () => {
         title: "You're now online",
         description: "Searching for ride requests..."
       });
-      
+
       // Navigate to driver-ride when going online
       navigate('/driver-ride');
     } else {
@@ -93,7 +125,6 @@ const DriverHome: React.FC = () => {
       });
     }
   };
-  
   const toggleDriverTier = (newValue: boolean) => {
     if (!newValue) {
       setIsPrimeDriver(false);
@@ -123,7 +154,6 @@ const DriverHome: React.FC = () => {
       }, 1000);
     }
   };
-  
   const toggleHotspots = () => {
     setShowHotspots(prev => !prev);
     if (!showHotspots) {
@@ -132,15 +162,9 @@ const DriverHome: React.FC = () => {
       toast("Hotspots disabled.");
     }
   };
-  
-  return (
-    <div className="flex flex-col min-h-screen relative">
+  return <div className="flex flex-col min-h-screen relative">
       {/* Full-screen map view */}
-      <EnhancedMapView 
-        showHotspots={showHotspots}
-        hotspots={hotspots}
-        driverPosition={driverPosition}
-      />
+      <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition} />
       
       {/* Header with transparency */}
       <div className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-md shadow-sm">
@@ -182,84 +206,54 @@ const DriverHome: React.FC = () => {
           {/* Bottom controls - These need pointer events */}
           <div className="space-y-4 mb-20 pointer-events-auto">
             {/* Prime Driver Tags */}
-            {isPrimeDriver && (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {isPeakTime && (
-                  <motion.span 
-                    whileHover={{ scale: 1.05 }} 
-                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center"
-                  >
+            {isPrimeDriver && <div className="mb-4 flex flex-wrap gap-2">
+                {isPeakTime && <motion.span whileHover={{
+              scale: 1.05
+            }} className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
                     <span className="w-2 h-2 bg-white rounded-full mr-1"></span>
                     Peak Bonus Active (+$0.50/ride)
-                  </motion.span>
-                )}
-                <motion.span 
-                  whileHover={{ scale: 1.05 }} 
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium px-2.5 py-1 rounded-full"
-                >
+                  </motion.span>}
+                <motion.span whileHover={{
+              scale: 1.05
+            }} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-medium px-2.5 py-1 rounded-full">
                   Priority Rides
                 </motion.span>
-              </div>
-            )}
+              </div>}
           
             {/* Hotspot toggle button */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="p-3 bg-white/90 rounded-lg border border-gray-100 shadow-sm"
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <TrendingUp size={18} className="text-rideroot-primary mr-2" />
-                  <div>
-                    <h3 className="text-sm font-medium">High Demand Areas</h3>
-                    <p className="text-xs text-gray-500">Show hotspots on map</p>
-                  </div>
-                </div>
-                <Switch 
-                  checked={showHotspots} 
-                  onCheckedChange={toggleHotspots}
-                  className={`${showHotspots ? 'bg-rideroot-primary' : 'bg-gray-300'} relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200`}
-                />
-              </div>
-            </motion.div>
+            
             
             <AnimatePresence>
-              {showEarningsBoost && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="p-3 bg-gradient-to-r from-green-100 to-green-50 border border-green-100 rounded-lg text-center"
-                >
+              {showEarningsBoost && <motion.div initial={{
+              opacity: 0,
+              scale: 0.8
+            }} animate={{
+              opacity: 1,
+              scale: 1
+            }} exit={{
+              opacity: 0,
+              scale: 0.9
+            }} className="p-3 bg-gradient-to-r from-green-100 to-green-50 border border-green-100 rounded-lg text-center">
                   <p className="text-sm text-green-600">Peak Bonus</p>
                   <p className="text-lg font-bold text-green-600">+${boostAmount.toFixed(2)}</p>
-                </motion.div>
-              )}
+                </motion.div>}
             </AnimatePresence>
             
-            {isOnline && (
-              <motion.div 
-                className="flex justify-center" 
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white px-8 py-5 rounded-lg shadow-lg font-medium text-base"
-                  onClick={() => navigate('/driver-ride')}
-                >
+            {isOnline && <motion.div className="flex justify-center" initial={{
+            scale: 1
+          }} whileHover={{
+            scale: 1.02
+          }} whileTap={{
+            scale: 0.98
+          }}>
+                <Button className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white px-8 py-5 rounded-lg shadow-lg font-medium text-base" onClick={() => navigate('/driver-ride')}>
                   <MapPin className="mr-2" />
                   View Active Ride Screen
                 </Button>
-              </motion.div>
-            )}
+              </motion.div>}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default DriverHome;
