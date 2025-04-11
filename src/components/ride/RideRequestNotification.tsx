@@ -1,9 +1,8 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Car, MapPin, X } from "lucide-react";
+import { Bell, Car, MapPin, X, DollarSign, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -32,7 +31,6 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
   }
 }) => {
   const navigate = useNavigate();
-  // Remove the expansion state as we'll show full details immediately on alert click
   
   if (!isVisible) return null;
   
@@ -54,42 +52,46 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
           exit={{ opacity: 0, y: -20 }}
           className="fixed top-20 inset-x-4 z-50"
         >
-          <Card className="border-[#6c5ce7] border-l-4 shadow-lg bg-white">
+          <Card className="border-[#6c5ce7] border-l-4 shadow-lg">
             <CardContent className="pt-6 pb-2">
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center">
                   <div className="bg-[#6c5ce7]/10 p-2 rounded-full mr-3">
                     <Bell size={16} className="text-[#6c5ce7]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">New Ride Request!</h3>
-                    <p className="text-xs text-gray-500">{rideDetails.requestTime}</p>
+                    <h3 className="font-semibold text-gray-900">New Ride Request</h3>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Clock size={12} className="mr-1" />
+                      {rideDetails.requestTime}
+                    </div>
                   </div>
                 </div>
                 <button 
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100"
                 >
                   <X size={16} />
                 </button>
               </div>
               
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 space-y-3 bg-gray-50 p-3 rounded-lg">
                 <div className="flex items-center text-sm">
-                  <Car size={15} className="mr-2 text-[#6c5ce7]" />
-                  <span className="font-medium">Rider:</span>
-                  <span className="ml-1">{rideDetails.rider}</span>
+                  <Car size={15} className="mr-2.5 text-[#6c5ce7]" />
+                  <span className="font-medium w-16">Rider:</span>
+                  <span className="text-gray-700">{rideDetails.rider}</span>
                 </div>
                 
                 <div className="flex items-center text-sm">
-                  <MapPin size={15} className="mr-2 text-[#6c5ce7]" />
-                  <span className="font-medium">Pickup:</span>
-                  <span className="ml-1">{rideDetails.pickup}</span>
+                  <MapPin size={15} className="mr-2.5 text-[#6c5ce7]" />
+                  <span className="font-medium w-16">Pickup:</span>
+                  <span className="text-gray-700">{rideDetails.pickup}</span>
                 </div>
                 
                 <div className="flex items-center text-sm">
-                  <span className="font-medium">Fare:</span>
-                  <span className="ml-1 text-[#6c5ce7] font-semibold">${rideDetails.fare.toFixed(2)}</span>
+                  <DollarSign size={15} className="mr-2.5 text-[#6c5ce7]" />
+                  <span className="font-medium w-16">Fare:</span>
+                  <span className="text-[#6c5ce7] font-semibold">${rideDetails.fare.toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
@@ -99,7 +101,7 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="text-gray-600"
+                className="text-gray-600 border-gray-300"
               >
                 Dismiss
               </Button>
