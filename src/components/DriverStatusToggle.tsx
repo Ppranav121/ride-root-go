@@ -23,6 +23,8 @@ const DriverStatusToggle: React.FC<DriverStatusToggleProps> = ({
     // If turning online, navigate directly to the driver-ride page
     if (online) {
       navigate("/driver-ride", { replace: false });
+      // Set a flag in sessionStorage to indicate we're coming from driver-home
+      sessionStorage.setItem('fromHome', 'true');
     }
   };
   
