@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, User, HelpCircle, MessageCircle, Crown, Zap, Settings, Bell, MapPin, ChevronRight, DollarSign, Car, Star, Gift } from "lucide-react";
+import { 
+  Menu, User, HelpCircle, MessageCircle, Crown, Zap, Settings, 
+  Bell, MapPin, ChevronRight, DollarSign, Car, Star, Gift,
+  Clock, Wallet, Award, ArrowUp
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -13,16 +17,14 @@ import { toast } from "sonner";
 // Custom Components
 import DriverBottomNav from "@/components/DriverBottomNav";
 import DriverStatusToggle from "@/components/DriverStatusToggle";
-import DriverTierSelector from "@/components/DriverTierSelector";
-import DriverStatsPanel from "@/components/DriverStatsPanel";
 
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
   const { toast: shadcnToast } = useToast();
   const [isOnline, setIsOnline] = useState(false);
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
-  const [todayEarnings, setTodayEarnings] = useState(50);
-  const [todayRides, setTodayRides] = useState(5);
+  const [todayEarnings, setTodayEarnings] = useState(75);
+  const [todayRides, setTodayRides] = useState(8);
   const [isPeakTime, setIsPeakTime] = useState(true);
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
@@ -32,7 +34,7 @@ const DriverHome: React.FC = () => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
         setShowEarningsBoost(false);
-      }, 2000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
@@ -91,7 +93,7 @@ const DriverHome: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col min-h-screen relative bg-gradient-to-br from-rideroot-background to-gray-50">
+    <div className="flex flex-col min-h-screen relative bg-gradient-to-b from-blue-50/70 to-indigo-50/70">
       {/* Beautiful background with subtle animation */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/90 to-indigo-50/90 opacity-90" />
@@ -108,13 +110,13 @@ const DriverHome: React.FC = () => {
                 initial={{ scale: 0 }} 
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-blue-400/20" 
+                className="absolute bottom-1/3 right-1/4 w-24 h-24 rounded-full bg-blue-400/10" 
               />
               <motion.div 
                 initial={{ scale: 0 }} 
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-                className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-indigo-400/20" 
+                className="absolute top-1/4 left-1/3 w-20 h-20 rounded-full bg-indigo-400/10" 
               />
             </>
           )}
@@ -127,21 +129,21 @@ const DriverHome: React.FC = () => {
         <Sheet>
           <SheetTrigger asChild>
             <motion.button 
-              className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center border border-gray-100 hover:bg-white/100 transition-all"
+              className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center border border-white/30 hover:bg-white/100 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Menu size={24} className="text-rideroot-primary" />
+              <Menu size={22} className="text-rideroot-primary" />
             </motion.button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] bg-white">
             <div className="flex flex-col h-full">
-              <div className="py-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-4 mx-auto">
+              <div className="py-8">
+                <div className="w-20 h-20 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-4 mx-auto shadow-md">
                   <User size={40} className="text-white" />
                 </div>
                 <h2 className="text-xl font-semibold text-center font-heading">
-                  Welcome, Driver
+                  Welcome, Alex
                 </h2>
                 <div className="flex items-center justify-center mt-2">
                   {isPrimeDriver ? (
@@ -165,15 +167,31 @@ const DriverHome: React.FC = () => {
                     className="w-full justify-start rounded-lg py-5 font-medium" 
                     onClick={() => navigate("/driver-profile")}
                   >
-                    <User className="mr-2" size={20} />
+                    <User className="mr-3" size={18} />
                     Profile
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-lg py-5 font-medium" 
+                    onClick={() => navigate("/driver-earnings")}
+                  >
+                    <Wallet className="mr-3" size={18} />
+                    Earnings
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-lg py-5 font-medium" 
+                    onClick={() => navigate("/driver-ratings")}
+                  >
+                    <Star className="mr-3" size={18} />
+                    Ratings
                   </Button>
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start rounded-lg py-5 font-medium" 
                     onClick={() => navigate("/driver-settings")}
                   >
-                    <Settings className="mr-2" size={20} />
+                    <Settings className="mr-3" size={18} />
                     Settings
                   </Button>
                   <Button 
@@ -181,7 +199,7 @@ const DriverHome: React.FC = () => {
                     className="w-full justify-start rounded-lg py-5 font-medium" 
                     onClick={() => navigate("/driver-messages")}
                   >
-                    <MessageCircle className="mr-2" size={20} />
+                    <MessageCircle className="mr-3" size={18} />
                     Messages
                   </Button>
                   <Button 
@@ -189,14 +207,14 @@ const DriverHome: React.FC = () => {
                     className="w-full justify-start rounded-lg py-5 font-medium" 
                     onClick={() => navigate("/driver-help")}
                   >
-                    <HelpCircle className="mr-2" size={20} />
+                    <HelpCircle className="mr-3" size={18} />
                     Help Center
                   </Button>
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start rounded-lg py-5 font-medium" 
                   >
-                    <Gift className="mr-2" size={20} />
+                    <Gift className="mr-3" size={18} />
                     Referrals
                   </Button>
                 </div>
@@ -205,7 +223,7 @@ const DriverHome: React.FC = () => {
               <div className="mt-auto p-4 border-t">
                 <motion.div 
                   whileHover={{ scale: 1.02 }} 
-                  className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary p-4 rounded-lg text-white"
+                  className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary p-4 rounded-lg text-white shadow-md"
                 >
                   <h4 className="font-medium text-sm mb-1">Driver Rating</h4>
                   <div className="flex items-center">
@@ -233,12 +251,12 @@ const DriverHome: React.FC = () => {
         {/* Right side - Notifications */}
         <div className="relative">
           <motion.button 
-            className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center border border-gray-100 hover:bg-white/100 transition-all"
+            className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center border border-white/30 hover:bg-white/100 transition-all"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleNotifications}
           >
-            <Bell size={24} className="text-rideroot-primary" />
+            <Bell size={22} className="text-rideroot-primary" />
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
           </motion.button>
           
@@ -248,42 +266,42 @@ const DriverHome: React.FC = () => {
                 initial={{ opacity: 0, y: -10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-xl z-50 overflow-hidden"
+                className="absolute top-full right-0 mt-2 w-80 bg-white/95 backdrop-blur-md rounded-xl shadow-xl z-50 overflow-hidden border border-white/50"
               >
                 <div className="p-3 border-b bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/5">
                   <h3 className="font-semibold text-gray-800">Recent Notifications</h3>
                 </div>
-                <div className="max-h-80 overflow-y-auto">
-                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                <div className="max-h-96 overflow-y-auto">
+                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer transition-colors">
                     <div className="flex">
-                      <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        <DollarSign size={16} className="text-green-600" />
+                      <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <DollarSign size={18} className="text-green-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">You received a $5.00 tip!</p>
-                        <p className="text-xs text-gray-500">10 minutes ago</p>
+                        <p className="text-sm font-medium">You received a $7.50 tip!</p>
+                        <p className="text-xs text-gray-500 mt-0.5">10 minutes ago</p>
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer transition-colors">
                     <div className="flex">
-                      <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        <Star size={16} className="text-blue-600" />
+                      <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <Star size={18} className="text-blue-600" />
                       </div>
                       <div>
                         <p className="text-sm font-medium">New 5-star rating received!</p>
-                        <p className="text-xs text-gray-500">2 hours ago</p>
+                        <p className="text-xs text-gray-500 mt-0.5">2 hours ago</p>
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                  <div className="p-3 border-b hover:bg-gray-50 cursor-pointer transition-colors">
                     <div className="flex">
-                      <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        <Zap size={16} className="text-purple-600" />
+                      <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                        <Zap size={18} className="text-purple-600" />
                       </div>
                       <div>
                         <p className="text-sm font-medium">Surge pricing active in your area</p>
-                        <p className="text-xs text-gray-500">1 day ago</p>
+                        <p className="text-xs text-gray-500 mt-0.5">1 hour ago</p>
                       </div>
                     </div>
                   </div>
@@ -307,11 +325,12 @@ const DriverHome: React.FC = () => {
         className="fixed top-20 left-1/2 -translate-x-1/2 z-20"
       >
         <div className="bg-white/90 backdrop-blur-md shadow-lg rounded-xl overflow-hidden border border-white/50">
-          <div className="px-8 py-4">
+          <div className="px-10 py-4 relative">
+            <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-blue-500/30 to-indigo-500/30"></div>
             <p className="text-center text-sm font-medium text-gray-500 mb-1">Today's Earnings</p>
             <p className="text-center text-3xl font-bold text-rideroot-primary">${todayEarnings.toFixed(2)}</p>
           </div>
-          <div className="bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/10 px-6 py-2 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/5 px-6 py-2 flex justify-between items-center">
             <div className="text-center">
               <p className="text-xs text-gray-500">RIDES</p>
               <p className="font-semibold">{todayRides}</p>
@@ -319,7 +338,7 @@ const DriverHome: React.FC = () => {
             <div className="h-8 border-r border-gray-200"></div>
             <div className="text-center">
               <p className="text-xs text-gray-500">HOURS</p>
-              <p className="font-semibold">3.5</p>
+              <p className="font-semibold">4.5</p>
             </div>
             <div className="h-8 border-r border-gray-200"></div>
             <div className="text-center">
@@ -340,8 +359,9 @@ const DriverHome: React.FC = () => {
         >
           {/* Driver Tier Card */}
           <Card className="w-full max-w-md bg-white/90 backdrop-blur-md border-white/50 shadow-lg overflow-hidden">
-            <CardHeader className="pb-2 bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/10">
-              <div className="flex items-center justify-between">
+            <CardHeader className="pb-2 bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/10 relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur-sm"></div>
+              <div className="flex items-center justify-between relative">
                 <h3 className="text-lg font-semibold">Driver Tier</h3>
                 <Badge className="bg-amber-100 text-amber-600 flex items-center gap-1">
                   <Crown size={12} /> 
@@ -356,7 +376,7 @@ const DriverHome: React.FC = () => {
                     <span>Progress to Platinum</span>
                     <span className="font-medium">75%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: '75%' }}
@@ -369,7 +389,7 @@ const DriverHome: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 mt-2">
                   <div className="bg-gray-50 rounded-lg p-3">
                     <h4 className="text-xs text-gray-500">PRIORITY RIDES</h4>
-                    <p className="text-xl font-semibold">7</p>
+                    <p className="text-xl font-semibold">12</p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3">
                     <h4 className="text-xs text-gray-500">PREMIUM BENEFITS</h4>
@@ -392,8 +412,9 @@ const DriverHome: React.FC = () => {
 
           {/* Driver Stats Panel */}
           <Card className="w-full max-w-md bg-white/90 backdrop-blur-md border-white/50 shadow-lg overflow-hidden">
-            <CardHeader className="pb-2 bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/10">
-              <div className="flex items-center justify-between">
+            <CardHeader className="pb-2 bg-gradient-to-r from-rideroot-primary/5 to-rideroot-secondary/10 relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 blur-sm"></div>
+              <div className="flex items-center justify-between relative">
                 <h3 className="text-lg font-semibold">Performance Stats</h3>
                 <Badge className="bg-green-100 text-green-600 flex items-center gap-1">
                   <Star size={12} /> 
@@ -403,26 +424,26 @@ const DriverHome: React.FC = () => {
             </CardHeader>
             <CardContent className="pt-3">
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
                     <Car size={16} className="text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">ACCEPTANCE RATE</p>
+                    <p className="text-xs text-gray-500">ACCEPTANCE</p>
                     <p className="font-semibold">92%</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <MessageCircle size={16} className="text-purple-600" />
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
+                    <Award size={16} className="text-purple-600" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">COMPLIMENTS</p>
                     <p className="font-semibold">24</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 bg-amber-100 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 bg-amber-100 rounded-full flex items-center justify-center">
                     <MapPin size={16} className="text-amber-600" />
                   </div>
                   <div>
@@ -430,13 +451,13 @@ const DriverHome: React.FC = () => {
                     <p className="font-semibold">420</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <DollarSign size={16} className="text-green-600" />
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <ArrowUp size={16} className="text-green-600" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">AVG WEEKLY</p>
-                    <p className="font-semibold">$670.25</p>
+                    <p className="font-semibold">$670</p>
                   </div>
                 </div>
               </div>
@@ -445,14 +466,14 @@ const DriverHome: React.FC = () => {
           
           {/* Driver Status Toggle (Online/Offline) */}
           <Card className="w-full max-w-md bg-white/90 backdrop-blur-md border-white/50 shadow-lg overflow-hidden">
-            <CardContent className="p-6">
+            <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold mb-1">Go Online</h3>
-                  <p className="text-sm text-gray-500">Start receiving ride requests</p>
+                  <p className="text-sm text-gray-600">Start receiving ride requests</p>
                 </div>
                 <Button 
-                  className={`rounded-full px-6 ${isOnline ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`} 
+                  className={`rounded-full px-8 ${isOnline ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`} 
                   onClick={() => toggleOnlineStatus(!isOnline)}
                 >
                   {isOnline ? 'Go Offline' : 'Go Online'}
@@ -465,12 +486,12 @@ const DriverHome: React.FC = () => {
           <AnimatePresence>
             {showEarningsBoost && (
               <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 className="fixed top-1/4 left-1/2 -translate-x-1/2 z-40"
               >
-                <div className="bg-white/90 backdrop-blur-md shadow-lg rounded-lg border border-green-100 px-8 py-6">
+                <div className="bg-white/90 backdrop-blur-md shadow-xl rounded-xl border border-green-100 px-8 py-6">
                   <div className="text-center">
                     <DollarSign className="mx-auto h-12 w-12 text-green-500 mb-2" />
                     <p className="text-sm text-green-600 font-medium">Peak Time Bonus</p>
