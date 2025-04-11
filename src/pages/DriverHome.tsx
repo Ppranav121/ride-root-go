@@ -12,6 +12,7 @@ import DriverTierSelector from "@/components/DriverTierSelector";
 import DriverStatsPanel from "@/components/DriverStatsPanel";
 import DriverSidebar from "@/components/DriverSidebar";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
+import RideRequestNotification from "@/components/ride/RideRequestNotification";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
 
@@ -38,6 +39,18 @@ const DriverHome: React.FC = () => {
   const [showEarningsBoost, setShowEarningsBoost] = useState(false);
   const [boostAmount, setBoostAmount] = useState(0);
   const [showHotspots, setShowHotspots] = useState(true);
+  const [showRideRequest, setShowRideRequest] = useState(false);
+
+  useEffect(() => {
+    if (isOnline) {
+      const delay = Math.floor(Math.random() * 20000) + 20000;
+      const requestTimer = setTimeout(() => {
+        setShowRideRequest(true);
+      }, delay);
+      
+      return () => clearTimeout(requestTimer);
+    }
+  }, [isOnline]);
 
   const hotspots = [
     {
@@ -114,13 +127,13 @@ const DriverHome: React.FC = () => {
         title: "You're now online",
         description: "Searching for ride requests..."
       });
-      navigate('/driver-ride');
     } else {
       shadcnToast({
         title: "You've gone offline",
         description: "You won't receive ride requests.",
         variant: "destructive"
       });
+      setShowRideRequest(false);
     }
   };
 
@@ -163,6 +176,18 @@ const DriverHome: React.FC = () => {
     }
   };
 
+  const handleViewRideRequest = () => {
+    setShowRideRequest(false);
+    navigate('/driver-ride');
+  };
+
+  const handleDismissRideRequest = () => {
+    setShowRideRequest(false);
+    toast.error("Ride request dismissed", {
+      description: "You can still find other rides"
+    });
+  };
+
   const currentPath = location.pathname;
 
   return (
@@ -194,6 +219,12 @@ const DriverHome: React.FC = () => {
           <div className="w-10" />
         </div>
       </div>
+      
+      <RideRequestNotification 
+        isVisible={showRideRequest}
+        onClose={handleDismissRideRequest}
+        onView={handleViewRideRequest}
+      />
       
       <ScrollArea className="fixed inset-x-0 top-16 bottom-0 z-10">
         <div className="p-4 flex flex-col min-h-[calc(100vh-4rem)]">
