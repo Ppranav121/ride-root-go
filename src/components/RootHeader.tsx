@@ -1,26 +1,20 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Bell, Menu } from "lucide-react";
+import { ChevronLeft, User } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Sidebar } from "./DriverSidebar";
 
 interface RootHeaderProps {
-  title?: React.ReactNode;
+  title?: React.ReactNode; // Changed from string to ReactNode
   showBackButton?: boolean;
   showProfileButton?: boolean;
-  showSidebarButton?: boolean;
-  showNotificationButton?: boolean;
   transparent?: boolean;
 }
 
 const RootHeader: React.FC<RootHeaderProps> = ({
   title,
-  showBackButton = false,
-  showProfileButton = false,
-  showSidebarButton = true,
-  showNotificationButton = true,
+  showBackButton = true,
+  showProfileButton = true,
   transparent = false,
 }) => {
   const navigate = useNavigate();
@@ -38,23 +32,6 @@ const RootHeader: React.FC<RootHeaderProps> = ({
             <ChevronLeft size={24} />
           </button>
         )}
-        
-        {showSidebarButton && isAuthenticated && (
-          <Sheet>
-            <SheetTrigger asChild>
-              <button
-                className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors"
-                aria-label="Open menu"
-              >
-                <Menu size={24} />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-[280px] sm:max-w-[280px]">
-              <Sidebar />
-            </SheetContent>
-          </Sheet>
-        )}
-        
         {title && (
           <h1 className="text-lg font-semibold text-rideroot-text tracking-tight">
             {title}
@@ -62,16 +39,13 @@ const RootHeader: React.FC<RootHeaderProps> = ({
         )}
       </div>
 
-      {showNotificationButton && isAuthenticated && (
+      {showProfileButton && isAuthenticated && (
         <button
-          onClick={() => navigate("/driver-notifications")}
-          className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors relative"
-          aria-label="View notifications"
+          onClick={() => navigate("/profile")}
+          className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
+          aria-label="View profile"
         >
-          <Bell size={22} />
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-            3
-          </span>
+          <User size={22} />
         </button>
       )}
     </header>
