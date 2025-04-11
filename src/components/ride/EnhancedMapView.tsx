@@ -14,12 +14,14 @@ interface EnhancedMapViewProps {
     demandLevel: "high" | "medium" | "low";
   }[];
   driverPosition?: { top: string; left: string };
+  children?: React.ReactNode;
 }
 
 const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({ 
   showHotspots, 
   hotspots,
-  driverPosition = { top: "50%", left: "50%" }
+  driverPosition = { top: "50%", left: "50%" },
+  children
 }) => {
   return (
     <div className="absolute inset-0 z-0">
@@ -43,6 +45,8 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }} 
           className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-indigo-400/20"
         />
+        
+        {children}
       </MapBackground>
     </div>
   );
