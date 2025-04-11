@@ -43,10 +43,11 @@ const DriverHome: React.FC = () => {
   const [showHotspots, setShowHotspots] = useState(true);
 
   // Mock hotspot data - in a real app, this would come from an API
+  // Fixed the type of demandLevel to be one of the allowed values: "high", "medium", or "low"
   const hotspots = [
-    { id: 1, location: { top: "30%", left: "40%" }, demandLevel: "high" },
-    { id: 2, location: { top: "50%", left: "60%" }, demandLevel: "medium" },
-    { id: 3, location: { top: "70%", left: "30%" }, demandLevel: "low" }
+    { id: 1, location: { top: "30%", left: "40%" }, demandLevel: "high" as const },
+    { id: 2, location: { top: "50%", left: "60%" }, demandLevel: "medium" as const },
+    { id: 3, location: { top: "70%", left: "30%" }, demandLevel: "low" as const }
   ];
 
   // Get first name for driver sidebar welcome message
