@@ -244,7 +244,7 @@ const BookRide: React.FC = () => {
               {/* Book Button */}
               <motion.button
                 onClick={handleBookRide}
-                className={`btn-primary w-full ${isLoading ? "opacity-70" : ""}`}
+                className={`bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full h-[56px] flex items-center justify-center rounded-xl text-white font-bold font-heading shadow-md ${isLoading ? "opacity-70" : ""}`}
                 disabled={isLoading || !dropoffLocation || !selectedPaymentMethod}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -288,3 +288,4 @@ const BookRide: React.FC = () => {
 };
 
 export default BookRide;
+

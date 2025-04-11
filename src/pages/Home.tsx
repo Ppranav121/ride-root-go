@@ -162,11 +162,16 @@ const Home: React.FC = () => {
         delay: 0.6,
         duration: 0.5
       }} className="mt-8 mb-16">
-          <motion.button whileHover={{
-          scale: 1.02
-        }} whileTap={{
-          scale: 0.98
-        }} onClick={() => navigate("/book-ride")} className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full py-4 rounded-xl text-white font-bold font-heading shadow-md">
+          <motion.button 
+            whileHover={{
+              scale: 1.02
+            }} 
+            whileTap={{
+              scale: 0.98
+            }} 
+            onClick={() => navigate("/book-ride")} 
+            className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full h-[56px] py-4 rounded-xl text-white font-bold font-heading shadow-md flex items-center justify-center"
+          >
             Book Your Ride Now
           </motion.button>
         </motion.div>
@@ -178,3 +183,4 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
