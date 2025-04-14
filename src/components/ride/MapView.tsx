@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { MapPin, Car, Navigation, Target } from "lucide-react";
+
+import React from "react";
+import { MapPin, Car, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DriverLocationMarker from "./DriverLocationMarker";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 
 interface MapViewProps {
   driverPosition: { top: string; left: string };
@@ -18,29 +18,6 @@ const MapView: React.FC<MapViewProps> = ({
   onComplete,
   ridePhase = "arriving" 
 }) => {
-  const [pinPosition, setPinPosition] = useState<{ top: string; left: string } | null>(null);
-
-  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const top = `${((e.clientY - rect.top) / rect.height) * 100}%`;
-    const left = `${((e.clientX - rect.left) / rect.width) * 100}%`;
-    setPinPosition({ top, left });
-    
-    toast.success("Location pinned", {
-      description: "Tap anywhere else to move the pin"
-    });
-  };
-
-  const handlePinLocation = () => {
-    toast("Tap anywhere on the map to pin your location", {
-      description: "This will help you navigate to your exact destination",
-      action: {
-        label: "Got it",
-        onClick: () => {}
-      }
-    });
-  };
-
   return (
     <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
       {/* Map background - in a real app this would be an actual map */}
@@ -115,39 +92,7 @@ const MapView: React.FC<MapViewProps> = ({
         </span>
       </div>
       
-      {/* Pin location button */}
-      <Button
-        variant="secondary"
-        size="sm"
-        className="absolute top-20 right-4 bg-white shadow-md hover:bg-gray-100 flex items-center gap-2"
-        onClick={handlePinLocation}
-      >
-        <Target size={16} />
-        <span className="text-xs">Pin Location</span>
-      </Button>
-
-      {/* Custom pin marker */}
-      {pinPosition && (
-        <motion.div
-          initial={{ scale: 0, y: -10 }}
-          animate={{ scale: 1, y: 0 }}
-          className="absolute z-20"
-          style={{ top: pinPosition.top, left: pinPosition.left, transform: 'translate(-50%, -100%)' }}
-        >
-          <div className="flex flex-col items-center">
-            <MapPin size={24} className="text-red-500" />
-            <div className="w-2 h-2 rounded-full bg-red-500 mt-1 animate-ping" />
-          </div>
-        </motion.div>
-      )}
-
-      {/* Clickable area for pin placement */}
-      <div 
-        className="absolute inset-0 cursor-crosshair" 
-        onClick={handleMapClick}
-      />
-
-      {/* Developer controls */}
+      {/* Developer controls - should be removed in production */}
       <Button
         variant="default"
         className="absolute bottom-4 right-4 bg-green-500 hover:bg-green-600 text-xs"
