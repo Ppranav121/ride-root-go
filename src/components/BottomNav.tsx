@@ -12,6 +12,14 @@ const BottomNav: React.FC = () => {
     return location.pathname === path;
   };
 
+  const handleNavigation = (path: string, extras?: any) => {
+    // Prevent navigation to the same route to avoid re-rendering
+    if (location.pathname === path) return;
+    
+    // Navigate with replacements for better performance
+    navigate(path, extras);
+  };
+
   return (
     <motion.nav 
       className="fixed bottom-0 w-full bg-white border-t border-rideroot-mediumGrey shadow-lg backdrop-blur-lg bg-white/90 z-30 mobile-bottom-safe"
@@ -24,28 +32,28 @@ const BottomNav: React.FC = () => {
           label="Home" 
           icon={Home} 
           isActive={isActive("/home")} 
-          onClick={() => navigate("/home")}
+          onClick={() => handleNavigation("/home")}
         />
 
         <NavButton 
           label="Book" 
           icon={MapPin} 
           isActive={isActive("/book-ride")} 
-          onClick={() => navigate("/book-ride")}
+          onClick={() => handleNavigation("/book-ride")}
         />
 
         <NavButton 
           label="Rides" 
           icon={Clock} 
           isActive={isActive("/rides")} 
-          onClick={() => navigate("/rides")}
+          onClick={() => handleNavigation("/rides")}
         />
 
         <NavButton 
           label="Profile" 
           icon={User} 
           isActive={isActive("/profile")}
-          onClick={() => navigate("/profile", { replace: false, state: { refresh: Date.now() } })}
+          onClick={() => handleNavigation("/profile", { replace: false, state: { refresh: Date.now() } })}
         />
       </div>
     </motion.nav>
@@ -63,8 +71,8 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
   return (
     <motion.button
       onClick={onClick}
-      whileTap={{ scale: 0.9 }}
-      className={`flex flex-col items-center justify-center w-1/4 pt-1 pb-1 relative touch-feedback ${
+      whileTap={{ scale: 0.95 }}
+      className={`flex flex-col items-center justify-center w-1/4 pt-1 pb-1 relative touch-action-manipulation ${
         isActive ? "text-rideroot-primary" : "text-rideroot-darkGrey"
       }`}
     >
@@ -75,11 +83,8 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       )}
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ type: "spring", stiffness: 300 }}
-      >
-        <Icon size={isActive ? 24 : 20} className={`${isActive ? 'mb-1' : 'mb-1'} transition-all`} />
+      <motion.div className="flex flex-col items-center">
+        <Icon size={isActive ? 24 : 20} className={`${isActive ? 'mb-0.5' : 'mb-0.5'} transition-all`} />
         <span className={`text-xs transition-all ${isActive ? 'font-medium' : 'font-normal'}`}>{label}</span>
       </motion.div>
     </motion.button>

@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, MapPin, ChevronRight } from "lucide-react";
+import { Clock, MapPin, ChevronRight, Calendar } from "lucide-react";
 import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
@@ -50,14 +50,27 @@ const Rides: React.FC = () => {
     }
   ];
 
-  const handleRideDetails = (rideId: number) => {
+  const handleRideDetails = useCallback((rideId: number) => {
     console.log("View details for ride:", rideId);
     toast.info("Loading ride details");
     navigate(`/ride/${rideId}`);
+  }, [navigate]);
+
+  const handleBookRide = useCallback(() => {
+    navigate("/book-ride");
+  }, [navigate]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
   };
 
-  const handleBookRide = () => {
-    navigate("/book-ride");
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
@@ -68,7 +81,7 @@ const Rides: React.FC = () => {
         <motion.div 
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           className="bg-white rounded-xl shadow-sm p-4 mb-6"
         >
           <h2 className="text-lg font-medium mb-4">Upcoming Rides</h2>
@@ -78,29 +91,33 @@ const Rides: React.FC = () => {
             <span>No upcoming rides scheduled</span>
           </div>
           
-          <button 
+          <motion.button 
+            whileTap={{ scale: 0.98 }}
             onClick={handleBookRide}
-            className="w-full py-3 bg-rideroot-primary text-white rounded-full font-medium hover:bg-rideroot-primary/90 transition-all"
+            className="w-full py-3 bg-rideroot-primary text-white rounded-full font-medium touch-action-manipulation"
           >
             Book a Ride
-          </button>
+          </motion.button>
         </motion.div>
 
         <motion.div 
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.3 }}
+          transition={{ delay: 0.05, duration: 0.2 }}
           className="bg-white rounded-xl shadow-sm p-4"
         >
           <h2 className="text-lg font-medium mb-4">Ride History</h2>
           
-          <div className="space-y-4">
-            {rides.map((ride, index) => (
+          <motion.div 
+            className="space-y-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {rides.map((ride) => (
               <motion.div
                 key={ride.id}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
+                variants={itemVariants}
                 className="flex items-center cursor-pointer hover:bg-rideroot-lightGrey/50 p-3 rounded-lg transition-all"
                 onClick={() => handleRideDetails(ride.id)}
               >
@@ -116,14 +133,14 @@ const Rides: React.FC = () => {
                   
                   <div className="flex items-center mt-1">
                     <MapPin size={14} className="text-rideroot-darkGrey mr-1" />
-                    <span>{ride.pickup} → {ride.dropoff}</span>
+                    <span className="truncate">{ride.pickup} → {ride.dropoff}</span>
                   </div>
                 </div>
 
-                <ChevronRight size={18} className="text-rideroot-darkGrey ml-2" />
+                <ChevronRight size={18} className="text-rideroot-darkGrey ml-2 flex-shrink-0" />
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -132,8 +149,5 @@ const Rides: React.FC = () => {
     </div>
   );
 };
-
-// Import Calendar icon that we use in the component
-import { Calendar } from "lucide-react";
 
 export default Rides;

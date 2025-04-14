@@ -10,22 +10,34 @@ export function useNetworkStatus() {
       : true
   })
 
+  // Use a ref to prevent duplicate toasts
+  const hasShownOfflineToast = React.useRef(false);
+  const hasShownOnlineToast = React.useRef(false);
+  
   React.useEffect(() => {
     // Safety check for SSR
     if (typeof window === 'undefined') return;
     
     const handleOnline = () => {
       setIsOnline(true)
-      toast.success("You're back online", {
-        description: "Your connection has been restored"
-      })
+      if (!hasShownOnlineToast.current) {
+        toast.success("You're back online", {
+          description: "Your connection has been restored"
+        })
+        hasShownOnlineToast.current = true;
+        hasShownOfflineToast.current = false;
+      }
     }
     
     const handleOffline = () => {
       setIsOnline(false)
-      toast.error("You're offline", {
-        description: "Please check your connection"
-      })
+      if (!hasShownOfflineToast.current) {
+        toast.error("You're offline", {
+          description: "Please check your connection"
+        })
+        hasShownOfflineToast.current = true;
+        hasShownOnlineToast.current = false;
+      }
     }
     
     // Add event listeners
