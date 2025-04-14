@@ -42,9 +42,9 @@ export function PageTransition({ children }: PageTransitionProps) {
     <AnimatePresence initial={false} mode="wait">
       <motion.div
         key={location.pathname}
-        initial={shouldAnimate ? "initial" : false}
-        animate={shouldAnimate ? "in" : { opacity: 1, x: 0 }}
-        exit={shouldAnimate ? "out" : false}
+        initial={shouldAnimate ? "initial" : "in"}
+        animate="in"
+        exit={shouldAnimate ? "out" : "in"}
         variants={pageVariants}
         transition={pageTransition}
         className="min-h-screen w-full"
