@@ -6,8 +6,9 @@ import RouteInfoCard from "./RouteInfoCard";
 import AdditionalRideInfo from "./AdditionalRideInfo";
 import { Ride } from "@/contexts/AppContext"; 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, ChevronDown, MessageCircle, Phone, User } from "lucide-react";
+import { ChevronUp, ChevronDown, MessageCircle, Phone, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface RideDetailsPanelProps {
   currentRide: Ride;
@@ -15,6 +16,26 @@ interface RideDetailsPanelProps {
 
 const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const handleShareDriver = async () => {
+    try {
+      const driverInfo = `${currentRide.driver?.name} - ${currentRide.driver?.vehicleType} (${currentRide.driver?.licensePlate})`;
+      
+      if (navigator.share) {
+        await navigator.share({
+          title: "My RideRoot Driver",
+          text: `My driver is ${driverInfo}`,
+          url: window.location.href
+        });
+      } else {
+        await navigator.clipboard.writeText(`My RideRoot driver: ${driverInfo}\n${window.location.href}`);
+        toast.success("Driver details copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      toast.error("Could not share driver details");
+    }
+  };
 
   return (
     <motion.div 
@@ -58,6 +79,9 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
             </div>
             
             <div className="flex gap-2">
+              <Button size="icon" variant="outline" className="rounded-full h-9 w-9" onClick={handleShareDriver}>
+                <Share2 size={18} />
+              </Button>
               <Button size="icon" variant="outline" className="rounded-full h-9 w-9">
                 <MessageCircle size={18} />
               </Button>
