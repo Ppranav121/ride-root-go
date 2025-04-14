@@ -1,11 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Clock, Car, Navigation } from "lucide-react";
+
 interface RideDetailsBannerProps {
   secondsLeft: number;
   ridePhase?: "arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed";
   minutesToDestination?: number;
 }
+
 const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
   secondsLeft,
   ridePhase = "arriving",
@@ -68,16 +70,28 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         return "bg-white";
     }
   };
-  return <motion.div className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4" initial={{
-    opacity: 0,
-    y: -20
-  }} animate={{
-    opacity: 1,
-    y: 0
-  }} transition={{
-    duration: 0.3
-  }}>
-      
-    </motion.div>;
+
+  return (
+    <motion.div 
+      className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4" 
+      initial={{
+        opacity: 0,
+        y: -20
+      }} 
+      animate={{
+        opacity: 1,
+        y: 0
+      }} 
+      transition={{
+        duration: 0.3
+      }}
+    >
+      <div className={`${getBgColor()} py-2 px-4 rounded-lg shadow-md flex items-center justify-center max-w-md w-full`}>
+        {getIcon()}
+        <span className="text-sm font-medium">{getMessage()}</span>
+      </div>
+    </motion.div>
+  );
 };
+
 export default RideDetailsBanner;
