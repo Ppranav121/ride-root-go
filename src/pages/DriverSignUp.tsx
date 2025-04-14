@@ -66,7 +66,7 @@ const DriverSignUp: React.FC = () => {
   };
   
   const goToSignIn = () => {
-    navigate("/signin");
+    navigate("/signin", { state: { isDriver: true } });
   };
 
   const handleNextStep = () => {

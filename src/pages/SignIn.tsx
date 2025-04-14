@@ -1,17 +1,33 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, ChevronRight, LogIn, Car } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+
+interface LocationState {
+  isDriver?: boolean;
+}
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useApp();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDriver, setIsDriver] = useState(false);
+
+  // Check if coming from driver signup
+  useEffect(() => {
+    const state = location.state as LocationState;
+    if (state?.isDriver) {
+      setIsDriver(true);
+    }
+  }, [location.state]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +35,8 @@ const SignIn: React.FC = () => {
     
     try {
       await login(email, password);
-      navigate("/home");
+      // Redirect to the appropriate home page based on user type
+      navigate(isDriver ? "/driver-home" : "/home");
     } catch (error) {
       console.error("Login failed", error);
     } finally {
@@ -28,7 +45,11 @@ const SignIn: React.FC = () => {
   };
 
   const goToSignUp = () => {
-    navigate("/signup");
+    navigate(isDriver ? "/driver-signup" : "/signup");
+  };
+
+  const toggleUserType = () => {
+    setIsDriver(!isDriver);
   };
 
   return (
@@ -52,6 +73,25 @@ const SignIn: React.FC = () => {
           
           <h1 className="text-3xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">Let's Get Started!</h1>
           <p className="text-gray-400 text-center">Let's dive in into your account</p>
+          
+          {/* User type toggle */}
+          <div className="mt-4 flex justify-center">
+            <Button 
+              variant="ghost" 
+              onClick={toggleUserType}
+              className="text-sm flex items-center gap-2"
+            >
+              <span>Sign in as a</span>
+              <Badge 
+                className={isDriver ? 
+                  "bg-rideroot-secondary text-white" : 
+                  "bg-rideroot-primary text-white"
+                }
+              >
+                {isDriver ? "Driver" : "Rider"}
+              </Badge>
+            </Button>
+          </div>
         </motion.div>
 
         {/* Social login buttons */}
