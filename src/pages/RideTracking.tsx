@@ -55,6 +55,23 @@ const RideTracking: React.FC = () => {
     }
   };
 
+  // Countdown timer for driver arrival
+  useEffect(() => {
+    if (ridePhase === "arriving" && secondsLeft > 0) {
+      const timer = setTimeout(() => {
+        setSecondsLeft(secondsLeft - 1);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    } else if (ridePhase === "arriving" && secondsLeft <= 0) {
+      setRidePhase("arrived");
+      toast.success("Your driver has arrived!", {
+        description: "Please meet them at the pickup location",
+        icon: <CheckCircle2 className="text-green-500" />
+      });
+    }
+  }, [ridePhase, secondsLeft]);
+
   // Lifecycle management for ride phases
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
@@ -96,16 +113,6 @@ const RideTracking: React.FC = () => {
         }));
       }, 200);
 
-      // After driver arrives at pickup
-      phaseTimerRef.current = setTimeout(() => {
-        clearInterval(positionInterval);
-        setRidePhase("arrived");
-        toast.success("Your driver has arrived!", {
-          description: "Please meet them at the pickup location",
-          icon: <CheckCircle2 className="text-green-500" />
-        });
-      }, phaseTimings.arriving);
-      
       return () => {
         clearInterval(positionInterval);
         if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
@@ -138,7 +145,8 @@ const RideTracking: React.FC = () => {
       phaseTimerRef.current = setTimeout(() => {
         clearInterval(positionInterval);
         setRidePhase("approaching");
-        toast("5 minutes to destination", {
+        toast({
+          title: "5 minutes to destination",
           description: "You're getting close to your destination",
           icon: <AlertCircle className="text-yellow-500" />
         });
@@ -166,7 +174,8 @@ const RideTracking: React.FC = () => {
         clearInterval(positionInterval);
         setRidePhase("almost_there");
         setMinutesToDestination(2);
-        toast("2 minutes to destination", {
+        toast({
+          title: "2 minutes to destination",
           description: "We're almost at your destination",
           icon: <AlertCircle className="text-yellow-500" />
         });
@@ -229,20 +238,15 @@ const RideTracking: React.FC = () => {
           driverPosition={driverPosition} 
           secondsLeft={secondsLeft} 
           onComplete={forceComplete} 
+          ridePhase={ridePhase}
         />
 
-        <div className="absolute top-0 left-0 right-0 bg-white/90 p-2 flex items-center justify-center">
-          <div className="bg-rideroot-primary/10 rounded-full px-4 py-1 text-center">
-            {ridePhase === "arriving" && <p className="font-medium text-sm">Driver arriving in {secondsLeft} seconds</p>}
-            {ridePhase === "arrived" && <p className="font-medium text-sm">Driver has arrived - Meet at pickup location</p>}
-            {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && 
-              <p className="font-medium text-sm">
-                {minutesToDestination} {minutesToDestination === 1 ? "minute" : "minutes"} to destination
-              </p>
-            }
-            {ridePhase === "completed" && <p className="font-medium text-sm">You have arrived!</p>}
-          </div>
-        </div>
+        {/* Enhanced ride details banner */}
+        <RideDetailsBanner 
+          secondsLeft={secondsLeft}
+          ridePhase={ridePhase}
+          minutesToDestination={minutesToDestination} 
+        />
         
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
           <RideDetailsPanel currentRide={currentRide} />
