@@ -12,19 +12,72 @@ import CancelRideButton from "@/components/ride/CancelRideButton";
 import { toast } from "sonner";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
+// Storage keys for ride state
+const RIDE_PHASE_STORAGE_KEY = "ride_phase";
+const SECONDS_LEFT_STORAGE_KEY = "ride_seconds_left";
+const MINUTES_TO_DEST_STORAGE_KEY = "ride_minutes_to_dest";
+const DRIVER_POS_STORAGE_KEY = "ride_driver_position";
+
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
   
   // State to track the driver's position for animation
-  const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
+  const [driverPosition, setDriverPosition] = useState(() => {
+    try {
+      const storedPosition = sessionStorage.getItem(DRIVER_POS_STORAGE_KEY);
+      return storedPosition ? JSON.parse(storedPosition) : { top: "60%", left: "30%" };
+    } catch (e) {
+      return { top: "60%", left: "30%" };
+    }
+  });
   
-  // Ride state management
-  const [ridePhase, setRidePhase] = useState<"arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed">("arriving");
-  const [secondsLeft, setSecondsLeft] = useState(30);
-  const [minutesToDestination, setMinutesToDestination] = useState(10);
+  // Ride state management with persistence
+  const [ridePhase, setRidePhase] = useState<"arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed">(() => {
+    return (sessionStorage.getItem(RIDE_PHASE_STORAGE_KEY) as any) || "arriving";
+  });
+  
+  const [secondsLeft, setSecondsLeft] = useState(() => {
+    return parseInt(sessionStorage.getItem(SECONDS_LEFT_STORAGE_KEY) || "30");
+  });
+  
+  const [minutesToDestination, setMinutesToDestination] = useState(() => {
+    return parseInt(sessionStorage.getItem(MINUTES_TO_DEST_STORAGE_KEY) || "10");
+  });
+  
   const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showCompletionRedirect, setShowCompletionRedirect] = useState(false);
+  
+  // Save ride state to storage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(RIDE_PHASE_STORAGE_KEY, ridePhase);
+  }, [ridePhase]);
+  
+  useEffect(() => {
+    sessionStorage.setItem(SECONDS_LEFT_STORAGE_KEY, secondsLeft.toString());
+  }, [secondsLeft]);
+  
+  useEffect(() => {
+    sessionStorage.setItem(MINUTES_TO_DEST_STORAGE_KEY, minutesToDestination.toString());
+  }, [minutesToDestination]);
+  
+  useEffect(() => {
+    sessionStorage.setItem(DRIVER_POS_STORAGE_KEY, JSON.stringify(driverPosition));
+  }, [driverPosition]);
+  
+  // Handle page visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log("Page is now visible, resuming ride state");
+        // The page is now visible, we're returning to the app
+        // No need to do anything special as we're already using stored state
+      }
+    };
+    
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
   
   // Handle ride completion and navigation
   const completeRide = () => {
@@ -43,6 +96,12 @@ const RideTracking: React.FC = () => {
       // Update state
       setCurrentRide(updatedRide);
       setShowCompletionRedirect(true);
+      
+      // Clear ride state storage since ride is complete
+      sessionStorage.removeItem(RIDE_PHASE_STORAGE_KEY);
+      sessionStorage.removeItem(SECONDS_LEFT_STORAGE_KEY);
+      sessionStorage.removeItem(MINUTES_TO_DEST_STORAGE_KEY);
+      sessionStorage.removeItem(DRIVER_POS_STORAGE_KEY);
       
       // Navigate after a short delay to ensure state is updated
       setTimeout(() => {
@@ -74,6 +133,7 @@ const RideTracking: React.FC = () => {
 
   // Lifecycle management for ride phases
   useEffect(() => {
+    // If no current ride data found, check for stored ride
     if (!currentRide || !currentRide.driver) {
       console.log("No ride in progress, redirecting to home");
       toast.error("No active ride found");
@@ -83,11 +143,13 @@ const RideTracking: React.FC = () => {
 
     console.log("Starting ride tracking simulation, phase:", ridePhase);
     
-    // Update ride status to in-progress
-    setCurrentRide({
-      ...currentRide,
-      status: "in-progress" as const
-    });
+    // Update ride status to in-progress if not already
+    if (currentRide.status !== "in-progress") {
+      setCurrentRide({
+        ...currentRide,
+        status: "in-progress" as const
+      });
+    }
 
     // Clear any existing timers
     if (phaseTimerRef.current) {
@@ -218,6 +280,21 @@ const RideTracking: React.FC = () => {
       if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
     };
   }, [currentRide, navigate, setCurrentRide, ridePhase]);
+
+  // Add a window beforeunload event handler to save state before leaving
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // This will be called when the user closes the tab or refreshes
+      // The state is already being saved via the other useEffects, so we just need
+      // to make sure any active timers are properly accounted for
+      if (phaseTimerRef.current) {
+        clearTimeout(phaseTimerRef.current);
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   // Force completion button for testing
   const forceComplete = () => {

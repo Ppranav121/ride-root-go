@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // Define types for our context
 type RideOption = "standard" | "premium";
@@ -74,17 +75,56 @@ interface AppContextType {
   sendMessage: (text: string, recipientId: string) => void;
 }
 
+// Storage keys
+const CURRENT_RIDE_STORAGE_KEY = "rideroot_current_ride";
+
 // Create the context with a default value
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [currentRide, setCurrentRide] = useState<Ride | null>(null);
   const [rideHistory, setRideHistory] = useState<Ride[]>([]);
   const [rideOption, setRideOption] = useState<RideOption>("standard");
   const [capacityOption, setCapacityOption] = useState<CapacityOption>("regular");
   const [messages, setMessages] = useState<Message[]>([]);
+  
+  // Initialize currentRide from session storage if available
+  const [currentRide, setCurrentRideState] = useState<Ride | null>(() => {
+    try {
+      const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
+      return storedRide ? JSON.parse(storedRide) : null;
+    } catch (error) {
+      console.error("Error reading stored ride:", error);
+      return null;
+    }
+  });
+
+  // Save ride to session storage when it changes
+  useEffect(() => {
+    if (currentRide) {
+      try {
+        sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(currentRide));
+      } catch (error) {
+        console.error("Error saving ride to storage:", error);
+      }
+    }
+  }, [currentRide]);
+
+  // Wrapper for setCurrentRide that also updates storage
+  const setCurrentRide = (ride: Ride | null) => {
+    setCurrentRideState(ride);
+    if (ride) {
+      try {
+        sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
+      } catch (error) {
+        console.error("Error saving ride to storage:", error);
+      }
+    } else {
+      // If ride is null, remove from storage
+      sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
+    }
+  };
 
   // Calculate fare based on distance, ride option, capacity, and subscription status
   const calculateFare = (
