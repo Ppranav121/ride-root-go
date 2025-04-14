@@ -1,11 +1,14 @@
+
 import React from "react";
 import { motion } from "framer-motion";
-import { MapPin, Clock, Car, Navigation, CheckCircle, Shield } from "lucide-react";
+import { Clock, Car, Navigation, CheckCircle, Shield } from "lucide-react";
+
 interface RideDetailsBannerProps {
   secondsLeft: number;
   ridePhase?: "arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed";
   minutesToDestination?: number;
 }
+
 const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
   secondsLeft,
   ridePhase = "arriving",
@@ -29,6 +32,7 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         return `Driver arriving in ${secondsLeft} seconds`;
     }
   };
+
   const getIcon = () => {
     switch (ridePhase) {
       case "arriving":
@@ -47,6 +51,7 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         return <Clock size={20} className="text-rideroot-primary" />;
     }
   };
+
   const getBgColor = () => {
     switch (ridePhase) {
       case "arriving":
@@ -65,16 +70,28 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         return "from-white to-blue-50";
     }
   };
-  return <motion.div className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4 md:px-6" initial={{
-    opacity: 0,
-    y: -20
-  }} animate={{
-    opacity: 1,
-    y: 0
-  }} transition={{
-    duration: 0.3
-  }}>
-      
-    </motion.div>;
+
+  return (
+    <motion.div 
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-30 px-4 md:px-6 max-w-md w-full"
+      initial={{
+        opacity: 0,
+        y: -20
+      }} 
+      animate={{
+        opacity: 1,
+        y: 0
+      }} 
+      transition={{
+        duration: 0.3
+      }}
+    >
+      <div className={`w-full bg-gradient-to-r ${getBgColor()} rounded-lg shadow-md p-3 flex items-center space-x-3`}>
+        {getIcon()}
+        <span className="text-sm font-medium flex-grow">{getMessage()}</span>
+      </div>
+    </motion.div>
+  );
 };
+
 export default RideDetailsBanner;
