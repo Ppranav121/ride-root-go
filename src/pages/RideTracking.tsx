@@ -146,8 +146,7 @@ const RideTracking: React.FC = () => {
         clearInterval(positionInterval);
         setRidePhase("approaching");
         toast({
-          title: "5 minutes to destination",
-          description: "You're getting close to your destination",
+          description: "5 minutes to destination. You're getting close!",
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.in_progress);
@@ -175,8 +174,7 @@ const RideTracking: React.FC = () => {
         setRidePhase("almost_there");
         setMinutesToDestination(2);
         toast({
-          title: "2 minutes to destination",
-          description: "We're almost at your destination",
+          description: "2 minutes to destination. We're almost there!",
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.approaching);
