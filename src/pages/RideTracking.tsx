@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -12,7 +11,6 @@ import CancelRideButton from "@/components/ride/CancelRideButton";
 import { toast } from "sonner";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
-// Storage keys for ride state
 const RIDE_PHASE_STORAGE_KEY = "ride_phase";
 const SECONDS_LEFT_STORAGE_KEY = "ride_seconds_left";
 const MINUTES_TO_DEST_STORAGE_KEY = "ride_minutes_to_dest";
@@ -22,7 +20,6 @@ const RideTracking: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
   
-  // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState(() => {
     try {
       const storedPosition = sessionStorage.getItem(DRIVER_POS_STORAGE_KEY);
@@ -32,7 +29,6 @@ const RideTracking: React.FC = () => {
     }
   });
   
-  // Ride state management with persistence
   const [ridePhase, setRidePhase] = useState<"arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed">(() => {
     return (sessionStorage.getItem(RIDE_PHASE_STORAGE_KEY) as any) || "arriving";
   });
@@ -48,7 +44,6 @@ const RideTracking: React.FC = () => {
   const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showCompletionRedirect, setShowCompletionRedirect] = useState(false);
   
-  // Save ride state to storage whenever it changes
   useEffect(() => {
     sessionStorage.setItem(RIDE_PHASE_STORAGE_KEY, ridePhase);
   }, [ridePhase]);
@@ -65,13 +60,10 @@ const RideTracking: React.FC = () => {
     sessionStorage.setItem(DRIVER_POS_STORAGE_KEY, JSON.stringify(driverPosition));
   }, [driverPosition]);
   
-  // Handle page visibility changes
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log("Page is now visible, resuming ride state");
-        // The page is now visible, we're returning to the app
-        // No need to do anything special as we're already using stored state
       }
     };
     
@@ -79,7 +71,6 @@ const RideTracking: React.FC = () => {
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
   
-  // Handle ride completion and navigation
   const completeRide = () => {
     if (!currentRide) return;
     
@@ -89,21 +80,17 @@ const RideTracking: React.FC = () => {
         status: "completed" as const
       };
       
-      // Store in session storage
       console.log("Storing completed ride in sessionStorage:", updatedRide);
       sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
       
-      // Update state
       setCurrentRide(updatedRide);
       setShowCompletionRedirect(true);
       
-      // Clear ride state storage since ride is complete
       sessionStorage.removeItem(RIDE_PHASE_STORAGE_KEY);
       sessionStorage.removeItem(SECONDS_LEFT_STORAGE_KEY);
       sessionStorage.removeItem(MINUTES_TO_DEST_STORAGE_KEY);
       sessionStorage.removeItem(DRIVER_POS_STORAGE_KEY);
       
-      // Navigate after a short delay to ensure state is updated
       setTimeout(() => {
         console.log("Navigating to ride-completion page");
         window.location.href = "/ride-completion";
@@ -114,7 +101,6 @@ const RideTracking: React.FC = () => {
     }
   };
 
-  // Countdown timer for driver arrival
   useEffect(() => {
     if (ridePhase === "arriving" && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -131,9 +117,7 @@ const RideTracking: React.FC = () => {
     }
   }, [ridePhase, secondsLeft]);
 
-  // Lifecycle management for ride phases
   useEffect(() => {
-    // If no current ride data found, check for stored ride
     if (!currentRide || !currentRide.driver) {
       console.log("No ride in progress, redirecting to home");
       toast.error("No active ride found");
@@ -143,7 +127,6 @@ const RideTracking: React.FC = () => {
 
     console.log("Starting ride tracking simulation, phase:", ridePhase);
     
-    // Update ride status to in-progress if not already
     if (currentRide.status !== "in-progress") {
       setCurrentRide({
         ...currentRide,
@@ -151,23 +134,19 @@ const RideTracking: React.FC = () => {
       });
     }
 
-    // Clear any existing timers
     if (phaseTimerRef.current) {
       clearTimeout(phaseTimerRef.current);
     }
 
-    // Phase timing logic (simulation)
     const phaseTimings = {
-      arriving: 5000,   // Driver arriving to pickup - 5 seconds
-      arrived: 3000,    // Driver arrived, waiting for rider - 3 seconds
-      in_progress: 10000, // Main ride duration - 10 seconds
-      approaching: 5000,  // 5 min from destination - 5 seconds
-      almost_there: 5000, // 2 min from destination - 5 seconds
+      arriving: 5000,
+      arrived: 3000,
+      in_progress: 10000,
+      approaching: 5000,
+      almost_there: 5000,
     };
 
-    // Handle each phase transition
     if (ridePhase === "arriving") {
-      // Animate driver approaching pickup
       const positionInterval = setInterval(() => {
         setDriverPosition(prev => ({
           top: `${Math.max(40, parseFloat(prev.top) - 1)}%`,
@@ -193,14 +172,12 @@ const RideTracking: React.FC = () => {
     }
 
     else if (ridePhase === "in_progress") {
-      // Animate driver moving to destination
       const positionInterval = setInterval(() => {
         setDriverPosition(prev => ({
           top: `${Math.max(20, parseFloat(prev.top) - 0.5)}%`,
           left: `${Math.min(70, parseFloat(prev.left) + 0.5)}%`
         }));
 
-        // Update countdown to destination
         setMinutesToDestination(prev => Math.max(5, prev - 1));
       }, 1000);
 
@@ -220,14 +197,12 @@ const RideTracking: React.FC = () => {
     }
 
     else if (ridePhase === "approaching") {
-      // Continue driver animation
       const positionInterval = setInterval(() => {
         setDriverPosition(prev => ({
           top: `${Math.max(15, parseFloat(prev.top) - 0.3)}%`,
           left: `${Math.min(85, parseFloat(prev.left) + 0.3)}%`
         }));
 
-        // Update countdown to destination
         setMinutesToDestination(prev => Math.max(2, prev - 1));
       }, 1000);
 
@@ -248,14 +223,12 @@ const RideTracking: React.FC = () => {
     }
 
     else if (ridePhase === "almost_there") {
-      // Final approach animation
       const positionInterval = setInterval(() => {
         setDriverPosition(prev => ({
           top: `${Math.max(10, parseFloat(prev.top) - 0.3)}%`,
           left: `${Math.min(90, parseFloat(prev.left) + 0.3)}%`
         }));
         
-        // Update countdown to destination
         setMinutesToDestination(prev => Math.max(0, prev - 1));
       }, 1000);
 
@@ -275,18 +248,13 @@ const RideTracking: React.FC = () => {
       };
     }
 
-    // Just to avoid any warning about missing return in useEffect
     return () => {
       if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
     };
   }, [currentRide, navigate, setCurrentRide, ridePhase]);
 
-  // Add a window beforeunload event handler to save state before leaving
   useEffect(() => {
     const handleBeforeUnload = () => {
-      // This will be called when the user closes the tab or refreshes
-      // The state is already being saved via the other useEffects, so we just need
-      // to make sure any active timers are properly accounted for
       if (phaseTimerRef.current) {
         clearTimeout(phaseTimerRef.current);
       }
@@ -296,7 +264,6 @@ const RideTracking: React.FC = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
-  // Force completion button for testing
   const forceComplete = () => {
     setRidePhase("completed");
     completeRide();
@@ -316,7 +283,8 @@ const RideTracking: React.FC = () => {
           ridePhase={ridePhase}
         />
 
-        {/* Enhanced ride details banner */}
+        <EmergencyButton />
+
         <RideDetailsBanner 
           secondsLeft={secondsLeft}
           ridePhase={ridePhase}
@@ -340,16 +308,6 @@ const RideTracking: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Debug button for developer testing only - consider removing in production */}
-      <button 
-        onClick={forceComplete}
-        className="absolute bottom-4 left-4 bg-red-500 text-white p-2 rounded text-xs"
-      >
-        Debug: Complete Ride
-      </button>
-
-      <EmergencyButton />
     </div>
   );
 };
