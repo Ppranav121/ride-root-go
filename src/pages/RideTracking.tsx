@@ -276,24 +276,26 @@ const RideTracking: React.FC = () => {
       <RootHeader title="Your Ride" />
 
       <div className="relative flex-1 overflow-hidden">
-        <MapView 
-          driverPosition={driverPosition} 
-          secondsLeft={secondsLeft} 
-          onComplete={forceComplete} 
-          ridePhase={ridePhase}
-        />
+        <RideDetailsPanel currentRide={currentRide} />
+        
+        <div className="relative mt-[70px]">
+          <MapView 
+            driverPosition={driverPosition} 
+            secondsLeft={secondsLeft} 
+            onComplete={forceComplete} 
+            ridePhase={ridePhase}
+          />
 
-        <EmergencyButton />
+          <EmergencyButton />
 
-        <RideDetailsBanner 
-          secondsLeft={secondsLeft}
-          ridePhase={ridePhase}
-          minutesToDestination={minutesToDestination} 
-        />
+          <RideDetailsBanner 
+            secondsLeft={secondsLeft}
+            ridePhase={ridePhase}
+            minutesToDestination={minutesToDestination} 
+          />
+        </div>
         
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
-          <RideDetailsPanel currentRide={currentRide} />
-          
           <RouteInfoCard
             pickupLocation={currentRide.pickupLocation}
             dropoffLocation={currentRide.dropoffLocation}
