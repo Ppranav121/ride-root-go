@@ -1,10 +1,8 @@
-
 import React, { useState } from "react";
 import { Info, Phone, MessageSquare, MapPin } from "lucide-react";
 import MessageDialog from "./MessageDialog";
 import { useApp } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
-
 interface RouteInfoCardProps {
   pickupLocation: string;
   dropoffLocation: string;
@@ -13,7 +11,6 @@ interface RouteInfoCardProps {
   distance: string | number;
   fare: number;
 }
-
 const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   pickupLocation,
   dropoffLocation,
@@ -23,8 +20,9 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   fare
 }) => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
-  const { currentRide } = useApp();
-
+  const {
+    currentRide
+  } = useApp();
   const rideOptionLabel = (option: string, capacity: string) => {
     let label = option.charAt(0).toUpperCase() + option.slice(1);
     if (capacity === "xl") {
@@ -32,17 +30,14 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
     }
     return label;
   };
-
   const handleCallDriver = () => {
     toast({
       title: "Calling driver",
-      description: "This feature would initiate a call to your driver in a real app.",
+      description: "This feature would initiate a call to your driver in a real app."
     });
   };
-
-  return (
-    <>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+  return <>
+      <div className="bg-white shadow-sm border border-gray-100 p-4 mb-4 rounded-md">
         <div className="flex items-start mb-4">
           <div className="mr-4 flex flex-col items-center">
             <div className="w-3 h-3 rounded-full bg-rideroot-primary"></div>
@@ -73,32 +68,18 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
         </div>
 
         <div className="flex space-x-3 mt-4">
-          <button 
-            className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm"
-            onClick={handleCallDriver}
-          >
+          <button className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm" onClick={handleCallDriver}>
             <Phone size={18} className="mr-2" />
             Call
           </button>
-          <button 
-            className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm"
-            onClick={() => setIsMessageOpen(true)}
-          >
+          <button className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm" onClick={() => setIsMessageOpen(true)}>
             <MessageSquare size={18} className="mr-2" />
             Message
           </button>
         </div>
       </div>
 
-      {currentRide && currentRide.driver && (
-        <MessageDialog 
-          isOpen={isMessageOpen} 
-          onClose={() => setIsMessageOpen(false)}
-          driverName={currentRide.driver.name}
-        />
-      )}
-    </>
-  );
+      {currentRide && currentRide.driver && <MessageDialog isOpen={isMessageOpen} onClose={() => setIsMessageOpen(false)} driverName={currentRide.driver.name} />}
+    </>;
 };
-
 export default RouteInfoCard;
