@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, memo, useCallback } from "react";
+import React, { useState } from "react";
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
@@ -19,8 +19,6 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   onPickupChange,
   onDropoffChange,
 }) => {
-  console.log("LocationSearchContainer rendering");
-  
   const [showRecentLocations, setShowRecentLocations] = useState(false);
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
@@ -28,39 +26,30 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock recent locations (kept from original code)
-  const recentLocations = useMemo(() => [
+  const recentLocations = [
     { id: "1", name: "Home", address: "123 Main St" },
     { id: "2", name: "Work", address: "456 Office Ave" },
     { id: "3", name: "Gym", address: "789 Fitness Blvd" },
-  ], []);
+  ];
 
-  // Memoize filtered search locations to prevent recalculation on every render
-  const searchLocations = useMemo(() => {
-    const locations = [
-      { id: "4", name: "Airport", address: "1234 Airport Way" },
-      { id: "5", name: "Mall", address: "5678 Shopping Center" },
-      { id: "6", name: "Downtown", address: "910 Main Square" },
-      { id: "7", name: "Park", address: "1112 Green Park" },
-      { id: "8", name: "Hospital", address: "1314 Health Ave" },
-    ];
-    
-    if (!searchQuery) return locations;
-    
-    return locations.filter(loc => 
-      loc.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      loc.address.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
+  // Mock search locations (kept from original code)
+  const searchLocations = [
+    { id: "4", name: "Airport", address: "1234 Airport Way" },
+    { id: "5", name: "Mall", address: "5678 Shopping Center" },
+    { id: "6", name: "Downtown", address: "910 Main Square" },
+    { id: "7", name: "Park", address: "1112 Green Park" },
+    { id: "8", name: "Hospital", address: "1314 Health Ave" },
+  ].filter(loc => 
+    loc.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    loc.address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleSelectRecentLocation = useCallback((address: string) => {
-    console.log(`Selecting ${locationSearchType} location: ${address}`);
-    
+  const handleSelectRecentLocation = (address: string) => {
     if (locationSearchType === "pickup") {
       onPickupChange(address);
     } else {
       onDropoffChange(address);
     }
-    
     setShowRecentLocations(false);
     setLocationDialogOpen(false);
     
@@ -68,17 +57,15 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
       description: address,
       duration: 2000,
     });
-  }, [locationSearchType, onPickupChange, onDropoffChange]);
+  };
 
-  const handleOpenLocationSearch = useCallback((type: "pickup" | "dropoff") => {
-    console.log(`Opening location search for ${type}`);
+  const handleOpenLocationSearch = (type: "pickup" | "dropoff") => {
     setLocationSearchType(type);
     setSearchQuery("");
     setLocationDialogOpen(true);
-  }, []);
+  };
 
-  const getCurrentLocation = useCallback(() => {
-    console.log("Getting current location");
+  const getCurrentLocation = () => {
     setIsLoading(true);
     
     // Simulate getting current location
@@ -97,7 +84,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
         duration: 2000,
       });
     }, 1000);
-  }, [locationSearchType, onPickupChange, onDropoffChange]);
+  };
 
   return (
     <>
@@ -108,8 +95,6 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
         onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
         onClearPickup={() => onPickupChange("")}
         onClearDropoff={() => onDropoffChange("")}
-        onUseCurrentPickupLocation={getCurrentLocation}
-        onUseCurrentDropoffLocation={getCurrentLocation}
       />
 
       <AnimatePresence>
@@ -136,4 +121,4 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   );
 };
 
-export default memo(LocationSearchContainer);
+export default LocationSearchContainer;

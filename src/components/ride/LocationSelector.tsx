@@ -9,8 +9,6 @@ interface LocationSelectorProps {
   onOpenDropoffSearch: () => void;
   onClearPickup: () => void;
   onClearDropoff: () => void;
-  onUseCurrentPickupLocation?: () => void;
-  onUseCurrentDropoffLocation?: () => void;
 }
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
@@ -20,8 +18,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   onOpenDropoffSearch,
   onClearPickup,
   onClearDropoff,
-  onUseCurrentPickupLocation,
-  onUseCurrentDropoffLocation,
 }) => {
   return (
     <div className="mb-5">
@@ -38,7 +34,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             placeholder="Select pickup location"
             onClear={onClearPickup}
             onOpenSearch={onOpenPickupSearch}
-            onUseCurrentLocation={onUseCurrentPickupLocation}
           />
           <LocationInput 
             label="Dropoff"
@@ -46,7 +41,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             placeholder="Where to?"
             onClear={onClearDropoff}
             onOpenSearch={onOpenDropoffSearch}
-            onUseCurrentLocation={onUseCurrentDropoffLocation}
           />
         </div>
       </div>

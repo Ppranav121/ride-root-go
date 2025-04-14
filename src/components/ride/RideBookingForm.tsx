@@ -1,5 +1,5 @@
 
-import React, { useMemo, memo } from "react";
+import React from "react";
 import { useApp } from "@/contexts/AppContext";
 import { PaymentMethod } from "@/components/ride/PaymentMethodSelector";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ const RideBookingForm: React.FC<RideBookingFormProps> = ({
   distance = 6, // Default value from original code
 }) => {
   const navigate = useNavigate();
-  const { bookRide, rideOption, capacityOption, user, calculateFare } = useApp();
+  const { bookRide, rideOption, capacityOption, user } = useApp();
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<PaymentMethod | null>({
     id: "card-1",
@@ -31,11 +31,6 @@ const RideBookingForm: React.FC<RideBookingFormProps> = ({
     expiryDate: "12/25",
     isDefault: true
   });
-
-  // Calculate fare once and memoize the value
-  const fare = useMemo(() => {
-    return calculateFare(distance, rideOption, capacityOption, user?.isSubscribed || false);
-  }, [distance, rideOption, capacityOption, user?.isSubscribed, calculateFare]);
 
   const handleBookRide = async () => {
     if (!dropoffLocation) {
@@ -66,9 +61,6 @@ const RideBookingForm: React.FC<RideBookingFormProps> = ({
     }
   };
 
-  // Check if the button should be disabled
-  const isButtonDisabled = isLoading || !dropoffLocation || !selectedPaymentMethod;
-
   return (
     <div className="px-6 pb-8">
       <div className="mb-5">
@@ -86,15 +78,15 @@ const RideBookingForm: React.FC<RideBookingFormProps> = ({
         distance={distance}
         rideOption={rideOption}
         capacityOption={capacityOption}
-        fare={fare}
+        fare={useApp().calculateFare(distance, rideOption, capacityOption, user?.isSubscribed || false)}
         isSubscribed={user?.isSubscribed || false}
       />
 
       <motion.button
         onClick={handleBookRide}
         className={`bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full h-[56px] flex items-center justify-center rounded-xl text-white font-bold font-heading shadow-md ${isLoading ? "opacity-70" : ""}`}
-        disabled={isButtonDisabled}
-        whileTap={{ scale: isButtonDisabled ? 1 : 0.98 }}
+        disabled={isLoading || !dropoffLocation || !selectedPaymentMethod}
+        whileTap={{ scale: 0.98 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         {isLoading ? "Finding your ride..." : "Book Ride"}
@@ -116,4 +108,4 @@ const RideBookingForm: React.FC<RideBookingFormProps> = ({
   );
 };
 
-export default memo(RideBookingForm);
+export default RideBookingForm;

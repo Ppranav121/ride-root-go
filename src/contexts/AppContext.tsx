@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // Define types for our context
@@ -82,16 +83,6 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  // Safely check if sessionStorage is available
-  const isSessionStorageAvailable = () => {
-    try {
-      return typeof sessionStorage !== 'undefined';
-    } catch (e) {
-      return false;
-    }
-  };
-
-  // State hooks - define all states before any effects
   const [user, setUser] = useState<User | null>(null);
   const [rideHistory, setRideHistory] = useState<Ride[]>([]);
   const [rideOption, setRideOption] = useState<RideOption>("standard");
@@ -100,21 +91,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   
   // Initialize currentRide from session storage if available
   const [currentRide, setCurrentRideState] = useState<Ride | null>(() => {
-    if (isSessionStorageAvailable()) {
-      try {
-        const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
-        return storedRide ? JSON.parse(storedRide) : null;
-      } catch (error) {
-        console.error("Error reading stored ride:", error);
-        return null;
-      }
+    try {
+      const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
+      return storedRide ? JSON.parse(storedRide) : null;
+    } catch (error) {
+      console.error("Error reading stored ride:", error);
+      return null;
     }
-    return null;
   });
 
   // Save ride to session storage when it changes
   useEffect(() => {
-    if (currentRide && isSessionStorageAvailable()) {
+    if (currentRide) {
       try {
         sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(currentRide));
       } catch (error) {
@@ -126,22 +114,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Wrapper for setCurrentRide that also updates storage
   const setCurrentRide = (ride: Ride | null) => {
     setCurrentRideState(ride);
-    
-    if (isSessionStorageAvailable()) {
-      if (ride) {
-        try {
-          sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
-        } catch (error) {
-          console.error("Error saving ride to storage:", error);
-        }
-      } else {
-        // If ride is null, remove from storage
-        try {
-          sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
-        } catch (error) {
-          console.error("Error removing ride from storage:", error);
-        }
+    if (ride) {
+      try {
+        sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
+      } catch (error) {
+        console.error("Error saving ride to storage:", error);
       }
+    } else {
+      // If ride is null, remove from storage
+      sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
     }
   };
 
@@ -165,6 +146,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     let totalFare = baseFare + (ratePerMile * distance);
     
+    // Apply 10% discount for subscribers
     if (isSubscribed) {
       totalFare *= 0.9;
     }

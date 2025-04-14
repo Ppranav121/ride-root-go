@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "./contexts/AppContext";
 import { PageTransition } from "./hooks/use-page-transition";
-import { memo } from "react";
 
 // Pages
 import Splash from "./pages/Splash";
@@ -37,71 +36,61 @@ import DriverProfile from "./pages/DriverProfile";
 import DriverRatings from "./pages/DriverRatings";
 import DriverSettings from "./pages/DriverSettings";
 
-// Memoize all page components for better performance
-const MemoizedHome = memo(Home);
-const MemoizedRides = memo(Rides);
-const MemoizedProfile = memo(Profile);
-const MemoizedBookRide = memo(BookRide);
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
     },
   },
 });
 
 const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AppProvider>
-        <TooltipProvider>
-          <Toaster />
-          <SonnerToaster />
-          <BrowserRouter>
-            <PageTransition>
-              <Routes>
-                <Route path="/" element={<Splash />} />
-                <Route path="/index" element={<Index />} />
-                <Route path="/welcome" element={<Welcome />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/home" element={<MemoizedHome />} />
-                <Route path="/book-ride" element={<MemoizedBookRide />} />
-                <Route path="/ride-confirmation" element={<RideConfirmation />} />
-                <Route path="/ride-tracking" element={<RideTracking />} />
-                <Route path="/ride-completion" element={<RideCompletion />} />
-                <Route path="/ride-cancellation" element={<RideCancellation />} />
-                
-                <Route path="/profile" element={<MemoizedProfile />} />
-                <Route path="/rides" element={<MemoizedRides />} />
-                <Route path="/ride/:id" element={<RideDetails />} />
-                
-                {/* Driver Routes */}
-                <Route path="/driver-signup" element={<DriverSignUp />} />
-                <Route path="/driver-home" element={<DriverHome />} />
-                <Route path="/driver-earnings" element={<DriverEarnings />} />
-                <Route path="/driver-help" element={<DriverHelp />} />
-                <Route path="/driver-profile" element={<DriverProfile />} />
-                <Route path="/driver-ratings" element={<DriverRatings />} />
-                <Route path="/driver-settings" element={<DriverSettings />} />
-                <Route path="/driver-messages" element={<Profile />} />
-                <Route path="/driver-subscription" element={<DriverSubscription />} />
-                <Route path="/driver-ride" element={<DriverRide />} />
-                
-                {/* Fallback route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </PageTransition>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AppProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <AppProvider>
+      <TooltipProvider>
+        <Toaster />
+        <SonnerToaster />
+        <BrowserRouter>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<Splash />} />
+              <Route path="/index" element={<Index />} />
+              <Route path="/welcome" element={<Welcome />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/book-ride" element={<BookRide />} />
+              <Route path="/ride-confirmation" element={<RideConfirmation />} />
+              <Route path="/ride-tracking" element={<RideTracking />} />
+              <Route path="/ride-completion" element={<RideCompletion />} />
+              <Route path="/ride-cancellation" element={<RideCancellation />} />
+              
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/rides" element={<Rides />} />
+              <Route path="/ride/:id" element={<RideDetails />} />
+              
+              {/* Driver Routes */}
+              <Route path="/driver-signup" element={<DriverSignUp />} />
+              <Route path="/driver-home" element={<DriverHome />} />
+              <Route path="/driver-earnings" element={<DriverEarnings />} />
+              <Route path="/driver-help" element={<DriverHelp />} />
+              <Route path="/driver-profile" element={<DriverProfile />} />
+              <Route path="/driver-ratings" element={<DriverRatings />} />
+              <Route path="/driver-settings" element={<DriverSettings />} />
+              <Route path="/driver-messages" element={<Profile />} />
+              <Route path="/driver-subscription" element={<DriverSubscription />} />
+              <Route path="/driver-ride" element={<DriverRide />} />
+              
+              {/* Fallback route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PageTransition>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AppProvider>
+  </QueryClientProvider>
 );
 
 export default App;

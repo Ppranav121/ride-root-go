@@ -1,9 +1,9 @@
 
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import RootHeader from "@/components/RootHeader";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import LocationSearchContainer from "@/components/ride/LocationSearchContainer";
@@ -13,85 +13,52 @@ interface LocationState {
   dropoffLocation?: string;
 }
 
-// Memoize the MapPlaceholder component to prevent unnecessary re-renders
-const MapPlaceholder = memo(() => (
-  <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-    <p className="text-rideroot-darkGrey">Map view would appear here</p>
-    
-    {/* Map Pins Animation */}
-    <motion.div 
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="absolute w-6 h-6 bg-rideroot-primary rounded-full top-1/3 left-1/2 transform -translate-x-1/2 flex items-center justify-center"
-    >
-      <div className="absolute w-6 h-6 bg-rideroot-primary rounded-full animate-ping opacity-75"></div>
-      <MapPin size={16} className="text-white" />
-    </motion.div>
-    <motion.div 
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 0.3, duration: 0.5 }}
-      className="absolute w-6 h-6 bg-rideroot-accent rounded-full bottom-1/3 left-1/2 transform -translate-x-1/2 flex items-center justify-center"
-    >
-      <MapPin size={16} className="text-white" />
-    </motion.div>
-  </div>
-));
-
-// Mark component name for debugging
-MapPlaceholder.displayName = 'MapPlaceholder';
-
 const BookRide: React.FC = () => {
-  console.log("BookRide rendering");
   const location = useLocation();
   const [pickupLocation, setPickupLocation] = useState("Current Location");
   const [dropoffLocation, setDropoffLocation] = useState("");
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-  const [hasShownNotification, setHasShownNotification] = useState(false);
-
-  // Convert state updating functions to useCallback to prevent re-rendering
-  const handlePickupChange = useCallback((location: string) => {
-    console.log("Setting pickup location:", location);
-    setPickupLocation(location);
-  }, []);
-
-  const handleDropoffChange = useCallback((location: string) => {
-    console.log("Setting dropoff location:", location);
-    setDropoffLocation(location);
-  }, []);
 
   // Get pre-selected location from navigation state if available
   useEffect(() => {
-    console.log("BookRide useEffect running, location state:", location.state);
-    
     const state = location.state as LocationState;
-    if (state?.dropoffLocation && !hasShownNotification) {
+    if (state?.dropoffLocation) {
       setDropoffLocation(state.dropoffLocation);
-      setHasShownNotification(true);
       
-      // Show notification with a small delay to ensure it appears after render
-      setTimeout(() => {
-        toast.success("Destination selected", {
-          description: state.dropoffLocation,
-          duration: 2000,
-        });
-      }, 100);
+      toast.success("Destination selected", {
+        description: state.dropoffLocation,
+        duration: 2000,
+      });
     }
-    
-    // Mark page as loaded after initial render
-    if (!isPageLoaded) {
-      setIsPageLoaded(true);
-    }
-  }, [location, hasShownNotification, isPageLoaded]);
+  }, [location]);
 
   return (
     <div className="flex flex-col h-screen bg-rideroot-lightGrey">
       <RootHeader title="Book a Ride" />
 
       <div className="flex-1 relative">
-        {/* Map Placeholder - Memoized to prevent re-rendering */}
-        <MapPlaceholder />
+        {/* Map Placeholder */}
+        <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
+          <p className="text-rideroot-darkGrey">Map view would appear here</p>
+          
+          {/* Map Pins Animation */}
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="absolute w-6 h-6 bg-rideroot-primary rounded-full top-1/3 left-1/2 transform -translate-x-1/2 flex items-center justify-center"
+          >
+            <div className="absolute w-6 h-6 bg-rideroot-primary rounded-full animate-ping opacity-75"></div>
+            <MapPin size={16} className="text-white" />
+          </motion.div>
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="absolute w-6 h-6 bg-rideroot-accent rounded-full bottom-1/3 left-1/2 transform -translate-x-1/2 flex items-center justify-center"
+          >
+            <MapPin size={16} className="text-white" />
+          </motion.div>
+        </div>
 
         {/* Ride Booking Interface */}
         <motion.div 
@@ -100,15 +67,14 @@ const BookRide: React.FC = () => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          layoutId="booking-panel"
         >
-          <ScrollArea className="h-[70vh] w-full px-0 py-0">
+          <ScrollArea className="h-[70vh] w-full">
             <div className="pt-6">
               <LocationSearchContainer
                 pickupLocation={pickupLocation}
                 dropoffLocation={dropoffLocation}
-                onPickupChange={handlePickupChange}
-                onDropoffChange={handleDropoffChange}
+                onPickupChange={setPickupLocation}
+                onDropoffChange={setDropoffLocation}
               />
               
               <RideBookingForm
@@ -123,4 +89,4 @@ const BookRide: React.FC = () => {
   );
 };
 
-export default memo(BookRide);
+export default BookRide;
