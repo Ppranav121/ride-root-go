@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "./contexts/AppContext";
-import { PageTransition } from "./hooks/use-page-transition";
 
 // Pages
 import Splash from "./pages/Splash";
@@ -52,41 +51,39 @@ const App = () => (
         <Toaster />
         <SonnerToaster />
         <BrowserRouter>
-          <PageTransition>
-            <Routes>
-              <Route path="/" element={<Splash />} />
-              <Route path="/index" element={<Index />} />
-              <Route path="/welcome" element={<Welcome />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/book-ride" element={<BookRide />} />
-              <Route path="/ride-confirmation" element={<RideConfirmation />} />
-              <Route path="/ride-tracking" element={<RideTracking />} />
-              <Route path="/ride-completion" element={<RideCompletion />} />
-              <Route path="/ride-cancellation" element={<RideCancellation />} />
-              
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/rides" element={<Rides />} />
-              <Route path="/ride/:id" element={<RideDetails />} />
-              
-              {/* Driver Routes */}
-              <Route path="/driver-signup" element={<DriverSignUp />} />
-              <Route path="/driver-home" element={<DriverHome />} />
-              <Route path="/driver-earnings" element={<DriverEarnings />} />
-              <Route path="/driver-help" element={<DriverHelp />} />
-              <Route path="/driver-profile" element={<DriverProfile />} />
-              <Route path="/driver-ratings" element={<DriverRatings />} />
-              <Route path="/driver-settings" element={<DriverSettings />} />
-              <Route path="/driver-messages" element={<Profile />} />
-              <Route path="/driver-subscription" element={<DriverSubscription />} />
-              <Route path="/driver-ride" element={<DriverRide />} />
-              
-              {/* Fallback route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </PageTransition>
+          <Routes>
+            <Route path="/" element={<Splash />} />
+            <Route path="/index" element={<Index />} />
+            <Route path="/welcome" element={<Welcome />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/book-ride" element={<BookRide />} />
+            <Route path="/ride-confirmation" element={<RideConfirmation />} />
+            <Route path="/ride-tracking" element={<RideTracking />} />
+            <Route path="/ride-completion" element={<RideCompletion />} />
+            <Route path="/ride-cancellation" element={<RideCancellation />} />
+            
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/rides" element={<Rides />} />
+            <Route path="/ride/:id" element={<RideDetails />} />
+            
+            {/* Driver Routes */}
+            <Route path="/driver-signup" element={<DriverSignUp />} />
+            <Route path="/driver-home" element={<DriverHome />} />
+            <Route path="/driver-earnings" element={<DriverEarnings />} />
+            <Route path="/driver-help" element={<DriverHelp />} />
+            <Route path="/driver-profile" element={<DriverProfile />} />
+            <Route path="/driver-ratings" element={<DriverRatings />} />
+            <Route path="/driver-settings" element={<DriverSettings />} />
+            <Route path="/driver-messages" element={<Profile />} />
+            <Route path="/driver-subscription" element={<DriverSubscription />} />
+            <Route path="/driver-ride" element={<DriverRide />} />
+            
+            {/* Fallback route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </AppProvider>
