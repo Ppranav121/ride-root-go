@@ -82,7 +82,7 @@ const CURRENT_RIDE_STORAGE_KEY = "rideroot_current_ride";
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Provider component
-export const AppProvider = ({ children }: { children: ReactNode }) => {
+export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [rideHistory, setRideHistory] = useState<Ride[]>([]);
   const [rideOption, setRideOption] = useState<RideOption>("standard");
