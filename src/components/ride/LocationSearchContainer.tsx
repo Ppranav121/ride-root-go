@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo, memo } from "react";
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
@@ -32,17 +32,23 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     { id: "3", name: "Gym", address: "789 Fitness Blvd" },
   ];
 
-  // Mock search locations (kept from original code)
-  const searchLocations = [
-    { id: "4", name: "Airport", address: "1234 Airport Way" },
-    { id: "5", name: "Mall", address: "5678 Shopping Center" },
-    { id: "6", name: "Downtown", address: "910 Main Square" },
-    { id: "7", name: "Park", address: "1112 Green Park" },
-    { id: "8", name: "Hospital", address: "1314 Health Ave" },
-  ].filter(loc => 
-    loc.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    loc.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Memoize filtered search locations to prevent recalculation on every render
+  const searchLocations = useMemo(() => {
+    const locations = [
+      { id: "4", name: "Airport", address: "1234 Airport Way" },
+      { id: "5", name: "Mall", address: "5678 Shopping Center" },
+      { id: "6", name: "Downtown", address: "910 Main Square" },
+      { id: "7", name: "Park", address: "1112 Green Park" },
+      { id: "8", name: "Hospital", address: "1314 Health Ave" },
+    ];
+    
+    if (!searchQuery) return locations;
+    
+    return locations.filter(loc => 
+      loc.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      loc.address.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
   const handleSelectRecentLocation = (address: string) => {
     if (locationSearchType === "pickup") {
@@ -121,4 +127,4 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   );
 };
 
-export default LocationSearchContainer;
+export default memo(LocationSearchContainer);

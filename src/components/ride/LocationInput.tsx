@@ -1,6 +1,6 @@
 
-import React from "react";
-import { MapPin, X, Target } from "lucide-react";
+import React, { memo } from "react";
+import { X, Target } from "lucide-react";
 import { toast } from "sonner";
 
 interface LocationInputProps {
@@ -18,9 +18,19 @@ const LocationInput: React.FC<LocationInputProps> = ({
   onClear,
   onOpenSearch,
 }) => {
+  // Prevent event bubbling when clicking clear button
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onClear();
+    toast.success(`${label} location cleared`, {
+      duration: 2000,
+    });
+  };
+
   return (
     <div 
-      className="relative cursor-pointer"
+      className="relative cursor-pointer touch-action-manipulation"
       onClick={onOpenSearch}
     >
       <div className="input-field w-full pr-8 flex items-center bg-gray-100 rounded-md p-3">
@@ -31,19 +41,17 @@ const LocationInput: React.FC<LocationInputProps> = ({
       <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-2">
         {location && (
           <button 
-            className="text-rideroot-darkGrey hover:text-rideroot-text"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClear();
-              toast.success(`${label} location cleared`, {
-                duration: 2000,
-              });
-            }}
+            className="text-rideroot-darkGrey hover:text-rideroot-text p-1.5 -m-1.5"
+            onClick={handleClear}
+            aria-label="Clear location"
           >
             <X size={16} />
           </button>
         )}
-        <button className="text-rideroot-primary hover:text-rideroot-accent">
+        <button 
+          className="text-rideroot-primary hover:text-rideroot-accent p-1.5 -m-1.5"
+          aria-label="Use current location"
+        >
           <Target size={16} />
         </button>
       </div>
@@ -51,4 +59,4 @@ const LocationInput: React.FC<LocationInputProps> = ({
   );
 };
 
-export default LocationInput;
+export default memo(LocationInput);
