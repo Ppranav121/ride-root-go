@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // Define types for our context
@@ -152,7 +151,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     let totalFare = baseFare + (ratePerMile * distance);
     
-    // Apply 10% discount for subscribers
     if (isSubscribed) {
       totalFare *= 0.9;
     }
@@ -263,4 +261,3 @@ export const useApp = () => {
   }
   return context;
 };
-
