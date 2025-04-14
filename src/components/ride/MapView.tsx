@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Car, Share2 } from "lucide-react";
+import { MapPin, Car, Share2, Navigation2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -66,48 +66,60 @@ const MapView: React.FC<MapViewProps> = ({
         transition={{ duration: 1.5 }}
       />
       
-      <div className="absolute bottom-[35%] left-[30%] z-10">
+      <motion.div 
+        className="absolute bottom-[35%] left-[30%] z-10 cursor-pointer"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
         <div className="w-6 h-6 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
           <MapPin size={16} className="text-white" />
         </div>
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Pickup</div>
-      </div>
-      
-      <div className="absolute top-[15%] right-[20%] z-10">
-        <motion.div 
-          animate={{ 
-            scale: ridePhase === "approaching" || ridePhase === "almost_there" ? [1, 1.2, 1] : 1 
-          }}
-          transition={{ 
-            repeat: ridePhase === "approaching" || ridePhase === "almost_there" ? Infinity : 0, 
-            duration: 1.5 
-          }}
-          className="w-8 h-8 bg-rideroot-accent rounded-full flex items-center justify-center shadow-lg"
-        >
-          <MapPin size={20} className="text-white" />
-        </motion.div>
-        <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
-      </div>
+      </motion.div>
       
       <motion.div 
-        className="absolute z-20 flex flex-col items-center"
+        className="absolute top-[15%] right-[20%] z-10 cursor-pointer"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        animate={{ 
+          scale: ridePhase === "approaching" || ridePhase === "almost_there" ? [1, 1.2, 1] : 1 
+        }}
+        transition={{ 
+          repeat: ridePhase === "approaching" || ridePhase === "almost_there" ? Infinity : 0, 
+          duration: 1.5 
+        }}
+      >
+        <div className="w-8 h-8 bg-rideroot-accent rounded-full flex items-center justify-center shadow-lg">
+          <MapPin size={20} className="text-white" />
+        </div>
+        <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
+      </motion.div>
+      
+      <motion.div 
+        className="absolute z-20 cursor-pointer"
         style={{ ...driverPosition }}
         animate={{ 
           rotate: [0, 5, 0, -5, 0],
-          scale: [1, 1.05, 1]
         }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
         transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatType: "reverse"
+          rotate: {
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse"
+          },
+          scale: { duration: 0.2 }
         }}
       >
-        <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-2">
-          <AvatarImage src="/placeholder.svg" alt="Driver" />
-          <AvatarFallback>DR</AvatarFallback>
-        </Avatar>
-        <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
-          <Car size={20} className="text-white" />
+        <div className="flex flex-col items-center">
+          <Avatar className="w-10 h-10 border-2 border-white shadow-md">
+            <AvatarImage src="/placeholder.svg" alt="Driver" />
+            <AvatarFallback>DR</AvatarFallback>
+          </Avatar>
+          <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg mt-1">
+            <Car size={20} className="text-white" />
+          </div>
         </div>
       </motion.div>
 

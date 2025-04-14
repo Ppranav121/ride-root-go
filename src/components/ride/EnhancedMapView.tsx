@@ -32,26 +32,38 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           <HotspotOverlay hotspots={hotspots} />
         )}
         
-        {/* Integrated driver location marker */}
+        {/* Improved driver location marker with better responsiveness */}
         <motion.div 
-          className="absolute z-20 flex flex-col items-center"
+          className="absolute z-20 cursor-pointer"
           style={{ ...driverPosition }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           animate={{ 
             rotate: [0, 5, 0, -5, 0],
-            scale: [1, 1.05, 1]
+            y: [0, -3, 0]
           }}
           transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "reverse"
+            rotate: {
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            },
+            y: {
+              duration: 1.5,
+              repeat: Infinity,
+              repeatType: "reverse"
+            },
+            scale: { duration: 0.2 }
           }}
         >
-          <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
-            <AvatarImage src="/placeholder.svg" alt="Driver" />
-            <AvatarFallback>DR</AvatarFallback>
-          </Avatar>
-          <div className="w-8 h-8 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
-            <Car size={16} className="text-white" />
+          <div className="flex flex-col items-center">
+            <Avatar className="w-10 h-10 border-2 border-white shadow-md">
+              <AvatarImage src="/placeholder.svg" alt="Driver" />
+              <AvatarFallback>DR</AvatarFallback>
+            </Avatar>
+            <div className="w-8 h-8 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg mt-1">
+              <Car size={16} className="text-white" />
+            </div>
           </div>
         </motion.div>
         
