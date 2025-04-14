@@ -4,10 +4,13 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Explicitly make React available in the global scope
+// Make React available globally for components that might use it
 window.React = React;
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Root element not found");
+
+createRoot(rootElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

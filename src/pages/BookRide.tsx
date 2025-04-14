@@ -13,6 +13,7 @@ interface LocationState {
   dropoffLocation?: string;
 }
 
+// Memoize the MapPlaceholder component to prevent unnecessary re-renders
 const MapPlaceholder = memo(() => (
   <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
     <p className="text-rideroot-darkGrey">Map view would appear here</p>
@@ -42,6 +43,7 @@ const BookRide: React.FC = () => {
   const location = useLocation();
   const [pickupLocation, setPickupLocation] = useState("Current Location");
   const [dropoffLocation, setDropoffLocation] = useState("");
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
 
   // Convert state updating functions to useCallback to prevent re-rendering
   const handlePickupChange = useCallback((location: string) => {
@@ -68,7 +70,15 @@ const BookRide: React.FC = () => {
       
       return () => clearTimeout(timeoutId);
     }
+    
+    // Mark page as loaded after initial render
+    setIsPageLoaded(true);
   }, [location]);
+
+  if (!isPageLoaded && !dropoffLocation) {
+    // Add a very short delay to ensure React has time to render
+    setTimeout(() => setIsPageLoaded(true), 10);
+  }
 
   return (
     <div className="flex flex-col h-screen bg-rideroot-lightGrey">
@@ -108,4 +118,4 @@ const BookRide: React.FC = () => {
   );
 };
 
-export default BookRide;
+export default memo(BookRide);

@@ -9,6 +9,7 @@ interface LocationInputProps {
   placeholder: string;
   onClear: () => void;
   onOpenSearch: () => void;
+  onUseCurrentLocation?: () => void;
 }
 
 const LocationInput: React.FC<LocationInputProps> = ({
@@ -17,6 +18,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
   placeholder,
   onClear,
   onOpenSearch,
+  onUseCurrentLocation,
 }) => {
   // Prevent event bubbling when clicking clear button
   const handleClear = (e: React.MouseEvent) => {
@@ -26,6 +28,17 @@ const LocationInput: React.FC<LocationInputProps> = ({
     toast.success(`${label} location cleared`, {
       duration: 2000,
     });
+  };
+
+  // Handle current location button click
+  const handleCurrentLocation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (onUseCurrentLocation) {
+      onUseCurrentLocation();
+    } else {
+      toast.info("Getting your current location...");
+    }
   };
 
   return (
@@ -44,6 +57,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
             className="text-rideroot-darkGrey hover:text-rideroot-text p-1.5 -m-1.5"
             onClick={handleClear}
             aria-label="Clear location"
+            type="button"
           >
             <X size={16} />
           </button>
@@ -51,6 +65,8 @@ const LocationInput: React.FC<LocationInputProps> = ({
         <button 
           className="text-rideroot-primary hover:text-rideroot-accent p-1.5 -m-1.5"
           aria-label="Use current location"
+          onClick={handleCurrentLocation}
+          type="button"
         >
           <Target size={16} />
         </button>

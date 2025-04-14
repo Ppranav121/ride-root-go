@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, memo } from "react";
+import React, { useState, useMemo, memo, useCallback } from "react";
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
@@ -50,7 +50,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     );
   }, [searchQuery]);
 
-  const handleSelectRecentLocation = (address: string) => {
+  const handleSelectRecentLocation = useCallback((address: string) => {
     if (locationSearchType === "pickup") {
       onPickupChange(address);
     } else {
@@ -63,15 +63,15 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
       description: address,
       duration: 2000,
     });
-  };
+  }, [locationSearchType, onPickupChange, onDropoffChange]);
 
-  const handleOpenLocationSearch = (type: "pickup" | "dropoff") => {
+  const handleOpenLocationSearch = useCallback((type: "pickup" | "dropoff") => {
     setLocationSearchType(type);
     setSearchQuery("");
     setLocationDialogOpen(true);
-  };
+  }, []);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     setIsLoading(true);
     
     // Simulate getting current location
@@ -90,7 +90,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
         duration: 2000,
       });
     }, 1000);
-  };
+  }, [locationSearchType, onPickupChange, onDropoffChange]);
 
   return (
     <>
@@ -101,6 +101,8 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
         onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
         onClearPickup={() => onPickupChange("")}
         onClearDropoff={() => onDropoffChange("")}
+        onUseCurrentPickupLocation={getCurrentLocation}
+        onUseCurrentDropoffLocation={getCurrentLocation}
       />
 
       <AnimatePresence>
