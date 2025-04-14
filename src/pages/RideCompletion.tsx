@@ -6,6 +6,7 @@ import { CheckCircle, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import BackButton from "@/components/common/BackButton";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const RideCompletion: React.FC = () => {
   const navigate = useNavigate();
@@ -13,8 +14,9 @@ const RideCompletion: React.FC = () => {
   const [rideData, setRideData] = useState(currentRide);
 
   useEffect(() => {
+    console.log("RideCompletion - Component mounted");
     console.log("RideCompletion - Current ride from context:", currentRide);
-
+    
     // First try to use ride data from context
     if (currentRide && currentRide.status === "completed") {
       console.log("RideCompletion - Using ride data from context");
@@ -29,7 +31,10 @@ const RideCompletion: React.FC = () => {
         const parsedRide = JSON.parse(storedRide);
         console.log("RideCompletion - Recovered ride from storage:", parsedRide);
         setRideData(parsedRide);
+        toast.success("Ride completed successfully!");
         return;
+      } else {
+        console.log("RideCompletion - No ride data found in sessionStorage");
       }
     } catch (e) {
       console.error("Error parsing stored ride:", e);
@@ -40,7 +45,7 @@ const RideCompletion: React.FC = () => {
       console.log("RideCompletion - No completed ride found, redirecting to home");
       navigate("/home");
     }
-  }, [currentRide, navigate, rideData]);
+  }, [currentRide, navigate]);  // Remove rideData from dependencies to prevent circular checks
 
   const handleGoHome = () => {
     navigate("/home");
@@ -54,7 +59,10 @@ const RideCompletion: React.FC = () => {
     }
   };
 
-  if (!rideData) return null;
+  if (!rideData) {
+    console.log("RideCompletion - No ride data, rendering null");
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-white">

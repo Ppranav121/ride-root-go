@@ -44,12 +44,14 @@ const RideTracking: React.FC = () => {
       }));
     }, 200);
 
-    // Countdown timer
+    // Countdown timer - run only once during component mount
     const countdownInterval = setInterval(() => {
       setSecondsLeft(prev => {
+        console.log(`Countdown: ${prev} seconds left`);
         if (prev <= 1) {
           clearInterval(countdownInterval);
           setIsSimulating(false);
+          console.log("Countdown finished, isSimulating set to false");
           return 0;
         }
         return prev - 1;
@@ -62,8 +64,10 @@ const RideTracking: React.FC = () => {
     };
   }, [currentRide, navigate, setCurrentRide]);
 
-  // Handle ride completion
+  // Separate effect specifically to handle ride completion
   useEffect(() => {
+    console.log(`Effect triggered - secondsLeft: ${secondsLeft}, isSimulating: ${isSimulating}`);
+    
     // When countdown reaches zero, navigate to completion page
     if (secondsLeft === 0 && !isSimulating) {
       console.log("Ride completed, navigating to completion page");
@@ -88,19 +92,24 @@ const RideTracking: React.FC = () => {
           console.log("Updated ride after completion:", updatedRide);
           console.log("Navigating to ride-completion immediately");
           
-          // Force immediate navigation
-          window.location.href = "/ride-completion";
+          // Force immediate navigation with small timeout to ensure state update completes
+          setTimeout(() => {
+            window.location.href = "/ride-completion";
+          }, 300);
         } catch (error) {
           console.error("Error during ride completion process:", error);
           toast.error("Failed to complete ride. Please try again.");
         }
       }
     }
-  }, [secondsLeft, isSimulating, navigate, currentRide, setCurrentRide]);
+  }, [secondsLeft, isSimulating, currentRide, setCurrentRide]);
 
-  // Manual navigation handler for testing
+  // Manual navigation handler - improved for reliability
   const goToCompletion = () => {
     console.log("Manual navigation to completion page");
+    
+    // Force timer to end and navigation to trigger
+    setSecondsLeft(0);
     setIsSimulating(false);
     
     // Update ride status to completed
@@ -122,8 +131,10 @@ const RideTracking: React.FC = () => {
         console.log("Manual ride completion, updated ride:", updatedRide);
         console.log("Manually navigating to ride-completion immediately");
         
-        // Force immediate navigation
-        window.location.href = "/ride-completion";
+        // Force immediate navigation with small timeout to ensure state update completes
+        setTimeout(() => {
+          window.location.href = "/ride-completion";
+        }, 300);
       } catch (error) {
         console.error("Error during manual ride completion:", error);
         toast.error("Failed to complete ride. Please try again.");
