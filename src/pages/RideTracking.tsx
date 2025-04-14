@@ -145,8 +145,7 @@ const RideTracking: React.FC = () => {
       phaseTimerRef.current = setTimeout(() => {
         clearInterval(positionInterval);
         setRidePhase("approaching");
-        toast({
-          description: "5 minutes to destination. You're getting close!",
+        toast("5 minutes to destination. You're getting close!", {
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.in_progress);
@@ -173,8 +172,7 @@ const RideTracking: React.FC = () => {
         clearInterval(positionInterval);
         setRidePhase("almost_there");
         setMinutesToDestination(2);
-        toast({
-          description: "2 minutes to destination. We're almost there!",
+        toast("2 minutes to destination. We're almost there!", {
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.approaching);
