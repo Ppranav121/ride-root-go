@@ -65,7 +65,7 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         return "from-white to-blue-50";
     }
   };
-  return <motion.div className="fixed top-4 left-1/2 -translate-x-1/2 z-30 px-4 md:px-6 w-full max-w-md" initial={{
+  return <motion.div className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4 md:px-6" initial={{
     opacity: 0,
     y: -20
   }} animate={{
