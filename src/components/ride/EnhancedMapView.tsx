@@ -32,14 +32,18 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           <HotspotOverlay hotspots={hotspots} />
         )}
         
-        {/* Improved driver location marker with better responsiveness */}
+        {/* Improved combined driver marker with proper positioning */}
         <motion.div 
           className="absolute z-20 cursor-pointer"
-          style={{ ...driverPosition }}
+          style={{ 
+            top: `calc(${driverPosition.top} + 20px)`,  // Adjusted to avoid banner overlap
+            left: driverPosition.left,
+            transform: "translate(-50%, -50%)" // Center the marker
+          }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           animate={{ 
-            rotate: [0, 5, 0, -5, 0],
+            rotate: [0, 3, 0, -3, 0],
             y: [0, -3, 0]
           }}
           transition={{
@@ -57,11 +61,11 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           }}
         >
           <div className="flex flex-col items-center">
-            <Avatar className="w-10 h-10 border-2 border-white shadow-md">
+            <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
               <AvatarImage src="/placeholder.svg" alt="Driver" />
               <AvatarFallback>DR</AvatarFallback>
             </Avatar>
-            <div className="w-8 h-8 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg mt-1">
+            <div className="w-8 h-8 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
               <Car size={16} className="text-white" />
             </div>
           </div>
@@ -71,14 +75,14 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           initial={{ scale: 0 }} 
           animate={{ scale: [1, 1.1, 1] }} 
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
-          className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-indigo-500/20"
+          className="absolute bottom-1/3 right-1/4 w-20 h-20 rounded-full bg-rideroot-primary/20"
         />
         
         <motion.div 
           initial={{ scale: 0 }} 
           animate={{ scale: [1, 1.2, 1] }} 
           transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }} 
-          className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-purple-500/20"
+          className="absolute top-1/4 left-1/3 w-16 h-16 rounded-full bg-rideroot-secondary/20"
         />
         
         {children}

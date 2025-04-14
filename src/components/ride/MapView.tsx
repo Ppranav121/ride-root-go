@@ -1,5 +1,6 @@
+
 import React from "react";
-import { MapPin, Car, Share2, Navigation2 } from "lucide-react";
+import { MapPin, Car, Share2, Navigation2, CheckCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -95,9 +96,13 @@ const MapView: React.FC<MapViewProps> = ({
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
       </motion.div>
       
+      {/* Adjusted driver marker to ensure it doesn't overlap with banner */}
       <motion.div 
         className="absolute z-20 cursor-pointer"
-        style={{ ...driverPosition }}
+        style={{ 
+          ...driverPosition,
+          top: `calc(${driverPosition.top} + 25px)`  // Offset to avoid banner overlap
+        }}
         animate={{ 
           rotate: [0, 5, 0, -5, 0],
         }}
@@ -113,11 +118,11 @@ const MapView: React.FC<MapViewProps> = ({
         }}
       >
         <div className="flex flex-col items-center">
-          <Avatar className="w-10 h-10 border-2 border-white shadow-md">
+          <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
             <AvatarImage src="/placeholder.svg" alt="Driver" />
             <AvatarFallback>DR</AvatarFallback>
           </Avatar>
-          <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg mt-1">
+          <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
             <Car size={20} className="text-white" />
           </div>
         </div>
@@ -138,7 +143,7 @@ const MapView: React.FC<MapViewProps> = ({
         <Button
           onClick={handleShareRide}
           variant="default"
-          className="absolute top-4 right-4 bg-white text-rideroot-primary hover:bg-white/90 shadow-lg z-20"
+          className="absolute top-4 right-4 bg-rideroot-primary text-white hover:bg-rideroot-primary/90 shadow-lg z-20"
         >
           <Share2 size={16} className="mr-2" />
           Share Ride
@@ -167,7 +172,7 @@ const MapView: React.FC<MapViewProps> = ({
       
       <Button
         variant="default"
-        className="absolute bottom-4 right-4 bg-green-500 hover:bg-green-600 text-xs"
+        className="absolute bottom-4 right-4 bg-rideroot-success hover:bg-rideroot-success/90 text-white text-xs"
         onClick={onComplete}
       >
         Complete Ride ({secondsLeft}s)
