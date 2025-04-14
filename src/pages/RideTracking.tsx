@@ -65,7 +65,7 @@ const RideTracking: React.FC = () => {
       return () => clearTimeout(timer);
     } else if (ridePhase === "arriving" && secondsLeft <= 0) {
       setRidePhase("arrived");
-      toast.success("Your driver has arrived!", {
+      toast("Your driver has arrived!", {
         description: "Please meet them at the pickup location",
         icon: <CheckCircle2 className="text-green-500" />
       });
@@ -123,7 +123,7 @@ const RideTracking: React.FC = () => {
       phaseTimerRef.current = setTimeout(() => {
         setRidePhase("in_progress");
         setMinutesToDestination(10);
-        toast.success("Your ride has started!", {
+        toast("Your ride has started!", {
           description: "You're on your way to your destination",
           icon: <CheckCircle2 className="text-green-500" />
         });
@@ -145,7 +145,8 @@ const RideTracking: React.FC = () => {
       phaseTimerRef.current = setTimeout(() => {
         clearInterval(positionInterval);
         setRidePhase("approaching");
-        toast("5 minutes to destination. You're getting close!", {
+        toast("5 minutes to destination", {
+          description: "You're getting close!",
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.in_progress);
@@ -172,7 +173,8 @@ const RideTracking: React.FC = () => {
         clearInterval(positionInterval);
         setRidePhase("almost_there");
         setMinutesToDestination(2);
-        toast("2 minutes to destination. We're almost there!", {
+        toast("2 minutes to destination", {
+          description: "We're almost there!",
           icon: <AlertCircle className="text-yellow-500" />
         });
       }, phaseTimings.approaching);
@@ -198,7 +200,7 @@ const RideTracking: React.FC = () => {
       phaseTimerRef.current = setTimeout(() => {
         clearInterval(positionInterval);
         setRidePhase("completed");
-        toast.success("You have arrived!", {
+        toast("You have arrived!", {
           description: "Thank you for riding with us",
           icon: <CheckCircle2 className="text-green-500" />
         });
