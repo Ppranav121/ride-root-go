@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MapPin, Car, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -80,16 +79,18 @@ const MapView: React.FC<MapViewProps> = ({
       {/* Driver's car icon on map */}
       <DriverLocationMarker position={driverPosition} />
       
-      {/* Progress indicator */}
-      <div className="absolute top-4 right-4 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-md z-20 flex items-center">
-        <Car size={16} className="text-rideroot-primary mr-2" />
-        <span className="text-sm font-medium">
-          {ridePhase === "arriving" ? `Arriving in ${secondsLeft}s` : 
-           ridePhase === "arrived" ? "Driver arrived" :
-           ridePhase === "in_progress" ? "Ride in progress" :
-           ridePhase === "approaching" ? "5 min to arrival" :
-           ridePhase === "almost_there" ? "2 min to arrival" : "Arrived"}
-        </span>
+      {/* Progress indicator - now centered */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-30">
+        <div className="bg-white/80 backdrop-blur px-6 py-3 rounded-lg shadow-md flex items-center">
+          <Car size={20} className="text-rideroot-primary mr-2" />
+          <span className="text-sm font-medium">
+            {ridePhase === "arriving" ? `Arriving in ${secondsLeft}s` : 
+             ridePhase === "arrived" ? "Driver arrived" :
+             ridePhase === "in_progress" ? "Ride in progress" :
+             ridePhase === "approaching" ? "5 min to arrival" :
+             ridePhase === "almost_there" ? "2 min to arrival" : "Arrived"}
+          </span>
+        </div>
       </div>
       
       {/* Developer controls - should be removed in production */}
