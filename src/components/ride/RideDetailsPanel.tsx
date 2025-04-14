@@ -6,7 +6,7 @@ import RouteInfoCard from "./RouteInfoCard";
 import AdditionalRideInfo from "./AdditionalRideInfo";
 import { Ride } from "@/contexts/AppContext"; 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, ChevronDown, MessageCircle, Phone, Share2 } from "lucide-react";
+import { ChevronUp, ChevronDown, MessageCircle, Phone, Share2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
