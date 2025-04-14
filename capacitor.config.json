@@ -1,0 +1,14 @@
+
+{
+  "appId": "app.lovable.5961f1df025c456a9523408589610676",
+  "appName": "ride-root-go",
+  "server": {
+    "url": "https://5961f1df-025c-456a-9523-408589610676.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
