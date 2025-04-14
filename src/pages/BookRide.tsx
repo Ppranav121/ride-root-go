@@ -8,15 +8,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-
-// Import our components
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import FareEstimate from "@/components/ride/FareEstimate";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
 import PaymentMethodSelector, { PaymentMethod } from "@/components/ride/PaymentMethodSelector";
+import LocationBanner from "@/components/ride/LocationBanner";
 
-// Define a type for location state
 interface LocationState {
   dropoffLocation?: string;
 }
@@ -41,32 +39,28 @@ const BookRide: React.FC = () => {
     expiryDate: "12/25",
     isDefault: true
   });
+  const [isBannerExpanded, setIsBannerExpanded] = useState(false);
 
-  // Get pre-selected location from navigation state if available
   useEffect(() => {
     const state = location.state as LocationState;
     if (state?.dropoffLocation) {
       setDropoffLocation(state.dropoffLocation);
       
-      // Show a confirmation toast
       toast.success("Destination selected", {
         description: state.dropoffLocation,
         duration: 2000,
       });
       
-      // Clear the state to prevent it from being reused on refresh
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
 
-  // Mock recent locations
   const recentLocations = [
     { id: "1", name: "Home", address: "123 Main St" },
     { id: "2", name: "Work", address: "456 Office Ave" },
     { id: "3", name: "Gym", address: "789 Fitness Blvd" },
   ];
 
-  // Mock search locations based on query
   const searchLocations = [
     { id: "4", name: "Airport", address: "1234 Airport Way" },
     { id: "5", name: "Mall", address: "5678 Shopping Center" },
@@ -78,10 +72,7 @@ const BookRide: React.FC = () => {
     loc.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Mock distance for demo purposes
-  const distance = 6; // 6 miles
-  
-  // Calculate fare based on the current ride options
+  const distance = 6;
   const fare = useApp().calculateFare(
     distance, 
     rideOption, 
@@ -98,7 +89,6 @@ const BookRide: React.FC = () => {
     setShowRecentLocations(false);
     setLocationDialogOpen(false);
     
-    // Show confirmation toast
     toast.success(`${locationSearchType === "pickup" ? "Pickup" : "Dropoff"} location set`, {
       description: address,
       duration: 2000,
@@ -114,7 +104,6 @@ const BookRide: React.FC = () => {
   const getCurrentLocation = () => {
     setIsLoading(true);
     
-    // Simulate getting current location
     setTimeout(() => {
       const location = "Current Location (Detected)";
       if (locationSearchType === "pickup") {
@@ -138,7 +127,6 @@ const BookRide: React.FC = () => {
     const left = `${((e.clientX - rect.left) / rect.width) * 100}%`;
     setPinPosition({ top, left });
     
-    // Auto-update the dropoff location if pin is placed
     const pinLocationAddress = "Pinned Location";
     setDropoffLocation(pinLocationAddress);
     
@@ -174,7 +162,6 @@ const BookRide: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Pass the payment method ID to bookRide
       await bookRide(pickupLocation, dropoffLocation, selectedPaymentMethod.id);
       navigate("/ride-confirmation");
     } catch (error) {
@@ -192,11 +179,7 @@ const BookRide: React.FC = () => {
       <RootHeader title="Book a Ride" />
 
       <div className="flex-1 relative">
-        {/* Map Placeholder - In a real app this would be an actual map */}
         <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-          <p className="text-rideroot-darkGrey">Map view would appear here</p>
-          
-          {/* Map Pins Animation */}
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -214,15 +197,19 @@ const BookRide: React.FC = () => {
           >
             <MapPin size={16} className="text-white" />
           </motion.div>
-          
-          {/* Clickable area for pin placement */}
           <div 
             className="absolute inset-0 cursor-crosshair z-0" 
             onClick={handleMapClick}
           />
         </div>
 
-        {/* Ride Booking Interface - Fixed height with scrollable content */}
+        <LocationBanner
+          isExpanded={isBannerExpanded}
+          onToggle={() => setIsBannerExpanded(!isBannerExpanded)}
+          pickupLocation={pickupLocation}
+          dropoffLocation={dropoffLocation}
+        />
+
         <motion.div 
           className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-xl"
           style={{ maxHeight: "70vh" }}
@@ -232,7 +219,6 @@ const BookRide: React.FC = () => {
         >
           <ScrollArea className="h-[70vh] w-full">
             <div className="px-6 pb-8 pt-6">
-              {/* Location inputs */}
               <LocationSelector 
                 pickupLocation={pickupLocation}
                 dropoffLocation={dropoffLocation}
@@ -242,7 +228,6 @@ const BookRide: React.FC = () => {
                 onClearDropoff={() => setDropoffLocation("")}
               />
 
-              {/* Pin Location Button */}
               <div className="mb-5 flex justify-end">
                 <Button
                   variant="secondary"
@@ -255,7 +240,6 @@ const BookRide: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Custom pin marker */}
               {pinPosition && (
                 <motion.div
                   initial={{ scale: 0, y: -10 }}
@@ -270,7 +254,6 @@ const BookRide: React.FC = () => {
                 </motion.div>
               )}
 
-              {/* Recent locations */}
               <AnimatePresence>
                 <RecentLocations 
                   recentLocations={recentLocations}
@@ -279,12 +262,10 @@ const BookRide: React.FC = () => {
                 />
               </AnimatePresence>
 
-              {/* Ride Options */}
               <div className="mb-5">
                 <RideOptionSelector />
               </div>
 
-              {/* Payment Method Selector */}
               <div className="mb-5">
                 <PaymentMethodSelector 
                   selectedPaymentMethod={selectedPaymentMethod}
@@ -292,7 +273,6 @@ const BookRide: React.FC = () => {
                 />
               </div>
 
-              {/* Fare Estimate */}
               <FareEstimate 
                 distance={distance}
                 rideOption={rideOption}
@@ -301,7 +281,6 @@ const BookRide: React.FC = () => {
                 isSubscribed={user?.isSubscribed || false}
               />
 
-              {/* Book Button */}
               <motion.button
                 onClick={handleBookRide}
                 className={`bg-gradient-to-r from-rideroot-primary to-rideroot-secondary w-full h-[56px] flex items-center justify-center rounded-xl text-white font-bold font-heading shadow-md ${isLoading ? "opacity-70" : ""}`}
@@ -312,7 +291,6 @@ const BookRide: React.FC = () => {
                 {isLoading ? "Finding your ride..." : "Book Ride"}
               </motion.button>
 
-              {/* Subscription call-to-action for non-subscribers */}
               {!user?.isSubscribed && (
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -330,7 +308,6 @@ const BookRide: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Location Search Dialog */}
       <LocationSearchDialog 
         isOpen={locationDialogOpen}
         onOpenChange={setLocationDialogOpen}
