@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Clock, Car, Navigation } from "lucide-react";
@@ -86,10 +87,14 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
         duration: 0.3
       }}
     >
-      <div className={`${getBgColor()} py-2 px-4 rounded-lg shadow-md flex items-center justify-center max-w-md w-full`}>
+      <motion.div 
+        className={`${getBgColor()} py-2 px-4 rounded-lg shadow-md flex items-center justify-center max-w-md w-full`}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
         {getIcon()}
         <span className="text-sm font-medium">{getMessage()}</span>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

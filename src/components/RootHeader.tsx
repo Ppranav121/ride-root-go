@@ -5,6 +5,7 @@ import { ChevronLeft, User, Menu } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
+import { motion } from "framer-motion";
 import DriverSidebar from "./DriverSidebar";
 
 interface RootHeaderProps {
@@ -30,27 +31,35 @@ const RootHeader: React.FC<RootHeaderProps> = ({
   const isPrimeDriver = user?.isSubscribed || false;
 
   return (
-    <header className={`flex items-center justify-between px-4 py-4 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'} z-10`}>
+    <motion.header 
+      className={`flex items-center justify-between px-4 py-4 mobile-top-safe ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'} z-10`}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="flex items-center">
         {showBackButton && (
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={() => navigate(-1)}
-            className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors"
+            className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors touch-feedback"
             aria-label="Go back"
           >
             <ChevronLeft size={24} />
-          </button>
+          </motion.button>
         )}
         {!showBackButton && showDriverSidebar && (
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors"
-              >
-                <Menu size={24} />
-              </Button>
+              <motion.div whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-2 rounded-full text-rideroot-text hover:bg-rideroot-lightGrey mr-2 transition-colors touch-feedback"
+                >
+                  <Menu size={24} />
+                </Button>
+              </motion.div>
             </SheetTrigger>
             <SheetContent side="left" className="w-[320px] p-0">
               <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
@@ -58,9 +67,14 @@ const RootHeader: React.FC<RootHeaderProps> = ({
           </Sheet>
         )}
         {title && (
-          <h1 className="text-lg font-semibold text-rideroot-text tracking-tight">
+          <motion.h1 
+            className="text-lg font-semibold text-rideroot-text tracking-tight"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             {title}
-          </h1>
+          </motion.h1>
         )}
       </div>
 
@@ -68,29 +82,32 @@ const RootHeader: React.FC<RootHeaderProps> = ({
         showDriverSidebar ? (
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
-              >
-                <User size={22} />
-              </Button>
+              <motion.div whileTap={{ scale: 0.9 }}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors touch-feedback"
+                >
+                  <User size={22} />
+                </Button>
+              </motion.div>
             </SheetTrigger>
             <SheetContent side="left" className="w-[320px] p-0">
               <DriverSidebar firstName={firstName} isPrimeDriver={isPrimeDriver} />
             </SheetContent>
           </Sheet>
         ) : (
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={() => navigate("/profile")}
-            className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors"
+            className="p-2 rounded-full bg-rideroot-lightGrey hover:bg-rideroot-mediumGrey text-rideroot-text transition-colors touch-feedback"
             aria-label="View profile"
           >
             <User size={22} />
-          </button>
+          </motion.button>
         )
       )}
-    </header>
+    </motion.header>
   );
 };
 
