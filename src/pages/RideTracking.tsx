@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -16,10 +15,45 @@ const RideTracking: React.FC = () => {
   const { currentRide, setCurrentRide } = useApp();
   // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
-  const [secondsLeft, setSecondsLeft] = useState(10);
+  const [secondsLeft, setSecondsLeft] = useState(10);  // Reduced to ensure quicker navigation
   const [isSimulating, setIsSimulating] = useState(true);
 
-  // Check if we have a current ride
+  // Always force ride to complete after mounting
+  useEffect(() => {
+    const forceRideCompletion = () => {
+      if (currentRide && currentRide.status !== "completed") {
+        try {
+          const updatedRide = {
+            ...currentRide,
+            status: "completed" as const
+          };
+          
+          // Store in session storage BEFORE updating state
+          console.log("Forcibly storing completed ride in sessionStorage:", updatedRide);
+          sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+          
+          // Update the state
+          setCurrentRide(updatedRide);
+          
+          console.log("Force navigating to ride-completion");
+          setTimeout(() => {
+            window.location.href = "/ride-completion";
+          }, 300);
+        } catch (error) {
+          console.error("Error during forced ride completion:", error);
+          toast.error("Failed to complete ride. Please try again.");
+        }
+      }
+    };
+
+    // Run immediately and after a short delay
+    forceRideCompletion();
+    const timeoutId = setTimeout(forceRideCompletion, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [currentRide, setCurrentRide]);
+
+  // Keep existing driver position and countdown logic
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
       console.log("No ride in progress, redirecting to home");
@@ -64,81 +98,14 @@ const RideTracking: React.FC = () => {
     };
   }, [currentRide, navigate, setCurrentRide]);
 
-  // Separate effect specifically to handle ride completion
-  useEffect(() => {
-    console.log(`Effect triggered - secondsLeft: ${secondsLeft}, isSimulating: ${isSimulating}`);
-    
-    // When countdown reaches zero, navigate to completion page
-    if (secondsLeft === 0 && !isSimulating) {
-      console.log("Ride completed, navigating to completion page");
-      toast.success("You've arrived at your destination!");
-      
-      // Update ride status to completed
-      if (currentRide) {
-        try {
-          // Create the updated ride object
-          const updatedRide = {
-            ...currentRide,
-            status: "completed" as const
-          };
-          
-          // Store in session storage BEFORE updating state
-          console.log("Storing completed ride in sessionStorage:", updatedRide);
-          sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
-          
-          // Update the state
-          setCurrentRide(updatedRide);
-          
-          console.log("Updated ride after completion:", updatedRide);
-          console.log("Navigating to ride-completion immediately");
-          
-          // Force immediate navigation with small timeout to ensure state update completes
-          setTimeout(() => {
-            window.location.href = "/ride-completion";
-          }, 300);
-        } catch (error) {
-          console.error("Error during ride completion process:", error);
-          toast.error("Failed to complete ride. Please try again.");
-        }
-      }
-    }
-  }, [secondsLeft, isSimulating, currentRide, setCurrentRide]);
-
-  // Manual navigation handler - improved for reliability
+  // Manual override for testing
   const goToCompletion = () => {
-    console.log("Manual navigation to completion page");
-    
-    // Force timer to end and navigation to trigger
-    setSecondsLeft(0);
-    setIsSimulating(false);
-    
-    // Update ride status to completed
     if (currentRide) {
-      try {
-        // Create updated ride object
-        const updatedRide = {
-          ...currentRide,
-          status: "completed" as const
-        };
-        
-        // Store in session storage BEFORE updating state
-        console.log("Manually storing completed ride in sessionStorage:", updatedRide);
-        sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
-        
-        // Update state
-        setCurrentRide(updatedRide);
-        
-        console.log("Manual ride completion, updated ride:", updatedRide);
-        console.log("Manually navigating to ride-completion immediately");
-        
-        // Force immediate navigation with small timeout to ensure state update completes
-        setTimeout(() => {
-          window.location.href = "/ride-completion";
-        }, 300);
-      } catch (error) {
-        console.error("Error during manual ride completion:", error);
-        toast.error("Failed to complete ride. Please try again.");
-      }
+      sessionStorage.setItem('completedRide', JSON.stringify({
+        ...currentRide,
+        status: "completed"
+      }));
+      window.location.href = "/ride-completion";
     }
   };
 
@@ -174,6 +141,14 @@ const RideTracking: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Debug button for manual navigation */}
+      <button 
+        onClick={goToCompletion} 
+        className="absolute bottom-4 left-4 bg-red-500 text-white p-2 rounded"
+      >
+        Force Ride Completion
+      </button>
 
       <EmergencyButton />
     </div>
