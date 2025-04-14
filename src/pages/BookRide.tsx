@@ -215,32 +215,6 @@ const BookRide: React.FC = () => {
             <MapPin size={16} className="text-white" />
           </motion.div>
           
-          {/* Pin location button */}
-          <Button
-            variant="secondary"
-            size="sm"
-            className="absolute top-20 right-4 bg-white shadow-md hover:bg-gray-100 flex items-center gap-2 z-10"
-            onClick={handlePinLocation}
-          >
-            <Target size={16} />
-            <span className="text-xs">Pin Location</span>
-          </Button>
-          
-          {/* Custom pin marker */}
-          {pinPosition && (
-            <motion.div
-              initial={{ scale: 0, y: -10 }}
-              animate={{ scale: 1, y: 0 }}
-              className="absolute z-20"
-              style={{ top: pinPosition.top, left: pinPosition.left, transform: 'translate(-50%, -100%)' }}
-            >
-              <div className="flex flex-col items-center">
-                <MapPin size={24} className="text-red-500" />
-                <div className="w-2 h-2 rounded-full bg-red-500 mt-1 animate-ping" />
-              </div>
-            </motion.div>
-          )}
-          
           {/* Clickable area for pin placement */}
           <div 
             className="absolute inset-0 cursor-crosshair z-0" 
@@ -267,6 +241,34 @@ const BookRide: React.FC = () => {
                 onClearPickup={() => setPickupLocation("")}
                 onClearDropoff={() => setDropoffLocation("")}
               />
+
+              {/* Pin Location Button */}
+              <div className="mb-5 flex justify-end">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white shadow-md hover:bg-gray-100 flex items-center gap-2"
+                  onClick={handlePinLocation}
+                >
+                  <Target size={16} />
+                  <span className="text-xs">Pin Location</span>
+                </Button>
+              </div>
+
+              {/* Custom pin marker */}
+              {pinPosition && (
+                <motion.div
+                  initial={{ scale: 0, y: -10 }}
+                  animate={{ scale: 1, y: 0 }}
+                  className="absolute z-20"
+                  style={{ top: pinPosition.top, left: pinPosition.left, transform: 'translate(-50%, -100%)' }}
+                >
+                  <div className="flex flex-col items-center">
+                    <MapPin size={24} className="text-red-500" />
+                    <div className="w-2 h-2 rounded-full bg-red-500 mt-1 animate-ping" />
+                  </div>
+                </motion.div>
+              )}
 
               {/* Recent locations */}
               <AnimatePresence>
