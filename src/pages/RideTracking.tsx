@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
@@ -9,51 +10,52 @@ import EmergencyButton from "@/components/ride/EmergencyButton";
 import RouteInfoCard from "@/components/ride/RouteInfoCard";
 import CancelRideButton from "@/components/ride/CancelRideButton";
 import { toast } from "sonner";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 
 const RideTracking: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
+  
   // State to track the driver's position for animation
   const [driverPosition, setDriverPosition] = useState({ top: "60%", left: "30%" });
-  const [secondsLeft, setSecondsLeft] = useState(10);  // Reduced to ensure quicker navigation
-  const [isSimulating, setIsSimulating] = useState(true);
+  
+  // Ride state management
+  const [ridePhase, setRidePhase] = useState<"arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed">("arriving");
+  const [secondsLeft, setSecondsLeft] = useState(30);
+  const [minutesToDestination, setMinutesToDestination] = useState(10);
+  const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [showCompletionRedirect, setShowCompletionRedirect] = useState(false);
+  
+  // Handle ride completion and navigation
+  const completeRide = () => {
+    if (!currentRide) return;
+    
+    try {
+      const updatedRide = {
+        ...currentRide,
+        status: "completed" as const
+      };
+      
+      // Store in session storage
+      console.log("Storing completed ride in sessionStorage:", updatedRide);
+      sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
+      
+      // Update state
+      setCurrentRide(updatedRide);
+      setShowCompletionRedirect(true);
+      
+      // Navigate after a short delay to ensure state is updated
+      setTimeout(() => {
+        console.log("Navigating to ride-completion page");
+        window.location.href = "/ride-completion";
+      }, 500);
+    } catch (error) {
+      console.error("Error during ride completion:", error);
+      toast.error("Failed to complete ride. Please try again.");
+    }
+  };
 
-  // Always force ride to complete after mounting
-  useEffect(() => {
-    const forceRideCompletion = () => {
-      if (currentRide && currentRide.status !== "completed") {
-        try {
-          const updatedRide = {
-            ...currentRide,
-            status: "completed" as const
-          };
-          
-          // Store in session storage BEFORE updating state
-          console.log("Forcibly storing completed ride in sessionStorage:", updatedRide);
-          sessionStorage.setItem('completedRide', JSON.stringify(updatedRide));
-          
-          // Update the state
-          setCurrentRide(updatedRide);
-          
-          console.log("Force navigating to ride-completion");
-          setTimeout(() => {
-            window.location.href = "/ride-completion";
-          }, 300);
-        } catch (error) {
-          console.error("Error during forced ride completion:", error);
-          toast.error("Failed to complete ride. Please try again.");
-        }
-      }
-    };
-
-    // Run immediately and after a short delay
-    forceRideCompletion();
-    const timeoutId = setTimeout(forceRideCompletion, 1000);
-
-    return () => clearTimeout(timeoutId);
-  }, [currentRide, setCurrentRide]);
-
-  // Keep existing driver position and countdown logic
+  // Lifecycle management for ride phases
   useEffect(() => {
     if (!currentRide || !currentRide.driver) {
       console.log("No ride in progress, redirecting to home");
@@ -62,54 +64,161 @@ const RideTracking: React.FC = () => {
       return;
     }
 
-    console.log("Current ride detected:", currentRide);
-
+    console.log("Starting ride tracking simulation, phase:", ridePhase);
+    
     // Update ride status to in-progress
     setCurrentRide({
       ...currentRide,
       status: "in-progress" as const
     });
 
-    // Animate driver moving toward pickup location
-    const positionInterval = setInterval(() => {
-      setDriverPosition(prev => ({
-        top: `${Math.max(20, parseFloat(prev.top) - 0.5)}%`,
-        left: `${Math.min(70, parseFloat(prev.left) + 0.3)}%`
-      }));
-    }, 200);
-
-    // Countdown timer - run only once during component mount
-    const countdownInterval = setInterval(() => {
-      setSecondsLeft(prev => {
-        console.log(`Countdown: ${prev} seconds left`);
-        if (prev <= 1) {
-          clearInterval(countdownInterval);
-          setIsSimulating(false);
-          console.log("Countdown finished, isSimulating set to false");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      clearInterval(positionInterval);
-      clearInterval(countdownInterval);
-    };
-  }, [currentRide, navigate, setCurrentRide]);
-
-  // Manual override for testing
-  const goToCompletion = () => {
-    if (currentRide) {
-      sessionStorage.setItem('completedRide', JSON.stringify({
-        ...currentRide,
-        status: "completed"
-      }));
-      window.location.href = "/ride-completion";
+    // Clear any existing timers
+    if (phaseTimerRef.current) {
+      clearTimeout(phaseTimerRef.current);
     }
+
+    // Phase timing logic (simulation)
+    const phaseTimings = {
+      arriving: 5000,   // Driver arriving to pickup - 5 seconds
+      arrived: 3000,    // Driver arrived, waiting for rider - 3 seconds
+      in_progress: 10000, // Main ride duration - 10 seconds
+      approaching: 5000,  // 5 min from destination - 5 seconds
+      almost_there: 5000, // 2 min from destination - 5 seconds
+    };
+
+    // Handle each phase transition
+    if (ridePhase === "arriving") {
+      // Animate driver approaching pickup
+      const positionInterval = setInterval(() => {
+        setDriverPosition(prev => ({
+          top: `${Math.max(40, parseFloat(prev.top) - 1)}%`,
+          left: `${Math.min(45, parseFloat(prev.left) + 0.5)}%`
+        }));
+      }, 200);
+
+      // After driver arrives at pickup
+      phaseTimerRef.current = setTimeout(() => {
+        clearInterval(positionInterval);
+        setRidePhase("arrived");
+        toast.success("Your driver has arrived!", {
+          description: "Please meet them at the pickup location",
+          icon: <CheckCircle2 className="text-green-500" />
+        });
+      }, phaseTimings.arriving);
+      
+      return () => {
+        clearInterval(positionInterval);
+        if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+      };
+    }
+
+    else if (ridePhase === "arrived") {
+      phaseTimerRef.current = setTimeout(() => {
+        setRidePhase("in_progress");
+        setMinutesToDestination(10);
+        toast.success("Your ride has started!", {
+          description: "You're on your way to your destination",
+          icon: <CheckCircle2 className="text-green-500" />
+        });
+      }, phaseTimings.arrived);
+    }
+
+    else if (ridePhase === "in_progress") {
+      // Animate driver moving to destination
+      const positionInterval = setInterval(() => {
+        setDriverPosition(prev => ({
+          top: `${Math.max(20, parseFloat(prev.top) - 0.5)}%`,
+          left: `${Math.min(70, parseFloat(prev.left) + 0.5)}%`
+        }));
+
+        // Update countdown to destination
+        setMinutesToDestination(prev => Math.max(5, prev - 1));
+      }, 1000);
+
+      phaseTimerRef.current = setTimeout(() => {
+        clearInterval(positionInterval);
+        setRidePhase("approaching");
+        toast("5 minutes to destination", {
+          description: "You're getting close to your destination",
+          icon: <AlertCircle className="text-yellow-500" />
+        });
+      }, phaseTimings.in_progress);
+      
+      return () => {
+        clearInterval(positionInterval);
+        if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+      };
+    }
+
+    else if (ridePhase === "approaching") {
+      // Continue driver animation
+      const positionInterval = setInterval(() => {
+        setDriverPosition(prev => ({
+          top: `${Math.max(15, parseFloat(prev.top) - 0.3)}%`,
+          left: `${Math.min(85, parseFloat(prev.left) + 0.3)}%`
+        }));
+
+        // Update countdown to destination
+        setMinutesToDestination(prev => Math.max(2, prev - 1));
+      }, 1000);
+
+      phaseTimerRef.current = setTimeout(() => {
+        clearInterval(positionInterval);
+        setRidePhase("almost_there");
+        setMinutesToDestination(2);
+        toast("2 minutes to destination", {
+          description: "We're almost at your destination",
+          icon: <AlertCircle className="text-yellow-500" />
+        });
+      }, phaseTimings.approaching);
+      
+      return () => {
+        clearInterval(positionInterval);
+        if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+      };
+    }
+
+    else if (ridePhase === "almost_there") {
+      // Final approach animation
+      const positionInterval = setInterval(() => {
+        setDriverPosition(prev => ({
+          top: `${Math.max(10, parseFloat(prev.top) - 0.3)}%`,
+          left: `${Math.min(90, parseFloat(prev.left) + 0.3)}%`
+        }));
+        
+        // Update countdown to destination
+        setMinutesToDestination(prev => Math.max(0, prev - 1));
+      }, 1000);
+
+      phaseTimerRef.current = setTimeout(() => {
+        clearInterval(positionInterval);
+        setRidePhase("completed");
+        toast.success("You have arrived!", {
+          description: "Thank you for riding with us",
+          icon: <CheckCircle2 className="text-green-500" />
+        });
+        completeRide();
+      }, phaseTimings.almost_there);
+      
+      return () => {
+        clearInterval(positionInterval);
+        if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+      };
+    }
+
+    // Just to avoid any warning about missing return in useEffect
+    return () => {
+      if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+    };
+  }, [currentRide, navigate, setCurrentRide, ridePhase]);
+
+  // Force completion button for testing
+  const forceComplete = () => {
+    setRidePhase("completed");
+    completeRide();
   };
 
-  if (!currentRide || !currentRide.driver) return null;
+  if (!currentRide || !currentRide.driver || showCompletionRedirect) return null;
 
   return (
     <div className="flex flex-col h-screen bg-rideroot-lightGrey relative">
@@ -119,10 +228,21 @@ const RideTracking: React.FC = () => {
         <MapView 
           driverPosition={driverPosition} 
           secondsLeft={secondsLeft} 
-          onComplete={goToCompletion} 
+          onComplete={forceComplete} 
         />
 
-        <RideDetailsBanner secondsLeft={secondsLeft} />
+        <div className="absolute top-0 left-0 right-0 bg-white/90 p-2 flex items-center justify-center">
+          <div className="bg-rideroot-primary/10 rounded-full px-4 py-1 text-center">
+            {ridePhase === "arriving" && <p className="font-medium text-sm">Driver arriving in {secondsLeft} seconds</p>}
+            {ridePhase === "arrived" && <p className="font-medium text-sm">Driver has arrived - Meet at pickup location</p>}
+            {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && 
+              <p className="font-medium text-sm">
+                {minutesToDestination} {minutesToDestination === 1 ? "minute" : "minutes"} to destination
+              </p>
+            }
+            {ridePhase === "completed" && <p className="font-medium text-sm">You have arrived!</p>}
+          </div>
+        </div>
         
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
           <RideDetailsPanel currentRide={currentRide} />
@@ -142,12 +262,12 @@ const RideTracking: React.FC = () => {
         </div>
       </div>
 
-      {/* Debug button for manual navigation */}
+      {/* Debug button for developer testing only - consider removing in production */}
       <button 
-        onClick={goToCompletion} 
-        className="absolute bottom-4 left-4 bg-red-500 text-white p-2 rounded"
+        onClick={forceComplete}
+        className="absolute bottom-4 left-4 bg-red-500 text-white p-2 rounded text-xs"
       >
-        Force Ride Completion
+        Debug: Complete Ride
       </button>
 
       <EmergencyButton />
