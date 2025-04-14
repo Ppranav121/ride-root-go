@@ -19,15 +19,15 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
       case "arriving":
         return `Driver arriving in ${secondsLeft} seconds`;
       case "arrived":
-        return "Your driver has arrived";
+        return "Driver has arrived";
       case "in_progress":
-        return `${minutesToDestination} minutes to destination`;
+        return `${minutesToDestination} mins to destination`;
       case "approaching":
-        return "5 minutes to destination";
+        return "5 mins to destination";
       case "almost_there":
-        return "Almost there! 2 minutes to destination";
+        return "Almost there! 2 mins left";
       case "completed":
-        return "You have arrived at your destination";
+        return "You've arrived";
       default:
         return `Driver arriving in ${secondsLeft} seconds`;
     }
@@ -36,19 +36,19 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
   const getIcon = () => {
     switch (ridePhase) {
       case "arriving":
-        return <Clock size={24} className="text-rideroot-primary" />;
+        return <Clock size={20} className="text-rideroot-primary" />;
       case "arrived":
-        return <Car size={24} className="text-green-500" />;
+        return <Car size={20} className="text-green-500" />;
       case "in_progress":
-        return <Navigation size={24} className="text-rideroot-accent" />;
+        return <Navigation size={20} className="text-rideroot-accent" />;
       case "approaching":
-        return <Navigation size={24} className="text-yellow-500" />;
+        return <Navigation size={20} className="text-yellow-500" />;
       case "almost_there":
-        return <Navigation size={24} className="text-orange-500" />;
+        return <Navigation size={20} className="text-orange-500" />;
       case "completed":
-        return <CheckCircle size={24} className="text-green-500" />;
+        return <CheckCircle size={20} className="text-green-500" />;
       default:
-        return <Clock size={24} className="text-rideroot-primary" />;
+        return <Clock size={20} className="text-rideroot-primary" />;
     }
   };
 
@@ -73,42 +73,45 @@ const RideDetailsBanner: React.FC<RideDetailsBannerProps> = ({
 
   return (
     <motion.div 
-      className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4" 
+      className="fixed top-16 left-0 right-0 flex justify-center z-30 px-4 md:px-6" 
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className={`bg-gradient-to-b ${getBgColor()} py-4 px-6 rounded-2xl shadow-lg flex flex-col items-center justify-center max-w-md w-full border border-gray-100`}>
-        <div className="flex items-center justify-center w-full space-x-3">
+      <div className={`
+        bg-gradient-to-b ${getBgColor()} 
+        py-2 px-4 rounded-xl shadow-md 
+        flex items-center justify-center 
+        max-w-xs w-full 
+        border border-gray-100
+        text-sm  // Reduced text size
+        space-x-2  // Reduced spacing
+      `}>
+        <div className="flex items-center space-x-2">
           {getIcon()}
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold">{getMessage()}</span>
-            {ridePhase === "in_progress" && (
-              <span className="text-sm text-gray-500">Keep following the route</span>
-            )}
-          </div>
-          
-          {ridePhase === "in_progress" && (
-            <motion.button 
-              className="ml-auto bg-blue-100 p-2 rounded-full"
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <Shield size={20} className="text-blue-600" />
-            </motion.button>
-          )}
+          <span className="font-medium">{getMessage()}</span>
         </div>
+        
+        {ridePhase === "in_progress" && (
+          <motion.button 
+            className="ml-auto bg-blue-100 p-1.5 rounded-full"
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Shield size={16} className="text-blue-600" />
+          </motion.button>
+        )}
         
         {(ridePhase === "approaching" || ridePhase === "almost_there") && (
           <motion.div 
-            className="w-full bg-gray-200 rounded-full h-1.5 mt-3"
+            className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
             <motion.div 
-              className="bg-yellow-500 h-1.5 rounded-full" 
+              className="bg-yellow-500 h-1" 
               initial={{ width: "0%" }}
               animate={{ width: ridePhase === "approaching" ? "70%" : "90%" }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
