@@ -1,7 +1,6 @@
 import React from "react";
-import { MapPin, Car, Navigation2, Share2 } from "lucide-react";
+import { MapPin, Car, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DriverLocationMarker from "./DriverLocationMarker";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -39,9 +38,7 @@ const MapView: React.FC<MapViewProps> = ({
 
   return (
     <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-      {/* Map background - in a real app this would be an actual map */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-blue-200 z-0">
-        {/* Grid lines for visual map effect */}
         <div className="grid grid-cols-8 h-full">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="border-r border-blue-300/30 h-full" />
@@ -54,10 +51,8 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
       
-      {/* Road visualization */}
       <div className="absolute w-[60%] h-4 bg-gray-500/30 rounded-full rotate-[35deg] top-[40%] left-[20%] z-0" />
       
-      {/* Active route visualization */}
       <motion.div 
         className="absolute w-[60%] h-2 bg-rideroot-primary/60 rounded-full rotate-[35deg] top-[40%] left-[20%] z-1"
         initial={{ width: "0%" }}
@@ -71,7 +66,6 @@ const MapView: React.FC<MapViewProps> = ({
         transition={{ duration: 1.5 }}
       />
       
-      {/* Starting point */}
       <div className="absolute bottom-[35%] left-[30%] z-10">
         <div className="w-6 h-6 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
           <MapPin size={16} className="text-white" />
@@ -79,7 +73,6 @@ const MapView: React.FC<MapViewProps> = ({
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Pickup</div>
       </div>
       
-      {/* Destination point with improved icon */}
       <div className="absolute top-[15%] right-[20%] z-10">
         <motion.div 
           animate={{ 
@@ -91,28 +84,33 @@ const MapView: React.FC<MapViewProps> = ({
           }}
           className="w-8 h-8 bg-rideroot-accent rounded-full flex items-center justify-center shadow-lg"
         >
-          <Navigation2 size={20} className="text-white" />
+          <MapPin size={20} className="text-white" />
         </motion.div>
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
       </div>
       
-      {/* Driver's car icon on map with avatar */}
-      <div className="absolute z-20" style={{ ...driverPosition }}>
-        <DriverLocationMarker position={driverPosition} />
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="absolute -top-8 -right-8"
-        >
-          <Avatar className="w-8 h-8 border-2 border-white shadow-md">
-            <AvatarImage src="/placeholder.svg" alt="Driver" />
-            <AvatarFallback>DR</AvatarFallback>
-          </Avatar>
-        </motion.div>
-      </div>
+      <motion.div 
+        className="absolute z-20 flex flex-col items-center"
+        style={{ ...driverPosition }}
+        animate={{ 
+          rotate: [0, 5, 0, -5, 0],
+          scale: [1, 1.05, 1]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      >
+        <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-2">
+          <AvatarImage src="/placeholder.svg" alt="Driver" />
+          <AvatarFallback>DR</AvatarFallback>
+        </Avatar>
+        <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
+          <Car size={20} className="text-white" />
+        </div>
+      </motion.div>
 
-      {/* Progress indicator */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-md z-20 flex items-center">
         <Car size={16} className="text-rideroot-primary mr-2" />
         <span className="text-sm font-medium">
@@ -124,7 +122,6 @@ const MapView: React.FC<MapViewProps> = ({
         </span>
       </div>
 
-      {/* Share ride button - Only show during ride */}
       {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && (
         <Button
           onClick={handleShareRide}
@@ -136,7 +133,6 @@ const MapView: React.FC<MapViewProps> = ({
         </Button>
       )}
       
-      {/* Safety Tips - Show during ride */}
       {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && (
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg z-20 w-[90%] max-w-md">
           <h3 className="font-semibold mb-2 text-rideroot-primary">During Your Ride</h3>
@@ -157,7 +153,6 @@ const MapView: React.FC<MapViewProps> = ({
         </div>
       )}
       
-      {/* Developer controls - should be removed in production */}
       <Button
         variant="default"
         className="absolute bottom-4 right-4 bg-green-500 hover:bg-green-600 text-xs"
