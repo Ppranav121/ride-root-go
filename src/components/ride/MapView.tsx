@@ -1,9 +1,10 @@
 
 import React from "react";
-import { MapPin, Car, Navigation } from "lucide-react";
+import { MapPin, Car, Navigation, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DriverLocationMarker from "./DriverLocationMarker";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface MapViewProps {
   driverPosition: { top: string; left: string };
@@ -18,6 +19,24 @@ const MapView: React.FC<MapViewProps> = ({
   onComplete,
   ridePhase = "arriving" 
 }) => {
+  const handleShareRide = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Track My Ride",
+          text: "Follow my ride in real-time!",
+          url: window.location.href
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success("Ride link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      toast.error("Could not share ride at this time");
+    }
+  };
+
   return (
     <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
       {/* Map background - in a real app this would be an actual map */}
@@ -91,6 +110,39 @@ const MapView: React.FC<MapViewProps> = ({
            ridePhase === "almost_there" ? "2 min to arrival" : "Arrived"}
         </span>
       </div>
+
+      {/* Share ride button - Only show during ride */}
+      {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && (
+        <Button
+          onClick={handleShareRide}
+          variant="default"
+          className="absolute top-4 right-4 bg-white text-rideroot-primary hover:bg-white/90 shadow-lg z-20"
+        >
+          <Share2 size={16} className="mr-2" />
+          Share Ride
+        </Button>
+      )}
+      
+      {/* Safety Tips - Show during ride */}
+      {(ridePhase === "in_progress" || ridePhase === "approaching" || ridePhase === "almost_there") && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg z-20 w-[90%] max-w-md">
+          <h3 className="font-semibold mb-2 text-rideroot-primary">During Your Ride</h3>
+          <ul className="text-sm text-gray-600 space-y-2">
+            <li className="flex items-center">
+              <div className="w-2 h-2 bg-rideroot-primary rounded-full mr-2" />
+              Share your trip with trusted contacts
+            </li>
+            <li className="flex items-center">
+              <div className="w-2 h-2 bg-rideroot-primary rounded-full mr-2" />
+              Keep an eye on the route using the map
+            </li>
+            <li className="flex items-center">
+              <div className="w-2 h-2 bg-rideroot-primary rounded-full mr-2" />
+              Emergency button available if needed
+            </li>
+          </ul>
+        </div>
+      )}
       
       {/* Developer controls - should be removed in production */}
       <Button
