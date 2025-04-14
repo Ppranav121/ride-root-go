@@ -20,10 +20,13 @@ const LocationInput: React.FC<LocationInputProps> = ({
   onOpenSearch,
   onUseCurrentLocation,
 }) => {
+  console.log(`LocationInput rendering: ${label} - ${location || placeholder}`);
+  
   // Prevent event bubbling when clicking clear button
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    console.log(`Clearing ${label} location`);
     onClear();
     toast.success(`${label} location cleared`, {
       duration: 2000,
@@ -34,6 +37,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const handleCurrentLocation = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    console.log(`Using current location for ${label}`);
     if (onUseCurrentLocation) {
       onUseCurrentLocation();
     } else {
@@ -45,6 +49,9 @@ const LocationInput: React.FC<LocationInputProps> = ({
     <div 
       className="relative cursor-pointer touch-action-manipulation"
       onClick={onOpenSearch}
+      role="button"
+      tabIndex={0}
+      aria-label={`Select ${label.toLowerCase()} location`}
     >
       <div className="input-field w-full pr-8 flex items-center bg-gray-100 rounded-md p-3">
         <span className="text-rideroot-text truncate">

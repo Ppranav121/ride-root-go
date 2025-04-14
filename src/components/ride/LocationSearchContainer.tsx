@@ -19,6 +19,8 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   onPickupChange,
   onDropoffChange,
 }) => {
+  console.log("LocationSearchContainer rendering");
+  
   const [showRecentLocations, setShowRecentLocations] = useState(false);
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
@@ -26,11 +28,11 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock recent locations (kept from original code)
-  const recentLocations = [
+  const recentLocations = useMemo(() => [
     { id: "1", name: "Home", address: "123 Main St" },
     { id: "2", name: "Work", address: "456 Office Ave" },
     { id: "3", name: "Gym", address: "789 Fitness Blvd" },
-  ];
+  ], []);
 
   // Memoize filtered search locations to prevent recalculation on every render
   const searchLocations = useMemo(() => {
@@ -51,11 +53,14 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   }, [searchQuery]);
 
   const handleSelectRecentLocation = useCallback((address: string) => {
+    console.log(`Selecting ${locationSearchType} location: ${address}`);
+    
     if (locationSearchType === "pickup") {
       onPickupChange(address);
     } else {
       onDropoffChange(address);
     }
+    
     setShowRecentLocations(false);
     setLocationDialogOpen(false);
     
@@ -66,12 +71,14 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   }, [locationSearchType, onPickupChange, onDropoffChange]);
 
   const handleOpenLocationSearch = useCallback((type: "pickup" | "dropoff") => {
+    console.log(`Opening location search for ${type}`);
     setLocationSearchType(type);
     setSearchQuery("");
     setLocationDialogOpen(true);
   }, []);
 
   const getCurrentLocation = useCallback(() => {
+    console.log("Getting current location");
     setIsLoading(true);
     
     // Simulate getting current location

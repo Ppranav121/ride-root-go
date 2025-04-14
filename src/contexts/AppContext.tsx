@@ -82,7 +82,16 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  // State hooks
+  // Safely check if sessionStorage is available
+  const isSessionStorageAvailable = () => {
+    try {
+      return typeof sessionStorage !== 'undefined';
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // State hooks - define all states before any effects
   const [user, setUser] = useState<User | null>(null);
   const [rideHistory, setRideHistory] = useState<Ride[]>([]);
   const [rideOption, setRideOption] = useState<RideOption>("standard");
@@ -91,7 +100,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   
   // Initialize currentRide from session storage if available
   const [currentRide, setCurrentRideState] = useState<Ride | null>(() => {
-    if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+    if (isSessionStorageAvailable()) {
       try {
         const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
         return storedRide ? JSON.parse(storedRide) : null;
@@ -105,7 +114,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // Save ride to session storage when it changes
   useEffect(() => {
-    if (currentRide && typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+    if (currentRide && isSessionStorageAvailable()) {
       try {
         sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(currentRide));
       } catch (error) {
@@ -117,7 +126,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Wrapper for setCurrentRide that also updates storage
   const setCurrentRide = (ride: Ride | null) => {
     setCurrentRideState(ride);
-    if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+    
+    if (isSessionStorageAvailable()) {
       if (ride) {
         try {
           sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
@@ -126,7 +136,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
       } else {
         // If ride is null, remove from storage
-        sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
+        try {
+          sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
+        } catch (error) {
+          console.error("Error removing ride from storage:", error);
+        }
       }
     }
   };

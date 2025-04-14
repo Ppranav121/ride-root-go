@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, memo } from "react";
 import { useLocation } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import RootHeader from "@/components/RootHeader";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import LocationSearchContainer from "@/components/ride/LocationSearchContainer";
@@ -39,46 +39,51 @@ const MapPlaceholder = memo(() => (
   </div>
 ));
 
+// Mark component name for debugging
+MapPlaceholder.displayName = 'MapPlaceholder';
+
 const BookRide: React.FC = () => {
+  console.log("BookRide rendering");
   const location = useLocation();
   const [pickupLocation, setPickupLocation] = useState("Current Location");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [hasShownNotification, setHasShownNotification] = useState(false);
 
   // Convert state updating functions to useCallback to prevent re-rendering
   const handlePickupChange = useCallback((location: string) => {
+    console.log("Setting pickup location:", location);
     setPickupLocation(location);
   }, []);
 
   const handleDropoffChange = useCallback((location: string) => {
+    console.log("Setting dropoff location:", location);
     setDropoffLocation(location);
   }, []);
 
   // Get pre-selected location from navigation state if available
   useEffect(() => {
+    console.log("BookRide useEffect running, location state:", location.state);
+    
     const state = location.state as LocationState;
-    if (state?.dropoffLocation) {
+    if (state?.dropoffLocation && !hasShownNotification) {
       setDropoffLocation(state.dropoffLocation);
+      setHasShownNotification(true);
       
-      // Prevent duplicate notifications
-      const timeoutId = setTimeout(() => {
+      // Show notification with a small delay to ensure it appears after render
+      setTimeout(() => {
         toast.success("Destination selected", {
           description: state.dropoffLocation,
           duration: 2000,
         });
       }, 100);
-      
-      return () => clearTimeout(timeoutId);
     }
     
     // Mark page as loaded after initial render
-    setIsPageLoaded(true);
-  }, [location]);
-
-  if (!isPageLoaded && !dropoffLocation) {
-    // Add a very short delay to ensure React has time to render
-    setTimeout(() => setIsPageLoaded(true), 10);
-  }
+    if (!isPageLoaded) {
+      setIsPageLoaded(true);
+    }
+  }, [location, hasShownNotification, isPageLoaded]);
 
   return (
     <div className="flex flex-col h-screen bg-rideroot-lightGrey">
