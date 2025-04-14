@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, Target } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import RootHeader from "@/components/RootHeader";
 import RideOptionSelector from "@/components/RideOptionSelector";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 // Import our components
 import LocationSelector from "@/components/ride/LocationSelector";
@@ -32,6 +32,7 @@ const BookRide: React.FC = () => {
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
   const [searchQuery, setSearchQuery] = useState("");
+  const [pinPosition, setPinPosition] = useState<{ top: string; left: string } | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>({
     id: "card-1",
     type: "card",
@@ -131,6 +132,31 @@ const BookRide: React.FC = () => {
     }, 1000);
   };
 
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const top = `${((e.clientY - rect.top) / rect.height) * 100}%`;
+    const left = `${((e.clientX - rect.left) / rect.width) * 100}%`;
+    setPinPosition({ top, left });
+    
+    // Auto-update the dropoff location if pin is placed
+    const pinLocationAddress = "Pinned Location";
+    setDropoffLocation(pinLocationAddress);
+    
+    toast.success("Location pinned", {
+      description: "Tap anywhere else to move the pin"
+    });
+  };
+
+  const handlePinLocation = () => {
+    toast("Tap anywhere on the map to pin your destination", {
+      description: "This helps us locate your exact dropoff point",
+      action: {
+        label: "Got it",
+        onClick: () => {}
+      }
+    });
+  };
+
   const handleBookRide = async () => {
     if (!dropoffLocation) {
       toast.error("Missing destination", {
@@ -188,6 +214,38 @@ const BookRide: React.FC = () => {
           >
             <MapPin size={16} className="text-white" />
           </motion.div>
+          
+          {/* Pin location button */}
+          <Button
+            variant="secondary"
+            size="sm"
+            className="absolute top-20 right-4 bg-white shadow-md hover:bg-gray-100 flex items-center gap-2 z-10"
+            onClick={handlePinLocation}
+          >
+            <Target size={16} />
+            <span className="text-xs">Pin Location</span>
+          </Button>
+          
+          {/* Custom pin marker */}
+          {pinPosition && (
+            <motion.div
+              initial={{ scale: 0, y: -10 }}
+              animate={{ scale: 1, y: 0 }}
+              className="absolute z-20"
+              style={{ top: pinPosition.top, left: pinPosition.left, transform: 'translate(-50%, -100%)' }}
+            >
+              <div className="flex flex-col items-center">
+                <MapPin size={24} className="text-red-500" />
+                <div className="w-2 h-2 rounded-full bg-red-500 mt-1 animate-ping" />
+              </div>
+            </motion.div>
+          )}
+          
+          {/* Clickable area for pin placement */}
+          <div 
+            className="absolute inset-0 cursor-crosshair z-0" 
+            onClick={handleMapClick}
+          />
         </div>
 
         {/* Ride Booking Interface - Fixed height with scrollable content */}
@@ -288,4 +346,3 @@ const BookRide: React.FC = () => {
 };
 
 export default BookRide;
-
