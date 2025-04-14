@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Info, Phone, MessageSquare } from "lucide-react";
+import { Info, Phone, MessageSquare, MapPin } from "lucide-react";
 import MessageDialog from "./MessageDialog";
 import { useApp } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
@@ -25,7 +25,6 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { currentRide } = useApp();
 
-  // Helper function to generate a readable label for the ride option
   const rideOptionLabel = (option: string, capacity: string) => {
     let label = option.charAt(0).toUpperCase() + option.slice(1);
     if (capacity === "xl") {
@@ -35,7 +34,6 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   };
 
   const handleCallDriver = () => {
-    // In a real app, this would initiate a call
     toast({
       title: "Calling driver",
       description: "This feature would initiate a call to your driver in a real app.",
@@ -44,43 +42,52 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
 
   return (
     <>
-      <div className="bg-rideroot-lightGrey p-3 rounded-xl mb-4">
-        <div className="flex items-start mb-3">
-          <div className="mr-3 flex flex-col items-center mt-1">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+        <div className="flex items-start mb-4">
+          <div className="mr-4 flex flex-col items-center">
             <div className="w-3 h-3 rounded-full bg-rideroot-primary"></div>
-            <div className="w-0.5 h-8 bg-rideroot-mediumGrey my-1"></div>
+            <div className="w-0.5 h-12 bg-gradient-to-b from-rideroot-primary to-rideroot-accent my-1"></div>
             <div className="w-3 h-3 rounded-full bg-rideroot-accent"></div>
           </div>
-          <div className="flex-1">
-            <p className="font-medium text-rideroot-text">{pickupLocation}</p>
-            <div className="h-6"></div> {/* Spacer */}
-            <p className="font-medium text-rideroot-text">{dropoffLocation}</p>
+          <div className="flex-1 space-y-3">
+            <div>
+              <p className="text-sm text-gray-500">Pickup</p>
+              <p className="font-medium text-rideroot-text">{pickupLocation}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Dropoff</p>
+              <p className="font-medium text-rideroot-text">{dropoffLocation}</p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center text-rideroot-darkGrey text-sm">
-          <Info size={14} className="mr-1" />
-          <span>
-            {rideOptionLabel(rideOption, capacityOption)} • 
-            {distance} miles • ${fare}
-          </span>
-        </div>
-      </div>
 
-      <div className="flex space-x-3 mb-4">
-        <button 
-          className="flex-1 py-2 bg-rideroot-primary text-white rounded-lg flex items-center justify-center hover:bg-rideroot-primary/90 transition-colors"
-          onClick={handleCallDriver}
-        >
-          <Phone size={18} className="mr-2" />
-          Call
-        </button>
-        <button 
-          className="flex-1 py-2 bg-rideroot-accent text-white rounded-lg flex items-center justify-center hover:bg-rideroot-accent/90 transition-colors"
-          onClick={() => setIsMessageOpen(true)}
-        >
-          <MessageSquare size={18} className="mr-2" />
-          Message
-        </button>
+        <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+          <div className="flex items-center">
+            <Info size={16} className="mr-2" />
+            <span>{rideOptionLabel(rideOption, capacityOption)}</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <span>{distance} miles</span>
+            <span className="font-medium text-rideroot-primary">${fare}</span>
+          </div>
+        </div>
+
+        <div className="flex space-x-3 mt-4">
+          <button 
+            className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm"
+            onClick={handleCallDriver}
+          >
+            <Phone size={18} className="mr-2" />
+            Call
+          </button>
+          <button 
+            className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm"
+            onClick={() => setIsMessageOpen(true)}
+          >
+            <MessageSquare size={18} className="mr-2" />
+            Message
+          </button>
+        </div>
       </div>
 
       {currentRide && currentRide.driver && (
