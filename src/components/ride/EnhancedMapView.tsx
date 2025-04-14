@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Car } from "lucide-react";
 import MapBackground from "@/components/ride/MapBackground";
 import HotspotOverlay from "@/components/ride/HotspotOverlay";
-import DriverLocationMarker from "@/components/ride/DriverLocationMarker";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface EnhancedMapViewProps {
   showHotspots: boolean;
@@ -32,7 +32,28 @@ const EnhancedMapView: React.FC<EnhancedMapViewProps> = ({
           <HotspotOverlay hotspots={hotspots} />
         )}
         
-        <DriverLocationMarker position={driverPosition} />
+        {/* Integrated driver location marker */}
+        <motion.div 
+          className="absolute z-20 flex flex-col items-center"
+          style={{ ...driverPosition }}
+          animate={{ 
+            rotate: [0, 5, 0, -5, 0],
+            scale: [1, 1.05, 1]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        >
+          <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
+            <AvatarImage src="/placeholder.svg" alt="Driver" />
+            <AvatarFallback>DR</AvatarFallback>
+          </Avatar>
+          <div className="w-8 h-8 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
+            <Car size={16} className="text-white" />
+          </div>
+        </motion.div>
         
         <motion.div 
           initial={{ scale: 0 }} 
