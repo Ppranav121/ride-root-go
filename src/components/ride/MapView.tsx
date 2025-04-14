@@ -81,7 +81,7 @@ const MapView: React.FC<MapViewProps> = ({
       <DriverLocationMarker position={driverPosition} />
       
       {/* Progress indicator */}
-      <div className="absolute top-4 right-4 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-md z-20 flex items-center">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-md z-20 flex items-center">
         <Car size={16} className="text-rideroot-primary mr-2" />
         <span className="text-sm font-medium">
           {ridePhase === "arriving" ? `Arriving in ${secondsLeft}s` : 
