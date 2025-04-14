@@ -83,6 +83,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  // State hooks
   const [user, setUser] = useState<User | null>(null);
   const [rideHistory, setRideHistory] = useState<Ride[]>([]);
   const [rideOption, setRideOption] = useState<RideOption>("standard");
@@ -91,18 +92,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   
   // Initialize currentRide from session storage if available
   const [currentRide, setCurrentRideState] = useState<Ride | null>(() => {
-    try {
-      const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
-      return storedRide ? JSON.parse(storedRide) : null;
-    } catch (error) {
-      console.error("Error reading stored ride:", error);
-      return null;
+    if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+      try {
+        const storedRide = sessionStorage.getItem(CURRENT_RIDE_STORAGE_KEY);
+        return storedRide ? JSON.parse(storedRide) : null;
+      } catch (error) {
+        console.error("Error reading stored ride:", error);
+        return null;
+      }
     }
+    return null;
   });
 
   // Save ride to session storage when it changes
   useEffect(() => {
-    if (currentRide) {
+    if (currentRide && typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
       try {
         sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(currentRide));
       } catch (error) {
@@ -114,15 +118,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Wrapper for setCurrentRide that also updates storage
   const setCurrentRide = (ride: Ride | null) => {
     setCurrentRideState(ride);
-    if (ride) {
-      try {
-        sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
-      } catch (error) {
-        console.error("Error saving ride to storage:", error);
+    if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+      if (ride) {
+        try {
+          sessionStorage.setItem(CURRENT_RIDE_STORAGE_KEY, JSON.stringify(ride));
+        } catch (error) {
+          console.error("Error saving ride to storage:", error);
+        }
+      } else {
+        // If ride is null, remove from storage
+        sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
       }
-    } else {
-      // If ride is null, remove from storage
-      sessionStorage.removeItem(CURRENT_RIDE_STORAGE_KEY);
     }
   };
 
@@ -257,3 +263,4 @@ export const useApp = () => {
   }
   return context;
 };
+
