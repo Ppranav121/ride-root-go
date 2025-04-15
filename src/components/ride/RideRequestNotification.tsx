@@ -75,7 +75,7 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="fixed top-16 inset-x-3 z-50 max-w-md mx-auto"
+          className="fixed top-4 inset-x-3 z-50 max-w-md mx-auto"
         >
           <Card className="border-[#6c5ce7] border-l-4 shadow-lg rounded-xl overflow-hidden">
             <CardContent className={`pt-5 pb-2 ${isMobile ? 'px-4' : 'px-6'}`}>
