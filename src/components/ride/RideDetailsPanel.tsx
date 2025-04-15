@@ -17,6 +17,10 @@ interface RideDetailsPanelProps {
 
 const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
   const [expanded, setExpanded] = useState(false);
+  
+  // Get ride phase from sessionStorage to determine if cancel button should be shown
+  const ridePhase = sessionStorage.getItem("ride_phase");
+  const canCancelRide = !ridePhase || ridePhase === "arriving" || ridePhase === "arrived";
 
   const handleShareDriver = async () => {
     try {
@@ -92,8 +96,8 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
             </div>
           </div>
 
-          {/* Add cancel button right after driver info when not expanded */}
-          {!expanded && (
+          {/* Add cancel button right after driver info when not expanded, but only if ride can be cancelled */}
+          {!expanded && canCancelRide && (
             <div className="mt-4">
               <CancelRideButton />
             </div>
@@ -127,10 +131,12 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
                   <AdditionalRideInfo isSubscribed={false} />
                 </div>
 
-                {/* Add cancel button at the bottom of expanded view */}
-                <div className="pt-2">
-                  <CancelRideButton />
-                </div>
+                {/* Add cancel button at the bottom of expanded view, but only if ride can be cancelled */}
+                {canCancelRide && (
+                  <div className="pt-2">
+                    <CancelRideButton />
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </motion.div>

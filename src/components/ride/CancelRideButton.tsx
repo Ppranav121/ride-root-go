@@ -9,9 +9,15 @@ import { useApp } from "@/contexts/AppContext";
 const CancelRideButton: React.FC = () => {
   const navigate = useNavigate();
   const { currentRide, setCurrentRide } = useApp();
+  
+  // Get ride phase from sessionStorage to determine if button should be disabled
+  const ridePhase = sessionStorage.getItem("ride_phase");
+  const isRideInProgress = ridePhase === "in_progress" || 
+                          ridePhase === "approaching" || 
+                          ridePhase === "almost_there";
 
   const handleCancel = () => {
-    if (currentRide) {
+    if (currentRide && !isRideInProgress) {
       // First log the current state before any changes
       console.log("Current ride before cancellation:", currentRide);
       
@@ -45,6 +51,8 @@ const CancelRideButton: React.FC = () => {
         console.error("Error during cancellation process:", error);
         toast.error("Failed to cancel ride. Please try again.");
       }
+    } else if (isRideInProgress) {
+      toast.error("Cannot cancel ride that is already in progress");
     } else {
       console.log("No current ride found, navigating to home");
       navigate("/home");
@@ -54,12 +62,17 @@ const CancelRideButton: React.FC = () => {
   return (
     <motion.button
       onClick={handleCancel}
-      className="w-full bg-rideroot-danger text-white rounded-xl py-4 font-medium border border-rideroot-danger/20 hover:bg-rideroot-danger/90 transition-colors shadow-button hover:shadow-button-hover flex items-center justify-center"
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      className={`w-full rounded-xl py-4 font-medium border border-rideroot-danger/20 transition-colors flex items-center justify-center ${
+        isRideInProgress 
+          ? "bg-gray-400 text-white cursor-not-allowed opacity-60"
+          : "bg-rideroot-danger text-white hover:bg-rideroot-danger/90 shadow-button hover:shadow-button-hover cursor-pointer"
+      }`}
+      whileHover={{ scale: isRideInProgress ? 1 : 1.02 }}
+      whileTap={{ scale: isRideInProgress ? 1 : 0.98 }}
+      disabled={isRideInProgress}
     >
       <X className="mr-2" size={18} />
-      Cancel Ride
+      {isRideInProgress ? "Cannot Cancel During Ride" : "Cancel Ride"}
     </motion.button>
   );
 };
