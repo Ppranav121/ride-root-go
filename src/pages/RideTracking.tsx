@@ -274,10 +274,10 @@ const RideTracking: React.FC = () => {
   if (!currentRide || !currentRide.driver || showCompletionRedirect) return null;
 
   return (
-    <div className="flex flex-col h-screen bg-rideroot-lightGrey relative">
+    <div className="flex flex-col h-screen bg-rideroot-lightGrey relative overflow-hidden">
       <RootHeader title="Your Ride" />
 
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1">
         <MapView 
           driverPosition={driverPosition} 
           secondsLeft={secondsLeft} 
@@ -294,9 +294,9 @@ const RideTracking: React.FC = () => {
           minutesToDestination={minutesToDestination} 
         />
         
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-10">
-          <RideDetailsPanel currentRide={currentRide} />
-          
+        <RideDetailsPanel currentRide={currentRide} />
+        
+        <div className={`absolute bottom-0 left-0 right-0 px-4 pb-4 pt-2 bg-white rounded-t-3xl shadow-lg z-20 ${routeCardExpanded ? 'translate-y-0' : 'translate-y-[100%]'} transition-transform duration-300`}>
           <RouteInfoCard
             pickupLocation={currentRide.pickupLocation}
             dropoffLocation={currentRide.dropoffLocation}
@@ -307,10 +307,6 @@ const RideTracking: React.FC = () => {
             expanded={routeCardExpanded}
             onExpandToggle={() => setRouteCardExpanded(!routeCardExpanded)}
           />
-          
-          <div className="mt-4">
-            <CancelRideButton />
-          </div>
         </div>
       </div>
     </div>

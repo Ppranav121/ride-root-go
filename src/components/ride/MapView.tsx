@@ -1,3 +1,4 @@
+
 import React from "react";
 import { MapPin, Car, Share2, Navigation2, CheckCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -97,9 +98,10 @@ const MapView: React.FC<MapViewProps> = ({
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
       </motion.div>
       
+      {/* Driver marker with conditional rendering based on showDriverMarker prop */}
       {showDriverMarker && (
         <motion.div 
-          className="absolute z-20 cursor-pointer"
+          className="absolute z-10 cursor-pointer" /* Changed z-index from z-20 to z-10 */
           style={{ 
             ...driverPosition,
             top: `calc(${driverPosition.top} + 25px)`  // Offset to avoid banner overlap

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DriverInfoCard from "./DriverInfoCard";
@@ -44,7 +45,7 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
 
   return (
     <motion.div 
-      className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg border-t border-rideroot-mediumGrey/30 z-20"
+      className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg border-t border-rideroot-mediumGrey/30 z-30"
       animate={{ 
         height: expanded ? "70vh" : "auto",
         transition: { type: "spring", stiffness: 300, damping: 30 }
