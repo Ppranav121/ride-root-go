@@ -15,10 +15,12 @@ import EnhancedMapView from "@/components/ride/EnhancedMapView";
 import RideRequestNotification from "@/components/ride/RideRequestNotification";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
+
 const getStoredOnlineStatus = () => {
   const stored = sessionStorage.getItem('driverOnlineStatus');
   return stored === 'true';
 };
+
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +39,7 @@ const DriverHome: React.FC = () => {
   const [boostAmount, setBoostAmount] = useState(0);
   const [showHotspots, setShowHotspots] = useState(true);
   const [showRideRequest, setShowRideRequest] = useState(false);
+
   useEffect(() => {
     if (isOnline) {
       const delay = Math.floor(Math.random() * 20000) + 20000;
@@ -46,6 +49,7 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(requestTimer);
     }
   }, [isOnline]);
+
   const hotspots = [{
     id: 1,
     location: {
@@ -82,11 +86,14 @@ const DriverHome: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
+
   const driverPosition = {
     top: "45%",
     left: "45%"
   };
+
   const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
+
   useEffect(() => {
     const fromRide = sessionStorage.getItem('fromRide') === 'true';
     if (fromRide) {
@@ -94,6 +101,7 @@ const DriverHome: React.FC = () => {
       sessionStorage.removeItem('fromRide');
     }
   }, []);
+
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -102,6 +110,7 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
+
   const toggleOnlineStatus = (newStatus: boolean) => {
     setIsOnline(newStatus);
     sessionStorage.setItem('driverOnlineStatus', String(newStatus));
@@ -119,6 +128,7 @@ const DriverHome: React.FC = () => {
       setShowRideRequest(false);
     }
   };
+
   const toggleDriverTier = (newValue: boolean) => {
     if (!newValue) {
       setIsPrimeDriver(false);
@@ -148,6 +158,7 @@ const DriverHome: React.FC = () => {
       }, 1000);
     }
   };
+
   const toggleHotspots = () => {
     setShowHotspots(prev => !prev);
     if (!showHotspots) {
@@ -156,17 +167,21 @@ const DriverHome: React.FC = () => {
       toast("Hotspots disabled.");
     }
   };
+
   const handleViewRideRequest = () => {
     setShowRideRequest(false);
     navigate('/driver-ride');
   };
+
   const handleDismissRideRequest = () => {
     setShowRideRequest(false);
     toast.error("Ride request dismissed", {
       description: "You can still find other rides"
     });
   };
+
   const currentPath = location.pathname;
+
   return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition} allowScroll={true} />
       
@@ -194,14 +209,11 @@ const DriverHome: React.FC = () => {
       
       <RideRequestNotification isVisible={showRideRequest} onClose={handleDismissRideRequest} onView={handleViewRideRequest} />
       
-      <ScrollArea className="fixed inset-x-0 top-16 bottom-0 z-10">
+      <ScrollArea className="fixed inset-x-0 top-16 bottom-0 z-10 overflow-y-auto no-scrollbar">
         <div className="p-4 flex flex-col min-h-[calc(100vh-4rem)]">
           <div className="space-y-4 mb-6">
             <DriverStatusToggle isOnline={isOnline} onStatusChange={toggleOnlineStatus} />
             
-            <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
-            
-            {/* Active Ride Screen Button positioned between tier selector and stats panel */}
             {isOnline && <motion.div initial={{
             opacity: 0,
             y: 10
@@ -217,10 +229,12 @@ const DriverHome: React.FC = () => {
                 </Button>
               </motion.div>}
             
+            <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
+            
             <DriverStatsPanel todayEarnings={todayEarnings} todayRides={todayRides} isPrimeDriver={isPrimeDriver} />
           </div>
           
-          <div className="flex-1" />  {/* Spacer */}
+          <div className="flex-1" />
           
           <div className="space-y-4 mb-20">
             {isPrimeDriver && <div className="mb-4 flex flex-wrap gap-2">
@@ -269,4 +283,5 @@ const DriverHome: React.FC = () => {
       </ScrollArea>
     </div>;
 };
+
 export default DriverHome;
