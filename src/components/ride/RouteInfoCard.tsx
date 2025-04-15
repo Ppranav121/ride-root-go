@@ -102,10 +102,7 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
 
             <div className="flex space-x-3 mt-4">
               
-              <Button variant="outline" className="flex-1" onClick={handleCallDriver}>
-                <Phone className="mr-2 h-4 w-4" />
-                Call
-              </Button>
+              
             </div>
 
             {showPrecautions && <div className="mt-4 bg-gray-50 rounded-lg p-4">
