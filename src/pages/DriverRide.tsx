@@ -8,27 +8,39 @@ import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
+import { RideRequestDetails } from "@/components/ride/RideRequestNotification";
+
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
-interface RideRequest {
-  id: string;
-  rider: string;
-  pickupLocation: string;
-  dropoffLocation: string;
-  distance: number;
-  estimatedTime: string;
-  fare: number;
-  rideType: 'Standard' | 'Standard XL' | 'Premium' | 'Premium XL';
-  isPremium: boolean;
-  isPeakBonus: boolean;
-}
+
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
-  const [rideState, setRideState] = useState<RideState>('searching');
+  const { toast } = useToast();
+  
+  const [rideState, setRideState] = useState<RideState>(() => {
+    try {
+      const pendingRequest = sessionStorage.getItem('pendingRideRequest');
+      return pendingRequest ? 'request' : 'searching';
+    } catch (error) {
+      return 'searching';
+    }
+  });
+  
   const [secondsLeft, setSecondsLeft] = useState(15);
-  const [rideRequest, setRideRequest] = useState<RideRequest | null>(null);
+  const [rideRequest, setRideRequest] = useState<RideRequestDetails | null>(() => {
+    try {
+      const pendingRequest = sessionStorage.getItem('pendingRideRequest');
+      if (pendingRequest) {
+        const parsedRequest = JSON.parse(pendingRequest);
+        sessionStorage.removeItem('pendingRideRequest');
+        return parsedRequest;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error parsing ride request:", error);
+      return null;
+    }
+  });
+  
   const [animateBonus, setAnimateBonus] = useState(false);
   const [pulseSize, setPulseSize] = useState(100);
   const [pulseOpacity, setPulseOpacity] = useState(0.5);
@@ -39,6 +51,7 @@ const DriverRide: React.FC = () => {
     top: "45%",
     left: "45%"
   });
+
   const hotspots = [{
     id: 1,
     location: {
@@ -75,6 +88,7 @@ const DriverRide: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => prev === 100 ? 120 : 100);
@@ -82,34 +96,41 @@ const DriverRide: React.FC = () => {
     }, 1500);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
-        setRideRequest({
-          id: "ride-123",
-          rider: "Jessica M.",
-          pickupLocation: "1234 Market Street",
-          dropoffLocation: "Golden Gate Park",
-          distance: 4.2,
-          estimatedTime: "15 mins",
-          fare: 17.50,
-          rideType: "Premium",
-          isPremium: true,
-          isPeakBonus: true
-        });
+        if (!rideRequest) {
+          setRideRequest({
+            id: "ride-123",
+            rider: "Jessica M.",
+            pickup: "1234 Market Street",
+            dropoffLocation: "Golden Gate Park",
+            distance: 4.2,
+            estimatedTime: "15 mins",
+            fare: 17.50,
+            rideType: "Premium",
+            isPremium: true,
+            isPeakBonus: true,
+            requestTime: "Just now"
+          });
+        }
         setRideState('request');
       }, 8000);
+      
       let count = 0;
       const interval = setInterval(() => {
         count += 1;
         setSearchInterval(count % 3 + 1);
       }, 800);
+      
       return () => {
         clearTimeout(timer);
         clearInterval(interval);
       };
     }
-  }, [rideState]);
+  }, [rideState, rideRequest]);
+
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -126,6 +147,7 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
+
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -153,6 +175,7 @@ const DriverRide: React.FC = () => {
       }
     }, 150);
   };
+
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -162,6 +185,7 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
+
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -185,13 +209,16 @@ const DriverRide: React.FC = () => {
       }
     }, 200);
   };
+
   const handleCompleteRide = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
+
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -201,11 +228,14 @@ const DriverRide: React.FC = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
+
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
   };
-  return <div className="flex flex-col min-h-screen relative">
+
+  return (
+    <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition}>
         {rideState !== 'searching' && <motion.div animate={{
         scale: [1, 1.1, 1],
@@ -292,15 +322,17 @@ const DriverRide: React.FC = () => {
         
       </div>
       
-      {rideState === 'request' && rideRequest && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
+      {rideState === 'request' && rideRequest && (
+        <motion.div 
+          initial={{ y: 300 }}
+          animate={{ y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20"
+        >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">New Ride Request</h2>
             <motion.div initial={{
@@ -386,17 +418,20 @@ const DriverRide: React.FC = () => {
               Accept
             </Button>
           </div>
-        </motion.div>}
+        </motion.div>
+      )}
       
-      {rideState === 'arrived' && rideRequest && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
+      {rideState === 'arrived' && rideRequest && (
+        <motion.div 
+          initial={{ y: 300 }}
+          animate={{ y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20"
+        >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">You've Arrived</h2>
             <div className="flex space-x-2">
@@ -441,17 +476,20 @@ const DriverRide: React.FC = () => {
           <Button className="w-full bg-rideroot-primary hover:bg-rideroot-primary/90" onClick={handleStartRide}>
             Start Ride
           </Button>
-        </motion.div>}
+        </motion.div>
+      )}
       
-      {rideState === 'inProgress' && rideRequest && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
+      {rideState === 'inProgress' && rideRequest && (
+        <motion.div 
+          initial={{ y: 300 }}
+          animate={{ y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20"
+        >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Ride in Progress</h2>
             <div className="flex space-x-2">
@@ -499,17 +537,20 @@ const DriverRide: React.FC = () => {
               </div>
             </div>
           </div>
-        </motion.div>}
+        </motion.div>
+      )}
       
-      {rideState === 'completed' && rideRequest && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20">
+      {rideState === 'completed' && rideRequest && (
+        <motion.div 
+          initial={{ y: 300 }}
+          animate={{ y: 0 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20"
+        >
           <div className="flex flex-col items-center mb-6">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -552,95 +593,131 @@ const DriverRide: React.FC = () => {
               Done
             </Button>
           </div>
-        </motion.div>}
+        </motion.div>
+      )}
       
-      {animateBonus && <motion.div initial={{
-      opacity: 0,
-      scale: 0.5,
-      y: 20
-    }} animate={{
-      opacity: 1,
-      scale: 1,
-      y: 0
-    }} exit={{
-      opacity: 0,
-      scale: 0.5,
-      y: 20
-    }} className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
+      {animateBonus && (
+        <motion.div 
+          initial={{
+            opacity: 0,
+            scale: 0.5,
+            y: 20
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.5,
+            y: 20
+          }}
+          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30"
+        >
           <div className="bg-white/90 backdrop-blur-md px-6 py-4 rounded-xl shadow-lg">
             <div className="flex flex-col items-center">
               <span className="text-green-500 font-bold text-lg mb-1">+$0.50</span>
               <span className="text-sm text-gray-600">Peak Time Bonus</span>
             </div>
           </div>
-        </motion.div>}
+        </motion.div>
+      )}
       
-      {rideState === 'searching' && <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
+      {rideState === 'searching' && (
+        <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
           {/* Empty div to replace the white background panel */}
-        </div>}
+        </div>
+      )}
       
-      {rideState === 'searching' && <motion.div initial={{
-      y: 300
-    }} animate={{
-      y: 0
-    }} transition={{
-      type: "spring",
-      stiffness: 300,
-      damping: 30
-    }} className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8">
+      {rideState === 'searching' && (
+        <motion.div 
+          initial={{
+            y: 300
+          }}
+          animate={{
+            y: 0
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30
+          }} 
+          className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8"
+        >
           <div className="flex flex-col items-center justify-center mb-6">
             <div className="relative mb-4">
-              <motion.div animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.5, 0.2]
-          }} transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }} className="absolute -inset-2 bg-purple-500/20 rounded-full" />
-              <motion.div animate={{
-            rotate: [0, 360]
-          }} transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "linear"
-          }} className="w-10 h-10 bg-gradient-to-br from-purple-500/70 to-indigo-600/70 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <motion.div 
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.2, 0.5, 0.2]
+                }} 
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }} 
+                className="absolute -inset-2 bg-purple-500/20 rounded-full"
+              />
+              <motion.div 
+                animate={{
+                  rotate: [0, 360]
+                }} 
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "linear"
+                }} 
+                className="w-10 h-10 bg-gradient-to-br from-purple-500/70 to-indigo-600/70 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/20"
+              >
                 <Search className="w-5 h-5 text-white" />
               </motion.div>
             </div>
             
-            <motion.div animate={{
-          opacity: [0.7, 1, 0.7]
-        }} transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatType: "mirror"
-        }} className="text-white text-sm font-medium tracking-wide mb-2">
+            <motion.div 
+              animate={{
+                opacity: [0.7, 1, 0.7]
+              }} 
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "mirror"
+              }} 
+              className="text-white text-sm font-medium tracking-wide mb-2"
+            >
               Searching for rides{renderSearchingDots()}
             </motion.div>
             
-            <motion.div initial={{
-          width: "30%"
-        }} animate={{
-          width: ["30%", "70%", "30%"]
-        }} transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        }} className="h-0.5 bg-gradient-to-r from-purple-400/50 via-indigo-400/70 to-purple-400/50 rounded-full mb-8" />
+            <motion.div 
+              initial={{
+                width: "30%"
+              }} 
+              animate={{
+                width: ["30%", "70%", "30%"]
+              }} 
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }} 
+              className="h-0.5 bg-gradient-to-r from-purple-400/50 via-indigo-400/70 to-purple-400/50 rounded-full mb-8"
+            />
           </div>
           
           <motion.div whileHover={{
-        scale: 1.03
-      }} whileTap={{
-        scale: 0.97
-      }} className="w-full">
+            scale: 1.03
+          }} whileTap={{
+            scale: 0.97
+          }} className="w-full">
             
           </motion.div>
-        </motion.div>}
+        </motion.div>
+      )}
       
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
-    </div>;
+    </div>
+  );
 };
+
 export default DriverRide;

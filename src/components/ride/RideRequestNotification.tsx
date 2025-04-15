@@ -8,16 +8,25 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+export interface RideRequestDetails {
+  rider: string;
+  pickup: string;
+  fare: number;
+  requestTime: string;
+  id: string;
+  dropoffLocation: string;
+  distance: number;
+  estimatedTime: string;
+  rideType: 'Standard' | 'Standard XL' | 'Premium' | 'Premium XL';
+  isPremium: boolean;
+  isPeakBonus: boolean;
+}
+
 interface RideRequestNotificationProps {
   isVisible: boolean;
   onClose: () => void;
   onView: () => void;
-  rideDetails?: {
-    rider: string;
-    pickup: string;
-    fare: number;
-    requestTime: string;
-  };
+  rideDetails?: RideRequestDetails;
 }
 
 const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
@@ -25,9 +34,16 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
   onClose,
   onView,
   rideDetails = {
+    id: "ride-123",
     rider: "Jessica M.",
     pickup: "1234 Market Street",
+    dropoffLocation: "Golden Gate Park",
+    distance: 4.2,
+    estimatedTime: "15 mins",
     fare: 17.50,
+    rideType: "Premium",
+    isPremium: true,
+    isPeakBonus: true,
     requestTime: "Just now"
   }
 }) => {
@@ -37,6 +53,13 @@ const RideRequestNotification: React.FC<RideRequestNotificationProps> = ({
   if (!isVisible) return null;
   
   const handleView = () => {
+    // Save the ride details in sessionStorage before navigating
+    try {
+      sessionStorage.setItem('pendingRideRequest', JSON.stringify(rideDetails));
+    } catch (error) {
+      console.error("Error storing ride request:", error);
+    }
+    
     onView();
     navigate('/driver-ride');
     toast("Opening ride request", {
