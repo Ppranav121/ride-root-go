@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -232,6 +233,24 @@ const DriverHome: React.FC = () => {
             <DriverStatusToggle isOnline={isOnline} onStatusChange={toggleOnlineStatus} />
             
             <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
+            
+            {/* Active Ride Screen Button positioned between tier selector and stats panel */}
+            {isOnline && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                <Button 
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2" 
+                  onClick={() => navigate('/driver-ride')}
+                >
+                  <Navigation className="mr-2" size={20} />
+                  <span className="text-base font-semibold">View Active Ride</span>
+                </Button>
+              </motion.div>
+            )}
             
             <DriverStatsPanel todayEarnings={todayEarnings} todayRides={todayRides} isPrimeDriver={isPrimeDriver} />
           </div>
