@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -40,6 +41,9 @@ const RideTracking: React.FC = () => {
   const [minutesToDestination, setMinutesToDestination] = useState(() => {
     return parseInt(sessionStorage.getItem(MINUTES_TO_DEST_STORAGE_KEY) || "10");
   });
+  
+  // Add state for RouteInfoCard expanded status
+  const [routeCardExpanded, setRouteCardExpanded] = useState(false);
   
   const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [showCompletionRedirect, setShowCompletionRedirect] = useState(false);
@@ -301,6 +305,8 @@ const RideTracking: React.FC = () => {
             capacityOption={currentRide.capacityOption}
             distance={currentRide.distance}
             fare={currentRide.fare}
+            expanded={routeCardExpanded}
+            onExpandToggle={() => setRouteCardExpanded(!routeCardExpanded)}
           />
           
           <div className="mt-4">
