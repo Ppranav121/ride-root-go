@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Car, Zap, Menu, MapPin, MapPinned, TrendingUp } from "lucide-react";
+import { Car, Zap, Menu, MapPin, MapPinned, TrendingUp, Navigation, MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -269,18 +269,22 @@ const DriverHome: React.FC = () => {
                 </motion.div>}
             </AnimatePresence>
             
-            {isOnline && <motion.div className="flex justify-center" initial={{
-            scale: 1
-          }} whileHover={{
-            scale: 1.02
-          }} whileTap={{
-            scale: 0.98
-          }}>
-                <Button className="bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white px-8 py-5 rounded-lg shadow-lg font-medium text-base" onClick={() => navigate('/driver-ride')}>
-                  <MapPin className="mr-2" />
-                  View Active Ride Screen
+            {isOnline && (
+              <motion.div 
+                className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Button 
+                  className="w-full bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white px-6 py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3" 
+                  onClick={() => navigate('/driver-ride')}
+                >
+                  <Navigation className="mr-2" size={24} />
+                  <span className="text-base font-semibold">Active Ride Screen</span>
                 </Button>
-              </motion.div>}
+              </motion.div>
+            )}
           </div>
         </div>
       </ScrollArea>
