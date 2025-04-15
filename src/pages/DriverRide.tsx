@@ -8,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import RootHeader from "@/components/RootHeader";
 import MessageDialog from "@/components/ride/MessageDialog";
 import EnhancedMapView from "@/components/ride/EnhancedMapView";
-
 type RideState = 'searching' | 'request' | 'accepted' | 'arrived' | 'inProgress' | 'completed';
 interface RideRequest {
   id: string;
@@ -22,10 +21,11 @@ interface RideRequest {
   isPremium: boolean;
   isPeakBonus: boolean;
 }
-
 const DriverRide: React.FC = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [rideState, setRideState] = useState<RideState>('searching');
   const [secondsLeft, setSecondsLeft] = useState(15);
   const [rideRequest, setRideRequest] = useState<RideRequest | null>(null);
@@ -75,7 +75,6 @@ const DriverRide: React.FC = () => {
     },
     demandLevel: "medium" as const
   }];
-
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseSize(prev => prev === 100 ? 120 : 100);
@@ -83,7 +82,6 @@ const DriverRide: React.FC = () => {
     }, 1500);
     return () => clearInterval(interval);
   }, []);
-
   useEffect(() => {
     if (rideState === 'searching') {
       const timer = setTimeout(() => {
@@ -112,7 +110,6 @@ const DriverRide: React.FC = () => {
       };
     }
   }, [rideState]);
-
   useEffect(() => {
     if (rideState === 'request' && secondsLeft > 0) {
       const timer = setTimeout(() => {
@@ -129,7 +126,6 @@ const DriverRide: React.FC = () => {
       });
     }
   }, [rideState, secondsLeft, toast]);
-
   const handleAcceptRide = () => {
     setRideState('accepted');
     toast({
@@ -157,7 +153,6 @@ const DriverRide: React.FC = () => {
       }
     }, 150);
   };
-
   const handleDeclineRide = () => {
     setRideState('searching');
     setSecondsLeft(15);
@@ -167,7 +162,6 @@ const DriverRide: React.FC = () => {
       variant: "destructive"
     });
   };
-
   const handleStartRide = () => {
     setRideState('inProgress');
     toast({
@@ -191,16 +185,13 @@ const DriverRide: React.FC = () => {
       }
     }, 200);
   };
-
   const handleCompleteRide = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
-
   const openMessageDialog = () => {
     setIsMessageDialogOpen(true);
   };
-
   const navigateToDashboard = () => {
     toast({
       title: "Returning to Dashboard",
@@ -210,12 +201,10 @@ const DriverRide: React.FC = () => {
     sessionStorage.setItem('driverOnlineStatus', 'true');
     navigate("/driver-home");
   };
-
   const renderSearchingDots = () => {
     const dots = '.'.repeat(searchInterval);
     return dots;
   };
-
   return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition}>
         {rideState !== 'searching' && <motion.div animate={{
@@ -590,91 +579,68 @@ const DriverRide: React.FC = () => {
           {/* Empty div to replace the white background panel */}
         </div>}
       
-      {rideState === 'searching' && (
-        <motion.div 
-          initial={{y: 300}}
-          animate={{y: 0}}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 30
-          }} 
-          className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8"
-        >
+      {rideState === 'searching' && <motion.div initial={{
+      y: 300
+    }} animate={{
+      y: 0
+    }} transition={{
+      type: "spring",
+      stiffness: 300,
+      damping: 30
+    }} className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8">
           <div className="flex flex-col items-center justify-center mb-6">
             <div className="relative mb-4">
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.2, 0.5, 0.2]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute -inset-2 bg-purple-500/20 rounded-full"
-              />
-              <motion.div 
-                animate={{ 
-                  rotate: [0, 360]
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                className="w-10 h-10 bg-gradient-to-br from-purple-500/70 to-indigo-600/70 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/20"
-              >
+              <motion.div animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.5, 0.2]
+          }} transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }} className="absolute -inset-2 bg-purple-500/20 rounded-full" />
+              <motion.div animate={{
+            rotate: [0, 360]
+          }} transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "linear"
+          }} className="w-10 h-10 bg-gradient-to-br from-purple-500/70 to-indigo-600/70 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/20">
                 <Search className="w-5 h-5 text-white" />
               </motion.div>
             </div>
             
-            <motion.div
-              animate={{ 
-                opacity: [0.7, 1, 0.7]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "mirror"
-              }}
-              className="text-white text-sm font-medium tracking-wide mb-2"
-            >
+            <motion.div animate={{
+          opacity: [0.7, 1, 0.7]
+        }} transition={{
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "mirror"
+        }} className="text-white text-sm font-medium tracking-wide mb-2">
               Searching for rides{renderSearchingDots()}
             </motion.div>
             
-            <motion.div
-              initial={{ width: "30%" }}
-              animate={{ width: ["30%", "70%", "30%"] }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut"
-              }}
-              className="h-0.5 bg-gradient-to-r from-purple-400/50 via-indigo-400/70 to-purple-400/50 rounded-full mb-8"
-            />
+            <motion.div initial={{
+          width: "30%"
+        }} animate={{
+          width: ["30%", "70%", "30%"]
+        }} transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut"
+        }} className="h-0.5 bg-gradient-to-r from-purple-400/50 via-indigo-400/70 to-purple-400/50 rounded-full mb-8" />
           </div>
           
-          <motion.div 
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full"
-          >
-            <Button 
-              variant="outline" 
-              className="w-full bg-gradient-to-r from-black/40 to-indigo-950/40 border border-purple-400/30 text-white backdrop-blur-md hover:bg-indigo-900/40 hover:border-purple-400/50 transition-all shadow-lg shadow-purple-900/20 py-6 rounded-xl text-base font-medium" 
-              onClick={() => navigate("/driver-home")}
-            >
-              Stop Searching
-            </Button>
+          <motion.div whileHover={{
+        scale: 1.03
+      }} whileTap={{
+        scale: 0.97
+      }} className="w-full">
+            
           </motion.div>
-        </motion.div>
-      )}
+        </motion.div>}
       
       <MessageDialog isOpen={isMessageDialogOpen} onClose={() => setIsMessageDialogOpen(false)} driverName={rideRequest?.rider || "Rider"} />
     </div>;
 };
-
 export default DriverRide;
