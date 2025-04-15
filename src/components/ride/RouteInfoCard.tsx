@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Info, Phone, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import MessageDialog from "./MessageDialog";
@@ -6,7 +5,6 @@ import { useApp } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
 interface RouteInfoCardProps {
   pickupLocation: string;
   dropoffLocation: string;
@@ -17,7 +15,6 @@ interface RouteInfoCardProps {
   expanded: boolean;
   onExpandToggle: () => void;
 }
-
 const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   pickupLocation,
   dropoffLocation,
@@ -29,8 +26,9 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   onExpandToggle
 }) => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
-  const { currentRide } = useApp();
-
+  const {
+    currentRide
+  } = useApp();
   const rideOptionLabel = (option: string, capacity: string) => {
     let label = option.charAt(0).toUpperCase() + option.slice(1);
     if (capacity === "xl") {
@@ -38,16 +36,13 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
     }
     return label;
   };
-
   const handleCallDriver = () => {
     toast({
       title: "Calling driver",
-      description: "This feature would initiate a call to your driver in a real app.",
+      description: "This feature would initiate a call to your driver in a real app."
     });
   };
-
-  return (
-    <Collapsible open={expanded} onOpenChange={onExpandToggle}>
+  return <Collapsible open={expanded} onOpenChange={onExpandToggle}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
           <h4 className="font-medium text-sm text-gray-500">ROUTE DETAILS</h4>
@@ -77,12 +72,18 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
         </div>
 
         <CollapsibleContent>
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          height: 0
+        }} animate={{
+          opacity: 1,
+          height: "auto"
+        }} exit={{
+          opacity: 0,
+          height: 0
+        }} transition={{
+          duration: 0.2
+        }}>
             <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center">
                 <Info size={16} className="mr-2" />
@@ -95,34 +96,14 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
             </div>
 
             <div className="flex space-x-3 mt-4">
-              <button 
-                className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm"
-                onClick={handleCallDriver}
-              >
-                <Phone size={18} className="mr-2" />
-                Call
-              </button>
-              <button 
-                className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm"
-                onClick={() => setIsMessageOpen(true)}
-              >
-                <MessageSquare size={18} className="mr-2" />
-                Message
-              </button>
+              
+              
             </div>
           </motion.div>
         </CollapsibleContent>
       </div>
 
-      {currentRide && currentRide.driver && (
-        <MessageDialog 
-          isOpen={isMessageOpen} 
-          onClose={() => setIsMessageOpen(false)}
-          driverName={currentRide.driver.name}
-        />
-      )}
-    </Collapsible>
-  );
+      {currentRide && currentRide.driver && <MessageDialog isOpen={isMessageOpen} onClose={() => setIsMessageOpen(false)} driverName={currentRide.driver.name} />}
+    </Collapsible>;
 };
-
 export default RouteInfoCard;
