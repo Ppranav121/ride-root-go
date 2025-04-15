@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
-import { Info, Phone, MessageSquare, MapPin } from "lucide-react";
+import { Info, Phone, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import MessageDialog from "./MessageDialog";
 import { useApp } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface RouteInfoCardProps {
   pickupLocation: string;
@@ -12,6 +14,8 @@ interface RouteInfoCardProps {
   capacityOption: string;
   distance: string | number;
   fare: number;
+  expanded: boolean;
+  onExpandToggle: () => void;
 }
 
 const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
@@ -20,7 +24,9 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   rideOption,
   capacityOption,
   distance,
-  fare
+  fare,
+  expanded,
+  onExpandToggle
 }) => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const { currentRide } = useApp();
@@ -41,8 +47,17 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   };
 
   return (
-    <>
+    <Collapsible open={expanded} onOpenChange={onExpandToggle}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="font-medium text-sm text-gray-500">ROUTE DETAILS</h4>
+          <CollapsibleTrigger asChild>
+            <button className="text-gray-500 hover:text-gray-700 transition-colors">
+              {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </button>
+          </CollapsibleTrigger>
+        </div>
+        
         <div className="flex items-start mb-4">
           <div className="mr-4 flex flex-col items-center">
             <div className="w-3 h-3 rounded-full bg-rideroot-primary"></div>
@@ -61,33 +76,42 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-          <div className="flex items-center">
-            <Info size={16} className="mr-2" />
-            <span>{rideOptionLabel(rideOption, capacityOption)}</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <span>{distance} miles</span>
-            <span className="font-medium text-rideroot-primary">${fare}</span>
-          </div>
-        </div>
+        <CollapsibleContent>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+              <div className="flex items-center">
+                <Info size={16} className="mr-2" />
+                <span>{rideOptionLabel(rideOption, capacityOption)}</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span>{distance} miles</span>
+                <span className="font-medium text-rideroot-primary">${fare}</span>
+              </div>
+            </div>
 
-        <div className="flex space-x-3 mt-4">
-          <button 
-            className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm"
-            onClick={handleCallDriver}
-          >
-            <Phone size={18} className="mr-2" />
-            Call
-          </button>
-          <button 
-            className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm"
-            onClick={() => setIsMessageOpen(true)}
-          >
-            <MessageSquare size={18} className="mr-2" />
-            Message
-          </button>
-        </div>
+            <div className="flex space-x-3 mt-4">
+              <button 
+                className="flex-1 py-3 bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-primary/95 hover:to-rideroot-primary/85 transition-all shadow-sm"
+                onClick={handleCallDriver}
+              >
+                <Phone size={18} className="mr-2" />
+                Call
+              </button>
+              <button 
+                className="flex-1 py-3 bg-gradient-to-br from-rideroot-accent to-rideroot-accent/90 text-white rounded-xl flex items-center justify-center hover:from-rideroot-accent/95 hover:to-rideroot-accent/85 transition-all shadow-sm"
+                onClick={() => setIsMessageOpen(true)}
+              >
+                <MessageSquare size={18} className="mr-2" />
+                Message
+              </button>
+            </div>
+          </motion.div>
+        </CollapsibleContent>
       </div>
 
       {currentRide && currentRide.driver && (
@@ -97,7 +121,7 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
           driverName={currentRide.driver.name}
         />
       )}
-    </>
+    </Collapsible>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DriverInfoCard from "./DriverInfoCard";
@@ -17,6 +16,7 @@ interface RideDetailsPanelProps {
 
 const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
   const [expanded, setExpanded] = useState(false);
+  const [routeExpanded, setRouteExpanded] = useState(false);
   
   // Get ride phase from sessionStorage to determine if cancel button should be shown
   const ridePhase = sessionStorage.getItem("ride_phase");
@@ -96,7 +96,6 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
             </div>
           </div>
 
-          {/* Add cancel button right after driver info when not expanded, but only if ride can be cancelled */}
           {!expanded && canCancelRide && (
             <div className="mt-4">
               <CancelRideButton />
@@ -114,24 +113,22 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
           >
             <ScrollArea className="px-4 py-3 h-[calc(70vh-160px)]">
               <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2 text-sm text-gray-500">ROUTE DETAILS</h4>
-                  <RouteInfoCard 
-                    pickupLocation={currentRide.pickupLocation}
-                    dropoffLocation={currentRide.dropoffLocation}
-                    rideOption={currentRide.rideOption}
-                    capacityOption={currentRide.capacityOption}
-                    distance={currentRide.distance}
-                    fare={currentRide.fare}
-                  />
-                </div>
+                <RouteInfoCard 
+                  pickupLocation={currentRide.pickupLocation}
+                  dropoffLocation={currentRide.dropoffLocation}
+                  rideOption={currentRide.rideOption}
+                  capacityOption={currentRide.capacityOption}
+                  distance={currentRide.distance}
+                  fare={currentRide.fare}
+                  expanded={routeExpanded}
+                  onExpandToggle={() => setRouteExpanded(!routeExpanded)}
+                />
                 
                 <div>
                   <h4 className="font-medium mb-2 text-sm text-gray-500">ADDITIONAL INFORMATION</h4>
                   <AdditionalRideInfo isSubscribed={false} />
                 </div>
 
-                {/* Add cancel button at the bottom of expanded view, but only if ride can be cancelled */}
                 {canCancelRide && (
                   <div className="pt-2">
                     <CancelRideButton />
