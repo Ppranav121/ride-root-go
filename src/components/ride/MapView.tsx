@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MapPin, Car, Share2, Navigation2, CheckCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,13 +10,15 @@ interface MapViewProps {
   secondsLeft: number;
   onComplete: () => void;
   ridePhase?: "arriving" | "arrived" | "in_progress" | "approaching" | "almost_there" | "completed";
+  showDriverMarker?: boolean; // New prop to control driver marker visibility
 }
 
 const MapView: React.FC<MapViewProps> = ({ 
   driverPosition, 
   secondsLeft, 
   onComplete,
-  ridePhase = "arriving" 
+  ridePhase = "arriving",
+  showDriverMarker = true // Default to true, but can be controlled
 }) => {
   const handleShareRide = async () => {
     try {
@@ -96,37 +97,38 @@ const MapView: React.FC<MapViewProps> = ({
         <div className="bg-white px-2 py-0.5 rounded text-xs mt-1 shadow">Destination</div>
       </motion.div>
       
-      {/* Adjusted driver marker to ensure it doesn't overlap with banner */}
-      <motion.div 
-        className="absolute z-20 cursor-pointer"
-        style={{ 
-          ...driverPosition,
-          top: `calc(${driverPosition.top} + 25px)`  // Offset to avoid banner overlap
-        }}
-        animate={{ 
-          rotate: [0, 5, 0, -5, 0],
-        }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{
-          rotate: {
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "reverse"
-          },
-          scale: { duration: 0.2 }
-        }}
-      >
-        <div className="flex flex-col items-center">
-          <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
-            <AvatarImage src="/placeholder.svg" alt="Driver" />
-            <AvatarFallback>DR</AvatarFallback>
-          </Avatar>
-          <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
-            <Car size={20} className="text-white" />
+      {showDriverMarker && (
+        <motion.div 
+          className="absolute z-20 cursor-pointer"
+          style={{ 
+            ...driverPosition,
+            top: `calc(${driverPosition.top} + 25px)`  // Offset to avoid banner overlap
+          }}
+          animate={{ 
+            rotate: [0, 5, 0, -5, 0],
+          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{
+            rotate: {
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            },
+            scale: { duration: 0.2 }
+          }}
+        >
+          <div className="flex flex-col items-center">
+            <Avatar className="w-10 h-10 border-2 border-white shadow-md mb-1">
+              <AvatarImage src="/placeholder.svg" alt="Driver" />
+              <AvatarFallback>DR</AvatarFallback>
+            </Avatar>
+            <div className="w-10 h-10 bg-rideroot-primary rounded-full flex items-center justify-center shadow-lg">
+              <Car size={20} className="text-white" />
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-md z-20 flex items-center">
         <Car size={16} className="text-rideroot-primary mr-2" />

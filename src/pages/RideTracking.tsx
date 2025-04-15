@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/contexts/AppContext";
@@ -42,7 +41,6 @@ const RideTracking: React.FC = () => {
     return parseInt(sessionStorage.getItem(MINUTES_TO_DEST_STORAGE_KEY) || "10");
   });
   
-  // Add state for RouteInfoCard expanded status
   const [routeCardExpanded, setRouteCardExpanded] = useState(false);
   
   const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -285,6 +283,7 @@ const RideTracking: React.FC = () => {
           secondsLeft={secondsLeft} 
           onComplete={forceComplete} 
           ridePhase={ridePhase}
+          showDriverMarker={!routeCardExpanded}
         />
 
         <EmergencyButton />
