@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mail, Lock, ChevronRight, LogIn, Car } from "lucide-react";
+import { Mail, Lock, ChevronRight, LogIn, Car, User, SwapIcon, ToggleLeft } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ const SignIn: React.FC = () => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="mb-10"
+          className="mb-6"
         >
           {/* Updated logo to match RideRoot branding */}
           <div className="w-20 h-20 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
@@ -73,26 +73,39 @@ const SignIn: React.FC = () => {
           
           <h1 className="text-3xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary">Let's Get Started!</h1>
           <p className="text-gray-400 text-center">Let's dive in into your account</p>
-          
-          {/* User type toggle */}
-          <div className="mt-4 flex justify-center">
-            <Button 
-              variant="ghost" 
-              onClick={toggleUserType}
-              className="text-sm flex items-center gap-2"
-            >
-              <span>Sign in as a</span>
-              <Badge 
-                className={isDriver ? 
-                  "bg-rideroot-secondary text-white" : 
-                  "bg-rideroot-primary text-white"
-                }
-              >
-                {isDriver ? "Driver" : "Rider"}
-              </Badge>
-            </Button>
-          </div>
         </motion.div>
+          
+        {/* User type toggle - ENHANCED */}
+        <div className="w-full max-w-md mb-8">
+          <div className="flex bg-black/40 border border-gray-700 rounded-lg p-1 backdrop-blur-sm">
+            <button
+              onClick={() => setIsDriver(false)}
+              className={`flex-1 py-3 rounded-lg flex items-center justify-center transition-all ${
+                !isDriver 
+                  ? "bg-rideroot-primary text-white" 
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <User size={18} className="mr-2" />
+              <span>Rider</span>
+            </button>
+            <button
+              onClick={() => setIsDriver(true)}
+              className={`flex-1 py-3 rounded-lg flex items-center justify-center transition-all ${
+                isDriver 
+                  ? "bg-rideroot-secondary text-white" 
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <Car size={18} className="mr-2" />
+              <span>Driver</span>
+            </button>
+          </div>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            <SwapIcon size={14} className="inline mr-1" />
+            Select your account type to sign in
+          </p>
+        </div>
 
         {/* Social login buttons */}
         <div className="w-full max-w-md space-y-3 mb-6">
@@ -131,18 +144,26 @@ const SignIn: React.FC = () => {
         {/* Sign up button */}
         <Button
           onClick={goToSignUp}
-          className="w-full max-w-md bg-gradient-to-r from-rideroot-primary to-rideroot-secondary hover:opacity-90 text-white rounded-full p-6 mb-4 font-medium shadow-md"
+          className={`w-full max-w-md ${
+            isDriver 
+              ? "bg-gradient-to-r from-rideroot-secondary to-rideroot-primary" 
+              : "bg-gradient-to-r from-rideroot-primary to-rideroot-secondary"
+          } hover:opacity-90 text-white rounded-full p-6 mb-4 font-medium shadow-md`}
         >
-          Sign up
+          Sign up as {isDriver ? "Driver" : "Rider"}
         </Button>
 
         {/* Sign in button */}
         <Button
           onClick={(e) => handleSignIn(e)}
-          className="w-full max-w-md bg-transparent border-2 border-rideroot-primary/70 text-white hover:bg-rideroot-primary/20 rounded-full p-6 flex items-center justify-center gap-2"
+          className={`w-full max-w-md bg-transparent border-2 ${
+            isDriver 
+              ? "border-rideroot-secondary/70 hover:bg-rideroot-secondary/20" 
+              : "border-rideroot-primary/70 hover:bg-rideroot-primary/20"
+          } text-white rounded-full p-6 flex items-center justify-center gap-2`}
         >
           <LogIn size={18} />
-          Sign in
+          Sign in as {isDriver ? "Driver" : "Rider"}
         </Button>
 
         {/* Footer */}

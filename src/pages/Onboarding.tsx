@@ -35,13 +35,14 @@ const slides: Slide[] = [
 
 const Onboarding: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isDriverMode, setIsDriverMode] = useState(false);
   const navigate = useNavigate();
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
     } else {
-      navigate("/signup");
+      navigate(isDriverMode ? "/driver-signup" : "/signup");
     }
   };
 
@@ -52,11 +53,16 @@ const Onboarding: React.FC = () => {
   };
 
   const goToSignup = () => {
-    navigate("/signup");
+    navigate(isDriverMode ? "/driver-signup" : "/signup");
   };
 
   const goToSignIn = () => {
-    navigate("/signin");
+    // Pass state to indicate if user is a driver
+    navigate("/signin", { state: { isDriver: isDriverMode } });
+  };
+
+  const toggleUserMode = () => {
+    setIsDriverMode(!isDriverMode);
   };
 
   return (
@@ -66,6 +72,22 @@ const Onboarding: React.FC = () => {
         <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rideroot-primary to-rideroot-secondary tracking-tight">
           RideRoot
         </div>
+      </div>
+
+      {/* User type toggle */}
+      <div className="flex justify-center mt-2 mb-4">
+        <button 
+          onClick={toggleUserMode}
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 shadow-md backdrop-blur-sm transition-all border"
+        >
+          <span className="text-sm font-medium">I'm a</span>
+          <span className={`px-3 py-1 rounded-full text-white text-sm font-medium transition-all ${
+            isDriverMode ? "bg-rideroot-secondary" : "bg-rideroot-primary"
+          }`}>
+            {isDriverMode ? "Driver" : "Rider"}
+          </span>
+          <span className="text-xs text-rideroot-darkGrey">(tap to change)</span>
+        </button>
       </div>
 
       {/* Slides */}
@@ -134,16 +156,24 @@ const Onboarding: React.FC = () => {
 
         <Button 
           onClick={goToSignup} 
-          className="w-full max-w-xs mx-auto mb-4 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white hover:opacity-95 hover:scale-105 transition-all duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg"
+          className={`w-full max-w-xs mx-auto mb-4 ${
+            isDriverMode 
+              ? "bg-gradient-to-r from-rideroot-secondary to-rideroot-primary" 
+              : "bg-gradient-to-r from-rideroot-primary to-rideroot-secondary"
+          } text-white hover:opacity-95 hover:scale-105 transition-all duration-300 rounded-full py-7 text-lg font-medium tracking-wide shadow-lg`}
         >
-          Create Account
+          Create {isDriverMode ? "Driver" : "Rider"} Account
           <ChevronRight className="ml-1 animate-pulse" size={20} />
         </Button>
         
         <Button 
           onClick={goToSignIn} 
           variant="outline" 
-          className="w-full max-w-xs mx-auto border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5 tracking-wide rounded-full py-6"
+          className={`w-full max-w-xs mx-auto ${
+            isDriverMode 
+              ? "border-2 border-rideroot-secondary/30 text-rideroot-secondary hover:bg-rideroot-secondary/5" 
+              : "border-2 border-rideroot-primary/30 text-rideroot-primary hover:bg-rideroot-primary/5"
+          } tracking-wide rounded-full py-6`}
         >
           Already have an account? Sign In
         </Button>
