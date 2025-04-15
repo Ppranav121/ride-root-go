@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mail, Lock, ChevronRight, LogIn, Car, User, SwapIcon, ToggleLeft } from "lucide-react";
+import { Mail, Lock, ChevronRight, LogIn, Car, User, ArrowLeftRight, ToggleLeft } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,6 @@ const SignIn: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDriver, setIsDriver] = useState(false);
 
-  // Check if coming from driver signup
   useEffect(() => {
     const state = location.state as LocationState;
     if (state?.isDriver) {
@@ -35,7 +33,6 @@ const SignIn: React.FC = () => {
     
     try {
       await login(email, password);
-      // Redirect to the appropriate home page based on user type
       navigate(isDriver ? "/driver-home" : "/home");
     } catch (error) {
       console.error("Login failed", error);
@@ -58,7 +55,6 @@ const SignIn: React.FC = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col"
     >
-      {/* Logo and header */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 pt-16">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -66,7 +62,6 @@ const SignIn: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="mb-6"
         >
-          {/* Updated logo to match RideRoot branding */}
           <div className="w-20 h-20 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary rounded-full flex items-center justify-center mb-8 mx-auto shadow-lg">
             <Car size={36} className="text-white" />
           </div>
@@ -75,7 +70,6 @@ const SignIn: React.FC = () => {
           <p className="text-gray-400 text-center">Let's dive in into your account</p>
         </motion.div>
           
-        {/* User type toggle - ENHANCED */}
         <div className="w-full max-w-md mb-8">
           <div className="flex bg-black/40 border border-gray-700 rounded-lg p-1 backdrop-blur-sm">
             <button
@@ -102,12 +96,11 @@ const SignIn: React.FC = () => {
             </button>
           </div>
           <p className="text-center text-xs text-gray-400 mt-2">
-            <SwapIcon size={14} className="inline mr-1" />
+            <ArrowLeftRight size={14} className="inline mr-1" />
             Select your account type to sign in
           </p>
         </div>
 
-        {/* Social login buttons */}
         <div className="w-full max-w-md space-y-3 mb-6">
           <button className="flex items-center justify-center w-full p-3 bg-black/40 border border-gray-700 rounded-full text-white hover:bg-gray-900 transition-all backdrop-blur-sm">
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -141,7 +134,6 @@ const SignIn: React.FC = () => {
           </button>
         </div>
 
-        {/* Sign up button */}
         <Button
           onClick={goToSignUp}
           className={`w-full max-w-md ${
@@ -153,7 +145,6 @@ const SignIn: React.FC = () => {
           Sign up as {isDriver ? "Driver" : "Rider"}
         </Button>
 
-        {/* Sign in button */}
         <Button
           onClick={(e) => handleSignIn(e)}
           className={`w-full max-w-md bg-transparent border-2 ${
@@ -166,7 +157,6 @@ const SignIn: React.FC = () => {
           Sign in as {isDriver ? "Driver" : "Rider"}
         </Button>
 
-        {/* Footer */}
         <div className="mt-10 flex items-center justify-center w-full max-w-md text-xs text-gray-500">
           <span>Privacy Policy</span>
           <span className="mx-2">•</span>
