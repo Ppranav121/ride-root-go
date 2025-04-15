@@ -370,7 +370,7 @@ const DriverRide: React.FC = () => {
                 <MapPin size={18} className="text-rideroot-primary mr-2 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-rideroot-darkGrey">Pickup</p>
-                  <p className="font-medium">{rideRequest.pickupLocation}</p>
+                  <p className="font-medium">{rideRequest.pickup}</p>
                 </div>
               </div>
               <div className="flex">
@@ -460,7 +460,7 @@ const DriverRide: React.FC = () => {
                 <MapPin size={18} className="text-rideroot-primary mr-2 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-rideroot-darkGrey">Pickup</p>
-                  <p className="font-medium">{rideRequest.pickupLocation}</p>
+                  <p className="font-medium">{rideRequest.pickup}</p>
                 </div>
               </div>
               <div className="flex">
@@ -525,7 +525,7 @@ const DriverRide: React.FC = () => {
                 <MapPin size={18} className="text-rideroot-primary mr-2 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-rideroot-darkGrey">Pickup</p>
-                  <p className="font-medium">{rideRequest.pickupLocation}</p>
+                  <p className="font-medium">{rideRequest.pickup}</p>
                 </div>
               </div>
               <div className="flex">

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Car, MapPin, X, DollarSign, Clock, ArrowRight } from "lucide-react";
@@ -20,6 +19,7 @@ export interface RideRequestDetails {
   rideType: 'Standard' | 'Standard XL' | 'Premium' | 'Premium XL';
   isPremium: boolean;
   isPeakBonus: boolean;
+  pickupLocation?: string; // Adding this as an alias for pickup for compatibility
 }
 
 interface RideRequestNotificationProps {
