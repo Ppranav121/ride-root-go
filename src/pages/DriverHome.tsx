@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,12 +15,10 @@ import EnhancedMapView from "@/components/ride/EnhancedMapView";
 import RideRequestNotification from "@/components/ride/RideRequestNotification";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
-
 const getStoredOnlineStatus = () => {
   const stored = sessionStorage.getItem('driverOnlineStatus');
   return stored === 'true';
 };
-
 const DriverHome: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +28,6 @@ const DriverHome: React.FC = () => {
   const {
     user
   } = useApp();
-
   const [isOnline, setIsOnline] = useState(getStoredOnlineStatus());
   const [isPrimeDriver, setIsPrimeDriver] = useState(true);
   const [todayEarnings, setTodayEarnings] = useState(135.48);
@@ -41,68 +37,56 @@ const DriverHome: React.FC = () => {
   const [boostAmount, setBoostAmount] = useState(0);
   const [showHotspots, setShowHotspots] = useState(true);
   const [showRideRequest, setShowRideRequest] = useState(false);
-
   useEffect(() => {
     if (isOnline) {
       const delay = Math.floor(Math.random() * 20000) + 20000;
       const requestTimer = setTimeout(() => {
         setShowRideRequest(true);
       }, delay);
-      
       return () => clearTimeout(requestTimer);
     }
   }, [isOnline]);
-
-  const hotspots = [
-    {
-      id: 1,
-      location: {
-        top: "30%",
-        left: "40%"
-      },
-      demandLevel: "high" as const
+  const hotspots = [{
+    id: 1,
+    location: {
+      top: "30%",
+      left: "40%"
     },
-    {
-      id: 2,
-      location: {
-        top: "50%",
-        left: "60%"
-      },
-      demandLevel: "medium" as const
+    demandLevel: "high" as const
+  }, {
+    id: 2,
+    location: {
+      top: "50%",
+      left: "60%"
     },
-    {
-      id: 3,
-      location: {
-        top: "70%",
-        left: "30%"
-      },
-      demandLevel: "low" as const
+    demandLevel: "medium" as const
+  }, {
+    id: 3,
+    location: {
+      top: "70%",
+      left: "30%"
     },
-    {
-      id: 4,
-      location: {
-        top: "20%",
-        left: "65%"
-      },
-      demandLevel: "high" as const
+    demandLevel: "low" as const
+  }, {
+    id: 4,
+    location: {
+      top: "20%",
+      left: "65%"
     },
-    {
-      id: 5,
-      location: {
-        top: "60%",
-        left: "20%"
-      },
-      demandLevel: "medium" as const
-    }
-  ];
-
+    demandLevel: "high" as const
+  }, {
+    id: 5,
+    location: {
+      top: "60%",
+      left: "20%"
+    },
+    demandLevel: "medium" as const
+  }];
   const driverPosition = {
     top: "45%",
     left: "45%"
   };
-
   const firstName = user?.name ? user.name.split(' ')[0] : "Driver";
-
   useEffect(() => {
     const fromRide = sessionStorage.getItem('fromRide') === 'true';
     if (fromRide) {
@@ -110,7 +94,6 @@ const DriverHome: React.FC = () => {
       sessionStorage.removeItem('fromRide');
     }
   }, []);
-
   useEffect(() => {
     if (showEarningsBoost) {
       const timer = setTimeout(() => {
@@ -119,7 +102,6 @@ const DriverHome: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showEarningsBoost]);
-
   const toggleOnlineStatus = (newStatus: boolean) => {
     setIsOnline(newStatus);
     sessionStorage.setItem('driverOnlineStatus', String(newStatus));
@@ -137,7 +119,6 @@ const DriverHome: React.FC = () => {
       setShowRideRequest(false);
     }
   };
-
   const toggleDriverTier = (newValue: boolean) => {
     if (!newValue) {
       setIsPrimeDriver(false);
@@ -167,7 +148,6 @@ const DriverHome: React.FC = () => {
       }, 1000);
     }
   };
-
   const toggleHotspots = () => {
     setShowHotspots(prev => !prev);
     if (!showHotspots) {
@@ -176,23 +156,18 @@ const DriverHome: React.FC = () => {
       toast("Hotspots disabled.");
     }
   };
-
   const handleViewRideRequest = () => {
     setShowRideRequest(false);
     navigate('/driver-ride');
   };
-
   const handleDismissRideRequest = () => {
     setShowRideRequest(false);
     toast.error("Ride request dismissed", {
       description: "You can still find other rides"
     });
   };
-
   const currentPath = location.pathname;
-
-  return (
-    <div className="flex flex-col min-h-screen relative">
+  return <div className="flex flex-col min-h-screen relative">
       <EnhancedMapView showHotspots={showHotspots} hotspots={hotspots} driverPosition={driverPosition} allowScroll={true} />
       
       <div className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-md shadow-sm">
@@ -204,11 +179,7 @@ const DriverHome: React.FC = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[320px] p-0">
-              <DriverSidebar 
-                isPrimeDriver={isPrimeDriver} 
-                firstName={firstName} 
-                currentPath={currentPath}
-              />
+              <DriverSidebar isPrimeDriver={isPrimeDriver} firstName={firstName} currentPath={currentPath} />
             </SheetContent>
           </Sheet>
           
@@ -221,11 +192,7 @@ const DriverHome: React.FC = () => {
         </div>
       </div>
       
-      <RideRequestNotification 
-        isVisible={showRideRequest}
-        onClose={handleDismissRideRequest}
-        onView={handleViewRideRequest}
-      />
+      <RideRequestNotification isVisible={showRideRequest} onClose={handleDismissRideRequest} onView={handleViewRideRequest} />
       
       <ScrollArea className="fixed inset-x-0 top-16 bottom-0 z-10">
         <div className="p-4 flex flex-col min-h-[calc(100vh-4rem)]">
@@ -235,22 +202,20 @@ const DriverHome: React.FC = () => {
             <DriverTierSelector isPrimeDriver={isPrimeDriver} onChange={toggleDriverTier} />
             
             {/* Active Ride Screen Button positioned between tier selector and stats panel */}
-            {isOnline && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="w-full"
-              >
-                <Button 
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2" 
-                  onClick={() => navigate('/driver-ride')}
-                >
+            {isOnline && <motion.div initial={{
+            opacity: 0,
+            y: 10
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.3
+          }} className="w-full">
+                <Button className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-5 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2" onClick={() => navigate('/driver-ride')}>
                   <Navigation className="mr-2" size={20} />
                   <span className="text-base font-semibold">View Active Ride</span>
                 </Button>
-              </motion.div>
-            )}
+              </motion.div>}
             
             <DriverStatsPanel todayEarnings={todayEarnings} todayRides={todayRides} isPrimeDriver={isPrimeDriver} />
           </div>
@@ -288,27 +253,20 @@ const DriverHome: React.FC = () => {
                 </motion.div>}
             </AnimatePresence>
             
-            {isOnline && (
-              <motion.div 
-                className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Button 
-                  className="w-full bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white px-6 py-5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3" 
-                  onClick={() => navigate('/driver-ride')}
-                >
-                  <Navigation className="mr-2" size={24} />
-                  <span className="text-base font-semibold">Active Ride Screen</span>
-                </Button>
-              </motion.div>
-            )}
+            {isOnline && <motion.div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs" initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.3
+          }}>
+                
+              </motion.div>}
           </div>
         </div>
       </ScrollArea>
-    </div>
-  );
+    </div>;
 };
-
 export default DriverHome;
