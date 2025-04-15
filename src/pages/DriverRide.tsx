@@ -324,25 +324,24 @@ const DriverRide: React.FC = () => {
       
       {rideState === 'request' && rideRequest && (
         <motion.div 
-          initial={{ y: 300 }}
-          animate={{ y: 0 }}
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
           transition={{
             type: "spring",
             stiffness: 300,
             damping: 30
           }} 
-          className="bg-white rounded-t-3xl shadow-lg p-5 absolute bottom-0 left-0 right-0 z-20"
+          className="bg-white rounded-b-3xl shadow-lg p-5 absolute top-16 left-0 right-0 z-50"
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">New Ride Request</h2>
-            <motion.div initial={{
-          scale: 1
-        }} animate={{
-          scale: [1, 1.1, 1]
-        }} transition={{
-          repeat: Infinity,
-          duration: 2
-        }} className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+            <motion.div 
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
+            >
               <span className="font-semibold text-rideroot-primary">{secondsLeft}</span>
             </motion.div>
           </div>
@@ -356,9 +355,14 @@ const DriverRide: React.FC = () => {
                 <h3 className="font-medium">{rideRequest.rider}</h3>
                 <div className="flex items-center">
                   <div className="flex">
-                    {[1, 2, 3, 4, 5].map(star => <svg key={star} className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>)}
+                    {[1, 2, 3, 4, 5].map(star => <svg 
+                      key={star} 
+                      className="w-3 h-3 text-yellow-400" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>)}
                   </div>
                   <span className="text-xs text-rideroot-darkGrey ml-1">4.9</span>
                 </div>
@@ -385,7 +389,7 @@ const DriverRide: React.FC = () => {
             <div className="flex justify-between mb-2">
               <div className="flex items-center">
                 <Clock size={16} className="text-rideroot-darkGrey mr-1" />
-                
+                <span className="text-sm">{rideRequest.estimatedTime}</span>
               </div>
               <span className="text-sm">{rideRequest.distance} miles</span>
             </div>
@@ -399,23 +403,34 @@ const DriverRide: React.FC = () => {
               <div className="flex flex-col items-end">
                 <span className="text-sm font-medium">{rideRequest.rideType}</span>
                 <div className="flex space-x-2 mt-1">
-                  {rideRequest.isPremium && <span className="bg-rideroot-secondary/10 text-rideroot-secondary text-xs px-2 py-0.5 rounded-full">
+                  {rideRequest.isPremium && (
+                    <span className="bg-rideroot-secondary/10 text-rideroot-secondary text-xs px-2 py-0.5 rounded-full">
                       Premium
-                    </span>}
-                  {rideRequest.isPeakBonus && <span className="bg-rideroot-primary/10 text-rideroot-primary text-xs px-2 py-0.5 rounded-full">
+                    </span>
+                  )}
+                  {rideRequest.isPeakBonus && (
+                    <span className="bg-rideroot-primary/10 text-rideroot-primary text-xs px-2 py-0.5 rounded-full">
                       +$0.50 Peak
-                    </span>}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
           </div>
           
           <div className="flex space-x-3">
-            <Button variant="outline" className="flex-1 border-red-500 text-red-500 hover:bg-red-50" onClick={handleDeclineRide}>
-              Decline
+            <Button 
+              variant="outline" 
+              className="flex-1 border-red-500 text-red-500 hover:bg-red-50" 
+              onClick={handleDeclineRide}
+            >
+              <X size={16} className="mr-1" /> Decline
             </Button>
-            <Button className="flex-1 bg-rideroot-primary hover:bg-rideroot-primary/90" onClick={handleAcceptRide}>
-              Accept
+            <Button 
+              className="flex-1 bg-rideroot-primary hover:bg-rideroot-primary/90" 
+              onClick={handleAcceptRide}
+            >
+              <Check size={16} className="mr-1" /> Accept
             </Button>
           </div>
         </motion.div>
