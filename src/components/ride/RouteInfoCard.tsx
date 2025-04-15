@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Info, Phone, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import MessageDialog from "./MessageDialog";
@@ -47,6 +48,11 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
       description: "This feature would initiate a call to your driver in a real app."
     });
   };
+  
+  const handleMessageDriver = () => {
+    setIsMessageOpen(true);
+  };
+  
   return <Collapsible open={expanded} onOpenChange={onExpandToggle}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
@@ -101,8 +107,23 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
             </div>
 
             <div className="flex space-x-3 mt-4">
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2" 
+                onClick={handleMessageDriver}
+              >
+                <MessageSquare size={16} />
+                <span>Message</span>
+              </Button>
               
-              
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2" 
+                onClick={handleCallDriver}
+              >
+                <Phone size={16} />
+                <span>Call</span>
+              </Button>
             </div>
 
             {showPrecautions && <div className="mt-4 bg-gray-50 rounded-lg p-4">
