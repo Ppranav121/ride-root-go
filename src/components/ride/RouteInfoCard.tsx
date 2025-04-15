@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Info, Phone, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import MessageDialog from "./MessageDialog";
@@ -5,6 +6,8 @@ import { useApp } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+
 interface RouteInfoCardProps {
   pickupLocation: string;
   dropoffLocation: string;
@@ -15,6 +18,7 @@ interface RouteInfoCardProps {
   expanded: boolean;
   onExpandToggle: () => void;
 }
+
 const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   pickupLocation,
   dropoffLocation,
@@ -29,6 +33,7 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
   const {
     currentRide
   } = useApp();
+  
   const rideOptionLabel = (option: string, capacity: string) => {
     let label = option.charAt(0).toUpperCase() + option.slice(1);
     if (capacity === "xl") {
@@ -36,12 +41,14 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
     }
     return label;
   };
+  
   const handleCallDriver = () => {
     toast({
       title: "Calling driver",
       description: "This feature would initiate a call to your driver in a real app."
     });
   };
+  
   return <Collapsible open={expanded} onOpenChange={onExpandToggle}>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
@@ -96,8 +103,22 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
             </div>
 
             <div className="flex space-x-3 mt-4">
-              
-              
+              <Button 
+                variant="outline" 
+                className="flex-1 items-center justify-center" 
+                onClick={() => setIsMessageOpen(true)}
+              >
+                <MessageSquare size={16} className="mr-2" />
+                Message
+              </Button>
+              <Button 
+                variant="outline"
+                className="flex-1 items-center justify-center"
+                onClick={handleCallDriver}
+              >
+                <Phone size={16} className="mr-2" />
+                Call
+              </Button>
             </div>
           </motion.div>
         </CollapsibleContent>
@@ -106,4 +127,5 @@ const RouteInfoCard: React.FC<RouteInfoCardProps> = ({
       {currentRide && currentRide.driver && <MessageDialog isOpen={isMessageOpen} onClose={() => setIsMessageOpen(false)} driverName={currentRide.driver.name} />}
     </Collapsible>;
 };
+
 export default RouteInfoCard;
