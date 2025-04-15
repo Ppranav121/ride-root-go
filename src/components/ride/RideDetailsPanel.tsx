@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, ChevronDown, MessageCircle, Phone, Share2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import CancelRideButton from "./CancelRideButton";
 
 interface RideDetailsPanelProps {
   currentRide: Ride;
@@ -90,6 +91,13 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
               </Button>
             </div>
           </div>
+
+          {/* Add cancel button right after driver info when not expanded */}
+          {!expanded && (
+            <div className="mt-4">
+              <CancelRideButton />
+            </div>
+          )}
         </motion.div>
       )}
       
@@ -117,6 +125,11 @@ const RideDetailsPanel: React.FC<RideDetailsPanelProps> = ({ currentRide }) => {
                 <div>
                   <h4 className="font-medium mb-2 text-sm text-gray-500">ADDITIONAL INFORMATION</h4>
                   <AdditionalRideInfo isSubscribed={false} />
+                </div>
+
+                {/* Add cancel button at the bottom of expanded view */}
+                <div className="pt-2">
+                  <CancelRideButton />
                 </div>
               </div>
             </ScrollArea>
