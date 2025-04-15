@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
@@ -29,12 +28,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 
 import RootHeader from "@/components/RootHeader";
 import DriverBottomNav from "@/components/DriverBottomNav";
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-// Sample data
 const earningsData = [
   { date: "Mon", earnings: 85, rides: 7 },
   { date: "Tue", earnings: 110, rides: 9 },
@@ -104,7 +103,6 @@ const DriverEarnings: React.FC = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState("This Week");
   const [activeTab, setActiveTab] = useState("earnings");
   
-  // Calculate summary stats
   const totalEarnings = earningsData.reduce((sum, day) => sum + day.earnings, 0);
   const totalRides = earningsData.reduce((sum, day) => sum + day.rides, 0);
   const averagePerRide = totalEarnings / totalRides;
@@ -123,7 +121,6 @@ const DriverEarnings: React.FC = () => {
       <RootHeader title="Earnings Dashboard" showBackButton />
       
       <div className="flex-1 overflow-auto p-4 pb-20 space-y-4">
-        {/* Timeframe Selector */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
             <Calendar size={18} className="text-rideroot-darkGrey mr-2" />
@@ -154,7 +151,6 @@ const DriverEarnings: React.FC = () => {
           </div>
         </div>
         
-        {/* Earnings Summary Card */}
         <Card className="border-none shadow-md bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white">
           <CardContent className="pt-6 pb-4">
             <div className="flex flex-col">
@@ -193,7 +189,6 @@ const DriverEarnings: React.FC = () => {
           </CardContent>
         </Card>
         
-        {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-3 w-full">
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
@@ -201,9 +196,7 @@ const DriverEarnings: React.FC = () => {
             <TabsTrigger value="stats">Stats</TabsTrigger>
           </TabsList>
           
-          {/* Earnings Tab */}
           <TabsContent value="earnings" className="space-y-4 mt-2">
-            {/* Chart Card */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center">
@@ -244,7 +237,6 @@ const DriverEarnings: React.FC = () => {
               </CardContent>
             </Card>
             
-            {/* Earnings Breakdown */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center">
@@ -279,7 +271,6 @@ const DriverEarnings: React.FC = () => {
               </CardContent>
             </Card>
             
-            {/* Daily Goals */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center">
@@ -294,8 +285,8 @@ const DriverEarnings: React.FC = () => {
                       <span className="text-sm">Earnings Target</span>
                       <span className="text-sm font-medium">{formatCurrency(150)} / {formatCurrency(200)}</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
-                      <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "75%" }}></div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                      <div className="bg-rideroot-primary h-2.5 rounded-full" style={{ width: "75%" }}></div>
                     </div>
                   </div>
                   
@@ -304,8 +295,8 @@ const DriverEarnings: React.FC = () => {
                       <span className="text-sm">Rides Completed</span>
                       <span className="text-sm font-medium">{totalRides} / 20</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
-                      <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${(totalRides / 20) * 100}%` }}></div>
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                      <div className="bg-rideroot-primary h-2.5 rounded-full" style={{ width: `${(totalRides / 20) * 100}%` }}></div>
                     </div>
                   </div>
                 </div>
@@ -313,7 +304,6 @@ const DriverEarnings: React.FC = () => {
             </Card>
           </TabsContent>
           
-          {/* History Tab */}
           <TabsContent value="history" className="space-y-4 mt-2">
             <div className="flex justify-between items-center">
               <p className="text-sm text-gray-500">
@@ -373,7 +363,6 @@ const DriverEarnings: React.FC = () => {
             </Button>
           </TabsContent>
           
-          {/* Stats Tab */}
           <TabsContent value="stats" className="space-y-4 mt-2">
             <div className="grid grid-cols-2 gap-4 mb-4">
               <Card>
@@ -408,7 +397,7 @@ const DriverEarnings: React.FC = () => {
                       <span className="text-sm">Acceptance Rate</span>
                       <span className="text-sm font-medium">92%</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                       <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "92%" }}></div>
                     </div>
                   </div>
@@ -418,7 +407,7 @@ const DriverEarnings: React.FC = () => {
                       <span className="text-sm">Completion Rate</span>
                       <span className="text-sm font-medium">98%</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                       <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "98%" }}></div>
                     </div>
                   </div>
@@ -428,7 +417,7 @@ const DriverEarnings: React.FC = () => {
                       <span className="text-sm">Rating</span>
                       <span className="text-sm font-medium">4.9/5.0</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2.5">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                       <div className="bg-amber-400 h-2.5 rounded-full" style={{ width: "98%" }}></div>
                     </div>
                   </div>
