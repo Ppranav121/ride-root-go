@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, MapPin, ChevronRight } from "lucide-react";
+import { Clock, MapPin, ChevronRight, Calendar } from "lucide-react";
 import RootHeader from "@/components/RootHeader";
 import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
@@ -71,7 +71,7 @@ const Rides: React.FC = () => {
           transition={{ duration: 0.3 }}
           className="bg-white rounded-xl shadow-sm p-4 mb-6"
         >
-          <h2 className="text-lg font-medium mb-4">Upcoming Rides</h2>
+          <h2 className="text-lg font-medium mb-4 text-rideroot-text">Upcoming Rides</h2>
           
           <div className="flex items-center justify-center py-8 text-rideroot-darkGrey">
             <Calendar className="mr-3" />
@@ -80,7 +80,7 @@ const Rides: React.FC = () => {
           
           <button 
             onClick={handleBookRide}
-            className="w-full py-3 bg-rideroot-primary text-white rounded-full font-medium hover:bg-rideroot-primary/90 transition-all"
+            className="w-full py-3 bg-gradient-to-r from-rideroot-primary to-rideroot-secondary text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-sm"
           >
             Book a Ride
           </button>
@@ -92,7 +92,7 @@ const Rides: React.FC = () => {
           transition={{ delay: 0.1, duration: 0.3 }}
           className="bg-white rounded-xl shadow-sm p-4"
         >
-          <h2 className="text-lg font-medium mb-4">Ride History</h2>
+          <h2 className="text-lg font-medium mb-4 text-rideroot-text">Ride History</h2>
           
           <div className="space-y-4">
             {rides.map((ride, index) => (
@@ -104,19 +104,19 @@ const Rides: React.FC = () => {
                 className="flex items-center cursor-pointer hover:bg-rideroot-lightGrey/50 p-3 rounded-lg transition-all"
                 onClick={() => handleRideDetails(ride.id)}
               >
-                <div className="w-10 h-10 bg-rideroot-primary/20 rounded-full flex items-center justify-center mr-3">
-                  <Clock size={18} className="text-rideroot-primary" />
+                <div className="w-12 h-12 bg-rideroot-primary/15 rounded-full flex items-center justify-center mr-3">
+                  <Clock size={20} className="text-rideroot-primary" />
                 </div>
 
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <span className="text-sm text-rideroot-darkGrey">{ride.date} · {ride.time}</span>
-                    <span className="font-medium">{ride.price}</span>
+                    <span className="font-medium text-rideroot-text">{ride.price}</span>
                   </div>
                   
                   <div className="flex items-center mt-1">
-                    <MapPin size={14} className="text-rideroot-darkGrey mr-1" />
-                    <span>{ride.pickup} → {ride.dropoff}</span>
+                    <MapPin size={14} className="text-rideroot-primary mr-1" />
+                    <span className="text-rideroot-text">{ride.pickup} → {ride.dropoff}</span>
                   </div>
                 </div>
 
@@ -132,8 +132,5 @@ const Rides: React.FC = () => {
     </div>
   );
 };
-
-// Import Calendar icon that we use in the component
-import { Calendar } from "lucide-react";
 
 export default Rides;

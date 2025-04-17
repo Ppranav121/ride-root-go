@@ -36,11 +36,12 @@ const BottomNav: React.FC = () => {
         >
           <button 
             onClick={() => navigate("/ride-tracking")}
-            className={`flex items-center justify-center w-16 h-16 rounded-full shadow-lg bg-gradient-to-br ${
+            className={`flex items-center justify-center w-16 h-16 rounded-full shadow-lg ${
               isActive("/ride-tracking") 
-                ? "from-rideroot-primary to-rideroot-primary/90" 
-                : "from-rideroot-secondary to-rideroot-secondary/90"
+                ? "bg-gradient-to-br from-rideroot-primary to-rideroot-primary/90" 
+                : "bg-gradient-to-br from-rideroot-secondary to-rideroot-secondary/90"
             } hover:shadow-xl transition-all duration-200`}
+            aria-label="Active ride"
           >
             <Car size={28} className="text-white" />
           </button>
@@ -87,6 +88,7 @@ const NavButton: React.FC<NavButtonProps> = ({ label, icon: Icon, isActive, onCl
       }`}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      aria-label={label}
     >
       {isActive && (
         <motion.div 
