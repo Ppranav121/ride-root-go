@@ -5,7 +5,7 @@ import RecentLocations from "@/components/ride/RecentLocations";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, MapPin } from "lucide-react";
 
 interface LocationSearchContainerProps {
   pickupLocation: string;
@@ -26,6 +26,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPanelMinimized, setIsPanelMinimized] = useState(false);
+  const [selectedMapPin, setSelectedMapPin] = useState<{lat: number, lng: number} | null>(null);
 
   // Mock recent locations (kept from original code)
   const recentLocations = [
@@ -105,6 +106,34 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     }, 1000);
   };
 
+  const handleMapPinDrop = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (isPanelMinimized) {
+      // When map is clicked and panel is minimized, capture coordinates
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      
+      const lat = 40.7128 + (Math.random() * 0.01); // Simulate real coordinates
+      const lng = -74.0060 + (Math.random() * 0.01);
+      
+      setSelectedMapPin({lat, lng});
+      
+      // Get reverse geocoded address (simulated)
+      const address = `${Math.floor(Math.random() * 999)} Pinned Location St`;
+      
+      if (locationSearchType === "pickup") {
+        onPickupChange(address);
+      } else {
+        onDropoffChange(address);
+      }
+      
+      toast.success("Location pinned", {
+        description: "You can adjust the pin or confirm this location",
+        duration: 2000,
+      });
+    }
+  };
+
   const togglePanel = () => {
     setIsPanelMinimized(prev => !prev);
   };
@@ -158,6 +187,31 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
           </AnimatePresence>
         </motion.div>
       </motion.div>
+
+      {/* Map Interaction Layer */}
+      {isPanelMinimized && (
+        <div 
+          className="absolute inset-0 z-10 cursor-pointer"
+          onClick={handleMapPinDrop}
+        >
+          {selectedMapPin && (
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="absolute z-20"
+              style={{ 
+                top: `${Math.random() * 70 + 15}%`, 
+                left: `${Math.random() * 70 + 15}%`
+              }}
+            >
+              <div className="flex flex-col items-center">
+                <MapPin size={32} className="text-rideroot-primary drop-shadow-lg" />
+                <div className="w-2 h-2 -mt-1 rounded-full bg-rideroot-primary shadow" />
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
 
       <LocationSearchDialog 
         isOpen={locationDialogOpen}
