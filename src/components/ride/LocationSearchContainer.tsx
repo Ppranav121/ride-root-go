@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LocationSelector from "@/components/ride/LocationSelector";
 import RecentLocations from "@/components/ride/RecentLocations";
 import LocationSearchDialog from "@/components/ride/LocationSearchDialog";
 import { toast } from "sonner";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface LocationSearchContainerProps {
   pickupLocation: string;
@@ -24,6 +25,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPanelMinimized, setIsPanelMinimized] = useState(false);
 
   // Mock recent locations (kept from original code)
   const recentLocations = [
@@ -44,6 +46,21 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     loc.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Auto-minimize panel when user hasn't interacted for a while
+  useEffect(() => {
+    let timer: number;
+    if (!isPanelMinimized) {
+      // Auto-minimize after 5 seconds of inactivity
+      timer = window.setTimeout(() => {
+        setIsPanelMinimized(true);
+      }, 5000);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isPanelMinimized]);
+
   const handleSelectRecentLocation = (address: string) => {
     if (locationSearchType === "pickup") {
       onPickupChange(address);
@@ -63,6 +80,8 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     setLocationSearchType(type);
     setSearchQuery("");
     setLocationDialogOpen(true);
+    // When user interacts, make panel visible again
+    setIsPanelMinimized(false);
   };
 
   const getCurrentLocation = () => {
@@ -86,25 +105,59 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     }, 1000);
   };
 
+  const togglePanel = () => {
+    setIsPanelMinimized(prev => !prev);
+  };
+
   return (
     <>
-      <LocationSelector 
-        pickupLocation={pickupLocation}
-        dropoffLocation={dropoffLocation}
-        onOpenPickupSearch={() => handleOpenLocationSearch("pickup")}
-        onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
-        onClearPickup={() => onPickupChange("")}
-        onClearDropoff={() => onDropoffChange("")}
-      />
+      <motion.div 
+        initial={false}
+        animate={isPanelMinimized ? { y: -10 } : { y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="relative"
+      >
+        {/* Panel Pull Tab - Always visible */}
+        <motion.div 
+          className="absolute left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-1 rounded-b-xl shadow-md z-20 cursor-pointer"
+          onClick={togglePanel}
+          style={{ top: isPanelMinimized ? '4px' : '100%' }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isPanelMinimized ? (
+            <ChevronDown size={24} className="text-rideroot-primary" />
+          ) : (
+            <ChevronUp size={24} className="text-rideroot-primary" />
+          )}
+        </motion.div>
 
-      <AnimatePresence>
-        <RecentLocations 
-          recentLocations={recentLocations}
-          onSelectLocation={handleSelectRecentLocation}
-          showRecentLocations={showRecentLocations && !locationDialogOpen}
-          className="mx-1"
-        />
-      </AnimatePresence>
+        {/* Main Panel Content */}
+        <motion.div 
+          initial={false}
+          animate={isPanelMinimized ? { opacity: 0, y: -200 } : { opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className={`overflow-hidden ${isPanelMinimized ? 'pointer-events-none' : 'pointer-events-auto'}`}
+        >
+          <LocationSelector 
+            pickupLocation={pickupLocation}
+            dropoffLocation={dropoffLocation}
+            onOpenPickupSearch={() => handleOpenLocationSearch("pickup")}
+            onOpenDropoffSearch={() => handleOpenLocationSearch("dropoff")}
+            onClearPickup={() => onPickupChange("")}
+            onClearDropoff={() => onDropoffChange("")}
+          />
+
+          <AnimatePresence>
+            <RecentLocations 
+              recentLocations={recentLocations}
+              onSelectLocation={handleSelectRecentLocation}
+              showRecentLocations={showRecentLocations && !locationDialogOpen}
+              className="mx-1"
+            />
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
 
       <LocationSearchDialog 
         isOpen={locationDialogOpen}
