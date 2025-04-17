@@ -19,7 +19,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
   onPickupChange,
   onDropoffChange,
 }) => {
-  const [showRecentLocations, setShowRecentLocations] = useState(false);
+  const [showRecentLocations, setShowRecentLocations] = useState(true);
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
   const [locationSearchType, setLocationSearchType] = useState<"pickup" | "dropoff">("dropoff");
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,7 +50,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
     } else {
       onDropoffChange(address);
     }
-    setShowRecentLocations(false);
+    setShowRecentLocations(true);
     setLocationDialogOpen(false);
     
     toast.success(`${locationSearchType === "pickup" ? "Pickup" : "Dropoff"} location set`, {
@@ -102,6 +102,7 @@ const LocationSearchContainer: React.FC<LocationSearchContainerProps> = ({
           recentLocations={recentLocations}
           onSelectLocation={handleSelectRecentLocation}
           showRecentLocations={showRecentLocations && !locationDialogOpen}
+          className="mx-1"
         />
       </AnimatePresence>
 
