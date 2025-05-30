@@ -1,21 +1,20 @@
-
 ## Project info
 
-**URL**: https://lovable.dev/projects/5961f1df-025c-456a-9523-408589610676
+<!-- Project-specific URL removed as it referenced Lovable -->
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
+There are several ways to edit your application:
 
-**Use Lovable**
+**Use the Web Editor**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5961f1df-025c-456a-9523-408589610676) and start prompting.
+If your project provides a web-based editor, simply visit the project’s web interface and start making changes.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via the web editor will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the project’s web interface.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -61,12 +60,13 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/5961f1df-025c-456a-9523-408589610676) and click on Share -> Publish.
+To deploy, use your preferred deployment method or hosting provider.  
+If you have a web-based project interface, look for options like Share or Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my project?
 
-Yes it is!
+Yes!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+To connect a domain, navigate to your project’s settings or domain management section and follow the instructions to connect a custom domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+<!-- Reference to Lovable documentation removed -->
