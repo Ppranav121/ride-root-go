@@ -1,72 +1,47 @@
-## Project info
+# 🚗 RideeRoot – Driver-First Ride-Hailing Platform
 
-<!-- Project-specific URL removed as it referenced Lovable -->
+**RideeRoot** is a mission-driven ride-hailing app built to put drivers first. Unlike traditional platforms, we don’t charge commission — we offer flexible pay-per-ride and subscription models that empower drivers to earn fairly and sustainably.
 
-## How can I edit this code?
+---
 
-There are several ways to edit your application:
+## 🌟 Why RideeRoot?
 
-**Use the Web Editor**
+Big platforms built empires on drivers' backs, only to replace them with automation.
 
-If your project provides a web-based editor, simply visit the project’s web interface and start making changes.
+🚫 No commission fees  
+💰 Crypto wallet tipping system  
+📍 Real-time ride tracking with WebSockets  
+🌱 Sustainable, transparent, and built by a driver-first mindset
 
-Changes made via the web editor will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠 Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the project’s web interface.
+| Frontend | Backend | Realtime | Database | Auth | DevOps |
+|----------|---------|----------|----------|------|--------|
+| React + TypeScript | Node.js + Express | WebSockets | MongoDB, Redis | JWT, Firebase | Docker, GitHub Actions |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📦 Features
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- 🌍 Interactive ride booking UI with **Google Maps integration**
+- 🔒 Secure sign-in and JWT-authenticated role-based access
+- 🚘 Live driver location tracking via **WebSocket**
+- 💸 Crypto wallet support (under development)
+- 👥 Dual interface: Rider and Driver modes
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🚀 Setup Instructions
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+```bash
+# Clone the repo
+git clone https://github.com/Ppranav121/rideeroot.git
+cd rideeroot
 
-**Edit a file directly in GitHub**
+# Install dependencies
+npm install
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-To deploy, use your preferred deployment method or hosting provider.  
-If you have a web-based project interface, look for options like Share or Publish.
-
-## Can I connect a custom domain to my project?
-
-Yes!
-
-To connect a domain, navigate to your project’s settings or domain management section and follow the instructions to connect a custom domain.
-
-<!-- Reference to Lovable documentation removed -->
+# Start backend and frontend
+npm run dev  # or use docker-compose up
