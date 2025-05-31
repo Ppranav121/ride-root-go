@@ -25,11 +25,11 @@ Big platforms built empires on drivers' backs, only to replace them with automat
 
 ##  Features
 
-- 🌍 Interactive ride booking UI with **Google Maps integration**
-- 🔒 Secure sign-in and JWT-authenticated role-based access
-- 🚘 Live driver location tracking via **WebSocket**
-- 💸 Crypto wallet support (under development)
-- 👥 Dual interface: Rider and Driver modes
+- Interactive ride booking UI with **Google Maps integration**
+- Secure sign-in and JWT-authenticated role-based access
+- Live driver location tracking via **WebSocket**
+- Crypto wallet support (under development)
+- Dual interface: Rider and Driver modes
 
 ---
 
